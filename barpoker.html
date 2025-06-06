@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ben's Bar Video Poker</title>
   <style>
     html, body {
@@ -13,15 +13,9 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
     }
     #game-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      height: 100vh;
-      padding: 1vh;
+      padding: 10px;
       box-sizing: border-box;
     }
     .card {
@@ -49,9 +43,9 @@
       border-color: red !important;
     }
     .btn {
-      font-size: 4vw;
-      padding: 2vw 4vw;
-      margin: 2vw 1vw;
+      font-size: 20px;
+      padding: 10px 20px;
+      margin: 10px;
       background-color: #000;
       color: #f00;
       border: 2px solid #f00;
@@ -59,58 +53,23 @@
       font-family: 'Courier New', monospace;
     }
     #paytable {
-      font-size: 3vw;
+      margin-top: 20px;
+      font-size: 16px;
       color: #f00;
     }
     .status {
-      font-size: 4vw;
-      margin: 1vh 0;
-    }
-    #hand {
-      display: flex;
-      justify-content: center;
-      flex-wrap: nowrap;
-    }
-    #fullscreen-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 2vw;
-      padding: 1vw;
-      background-color: #000;
-      color: #f00;
-      border: 1px solid #f00;
-      z-index: 1000;
-    }
-    .crt {
-      position: relative;
-    }
-    .crt::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        rgba(255, 0, 0, 0.05),
-        rgba(255, 0, 0, 0.05) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-      pointer-events: none;
+      font-size: 20px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <div id="game-wrapper" class="crt">
-    <button id="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+  <div id="game-wrapper">
     <h1>Ben's Bar Video Poker</h1>
     <div id="credits">Credits: 100</div>
     <div id="bet">Bet: 1</div>
     <div>
-      <button class="btn" onclick="changeBet()">Bet One</button>
+      <button class="btn" onclick="changeBet()">Change Bet</button>
       <button class="btn" onclick="maxBet()">Max Bet</button>
       <button class="btn" onclick="deal()">Deal / Draw</button>
       <button class="btn" onclick="cashOut()">Cash Out</button>
@@ -132,13 +91,158 @@
     </div>
   </div>
   <script>
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
+    document.addEventListener("DOMContentLoaded", function () {
+      const suits = ['S', 'H', 'D', 'C'];
+      const ranks = ['2','3','4','5','6','7','8','9','T','J','Q','K','A'];
+
+      let credits = 100;
+      let bet = 1;
+      let deck = [];
+      let hand = [];
+      let held = [false, false, false, false, false];
+      let highscore = localStorage.getItem("pokerHighscore") || 100;
+      let inPlay = false;
+
+      function updateDisplay(message = '') {
+        document.getElementById("credits").innerText = `Credits: ${credits}`;
+        document.getElementById("bet").innerText = `Bet: ${bet}`;
+        document.getElementById("highscore").innerText = `High Score: ${highscore}`;
+        document.getElementById("status").innerText = message;
+        const handDiv = document.getElementById("hand");
+        handDiv.innerHTML = "";
+
+        if (hand.length === 0) {
+          for (let i = 0; i < 5; i++) {
+            const div = document.createElement("div");
+            div.className = "card";
+            const img = document.createElement("img");
+            img.src = "cards/back.png";
+            img.className = 'card-img back';
+            div.appendChild(img);
+            handDiv.appendChild(div);
+          }
+          return;
+        }
+
+        hand.forEach((card, i) => {
+          const div = document.createElement("div");
+          div.className = "card" + (held[i] ? " held" : "");
+          const img = document.createElement('img');
+          img.src = `cards/${card.rank}${card.suit}.png`;
+          img.className = 'card-img';
+          div.appendChild(img);
+          div.onclick = () => {
+            if (inPlay) toggleHold(i);
+          };
+          handDiv.appendChild(div);
+        });
+
+        document.querySelector('button[onclick="changeBet()"]')?.removeAttribute('disabled');
+        if (inPlay) {
+          document.querySelector('button[onclick="changeBet()"]')?.setAttribute('disabled', true);
+        }
       }
-    }
+
+      function toggleHold(index) {
+        held[index] = !held[index];
+        updateDisplay();
+      }
+
+      window.changeBet = function () {
+        bet = bet >= 5 ? 1 : bet + 1;
+        updateDisplay();
+      }
+
+      window.maxBet = function () {
+        if (credits < 5) return alert("Not enough credits!");
+        bet = 5;
+        deal();
+      }
+
+      window.deal = function () {
+        if (!inPlay) {
+          if (credits < bet) return alert("Not enough credits!");
+          credits -= bet;
+          deck = buildDeck();
+          if (deck.length < 5) return alert("Deck failed to build.");
+          hand = drawHand();
+          held = [false, false, false, false, false];
+          inPlay = true;
+          updateDisplay("Cards Dealt. Tap to hold.");
+        } else {
+          hand = hand.map((card, i) => held[i] ? card : deck.pop());
+          const result = evaluateHand(hand);
+          let payout = getPayout(result);
+          if (payout > 0) credits += payout * bet;
+          if (credits > highscore) {
+            highscore = credits;
+            localStorage.setItem("pokerHighscore", credits);
+          }
+          inPlay = false;
+          const displayText = payout > 0 ? `${result} (${payout * bet} credits)` : `${result} – Try Again!`;
+          updateDisplay(displayText);
+          hand = [];
+        }
+      }
+
+      window.cashOut = function () {
+        alert(`You cashed out with ${credits} credits.`);
+        credits = 100;
+        bet = 1;
+        hand = [];
+        held = [false, false, false, false, false];
+        updateDisplay("Credits reset. Good luck!");
+      }
+
+      function buildDeck() {
+        let d = [];
+        suits.forEach(s => {
+          ranks.forEach(r => d.push({rank: r, suit: s}));
+        });
+        return d.sort(() => Math.random() - 0.5);
+      }
+
+      function drawHand() {
+        return deck.splice(0, 5);
+      }
+
+      function getPayout(rank) {
+        switch(rank) {
+          case 'Royal Flush': return 250;
+          case 'Straight Flush': return 50;
+          case 'Four of a Kind': return 25;
+          case 'Full House': return 9;
+          case 'Flush': return 6;
+          case 'Straight': return 4;
+          case 'Three of a Kind': return 3;
+          case 'Two Pair': return 2;
+          case 'Jacks or Better': return 1;
+          default: return 0;
+        }
+      }
+
+      function evaluateHand(h) {
+        let counts = {};
+        h.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
+        let vals = Object.values(counts).sort((a,b) => b - a);
+        let flush = h.every(c => c.suit === h[0].suit);
+        let idxs = h.map(c => ranks.indexOf(c.rank)).sort((a,b) => a - b);
+        let straight = idxs.every((v,i,a) => i === 0 || a[i]-1 === a[i-1]);
+        let hasJacks = h.some(c => ['J','Q','K','A'].includes(c.rank) && counts[c.rank] === 2);
+        if (flush && idxs.join() === "8,9,10,11,12") return "Royal Flush";
+        if (flush && straight) return "Straight Flush";
+        if (vals[0] === 4) return "Four of a Kind";
+        if (vals[0] === 3 && vals[1] === 2) return "Full House";
+        if (flush) return "Flush";
+        if (straight) return "Straight";
+        if (vals[0] === 3) return "Three of a Kind";
+        if (vals[0] === 2 && vals[1] === 2) return "Two Pair";
+        if (vals[0] === 2 && hasJacks) return "Jacks or Better";
+        return "No Win";
+      }
+
+      updateDisplay();
+    });
   </script>
 </body>
 </html>
