@@ -13,10 +13,13 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
     #game-wrapper {
       padding: 10px;
       box-sizing: border-box;
+      max-width: 100vw;
     }
     .card {
       width: 18vw;
@@ -36,15 +39,13 @@
     }
     .card-img.back {
       object-fit: contain;
-      padding: 5%;
-      transform: scale(1.2);
     }
     .held {
       border-color: red !important;
     }
     .btn {
-      font-size: 20px;
-      padding: 10px 20px;
+      font-size: 4vw;
+      padding: 2vw 4vw;
       margin: 10px;
       background-color: #000;
       color: #f00;
@@ -53,12 +54,12 @@
       font-family: 'Courier New', monospace;
     }
     #paytable {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #f00;
+      margin: 20px auto;
+      font-size: 3.5vw;
+      max-width: 600px;
     }
     .status {
-      font-size: 20px;
+      font-size: 4vw;
       margin-top: 20px;
     }
   </style>
@@ -111,31 +112,25 @@
         const handDiv = document.getElementById("hand");
         handDiv.innerHTML = "";
 
-        if (hand.length === 0) {
-          for (let i = 0; i < 5; i++) {
-            const div = document.createElement("div");
-            div.className = "card";
-            const img = document.createElement("img");
-            img.src = "cards/back.png";
-            img.className = 'card-img back';
-            div.appendChild(img);
-            handDiv.appendChild(div);
-          }
-          return;
-        }
-
-        hand.forEach((card, i) => {
+        for (let i = 0; i < 5; i++) {
           const div = document.createElement("div");
           div.className = "card" + (held[i] ? " held" : "");
-          const img = document.createElement('img');
-          img.src = `cards/${card.rank}${card.suit}.png`;
-          img.className = 'card-img';
+          const img = document.createElement("img");
+
+          if (hand.length === 0) {
+            img.src = "cards/back.png";
+            img.className = 'card-img back';
+          } else {
+            const card = hand[i];
+            img.src = `cards/${card.rank}${card.suit}.png`;
+            img.className = 'card-img';
+            div.onclick = () => {
+              if (inPlay) toggleHold(i);
+            };
+          }
           div.appendChild(img);
-          div.onclick = () => {
-            if (inPlay) toggleHold(i);
-          };
           handDiv.appendChild(div);
-        });
+        }
 
         document.querySelector('button[onclick="changeBet()"]')?.removeAttribute('disabled');
         if (inPlay) {
@@ -164,7 +159,6 @@
           if (credits < bet) return alert("Not enough credits!");
           credits -= bet;
           deck = buildDeck();
-          if (deck.length < 5) return alert("Deck failed to build.");
           hand = drawHand();
           held = [false, false, false, false, false];
           inPlay = true;
@@ -179,9 +173,7 @@
             localStorage.setItem("pokerHighscore", credits);
           }
           inPlay = false;
-          const displayText = payout > 0 ? `${result} (${payout * bet} credits)` : `${result} – Try Again!`;
-          updateDisplay(displayText);
-          hand = [];
+          updateDisplay(payout > 0 ? `${result} (+${payout * bet})` : `${result} – Try Again!`);
         }
       }
 
