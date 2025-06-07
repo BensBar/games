@@ -266,8 +266,12 @@
       function deal() {
         if (!inPlay) {
           if (credits < bet) {
-            showError("Not enough credits to deal!");
-            return;
+            if (credits > 0) {
+              bet = credits;  // Automatically adjust bet to available credits
+            } else {
+              showError("Not enough credits to deal!");
+              return;
+            }
           }
           credits -= bet;
           deck = buildDeck();
