@@ -32,6 +32,7 @@
       background-color: #000;
       cursor: pointer;
       transition: border-color 0.2s;
+      position: relative;
     }
     .card-img {
       width: 100%;
@@ -43,6 +44,9 @@
     }
     .held {
       border-color: #0f0 !important; /* Green for held cards */
+    }
+    .suggested {
+      border-color: #00f !important; /* Blue for suggested cards */
     }
     .btn {
       font-size: min(4vw, 16px);
@@ -97,6 +101,7 @@
     <div>
       <button class="btn" id="changeBetBtn">Change Bet</button>
       <button class="btn" id="maxBetBtn">Max Bet</button>
+      <button class="btn" id="suggestBtn">Suggest Holds</button>
       <button class="btn" id="dealBtn">Deal / Draw</button>
       <button class="btn" id="cashOutBtn">Cash Out</button>
     </div>
@@ -126,6 +131,7 @@
       let deck = [];
       let hand = [];
       let held = [false, false, false, false, false];
+      let suggested = [false, false, false, false, false];
       let highscore = Number(localStorage.getItem("pokerHighscore")) || 100;
       let inPlay = false;
 
@@ -138,6 +144,7 @@
         hand: document.getElementById("hand"),
         changeBetBtn: document.getElementById("changeBetBtn"),
         maxBetBtn: document.getElementById("maxBetBtn"),
+        suggestBtn: document.getElementById("suggestBtn"),
         dealBtn: document.getElementById("dealBtn"),
         cashOutBtn: document.getElementById("cashOutBtn"),
       };
@@ -152,9 +159,9 @@
 
         for (let i = 0; i < 5; i++) {
           const div = document.createElement("div");
-          div.className = "card" + (held[i] ? " held" : "");
+          div.className = "card" + (held[i] ? " held" : "") + (suggested[i] && !held[i] ? " suggested" : "");
           div.setAttribute("aria-label", hand[i] ? `Card ${hand[i].rank} of ${hand[i].suit}` : "Card back");
-          div.tabIndex = 0; // Make focusable
+          div.tabIndex = 0;
           const img = document.createElement("img");
 
           if (hand.length === 0) {
@@ -175,7 +182,13 @@
             };
           }
           img.onerror = () => {
-            showError("Failed to load card images. Please check the 'cards' directory.");
+            img.style.display = 'none';
+            div.textContent = hand[i] ? `${hand[i].rank}${hand[i].suit}` : 'Back';
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.justifyContent = 'center';
+            div.style.color = '#f00';
+            showError("Some card images failed to load. Using text fallback.");
           };
           div.appendChild(img);
           elements.hand.appendChild(div);
@@ -183,6 +196,7 @@
 
         elements.changeBetBtn.disabled = inPlay;
         elements.maxBetBtn.disabled = inPlay || credits < 5;
+        elements.suggestBtn.disabled = !inPlay || hand.length === 0;
         elements.dealBtn.textContent = inPlay ? "Draw" : "Deal";
       }
 
@@ -191,8 +205,46 @@
       }
 
       function toggleHold(index) {
+        if (!inPlay) return;
         held[index] = !held[index];
-        updateDisplay(inPlay ? "Select cards to hold, then draw." : "");
+        updateDisplay("Select cards to hold, then draw.");
+      }
+
+      function suggestHolds() {
+        if (!inPlay || hand.length === 0) return;
+        suggested = [false, false, false, false, false];
+
+        // Simple Jacks or Better strategy
+        const counts = {};
+        hand.forEach(c => counts[c.rank] = (counts[c.rank] || 0) + 1);
+        const flush = hand.every(c => c.suit === hand[0].suit);
+        const idxs = hand.map(c => ranks.indexOf(c.rank)).sort((a, b) => a - b);
+        const straightPotential = idxs.some((v, i, a) => i < a.length - 3 && a[i + 3] - v <= 4);
+        const highCards = hand.map((c, i) => ['J', 'Q', 'K', 'A'].includes(c.rank) ? i : -1).filter(i => i >= 0);
+
+        // Hold high pairs (Jacks or better)
+        Object.keys(counts).forEach(rank => {
+          if (counts[rank] >= 2 && ['J', 'Q', 'K', 'A'].includes(rank)) {
+            hand.forEach((card, i) => {
+              if (card.rank === rank) suggested[i] = true;
+            });
+          }
+        });
+
+        // Hold four cards to a flush
+        if (flush) {
+          suggested = [true, true, true, true, true];
+        }
+        // Hold four cards to an outside straight
+        else if (straightPotential && idxs.length === 5 && idxs[4] - idxs[1] === 3) {
+          hand.forEach((_, i) => suggested[i] = true);
+        }
+        // Hold high cards (J, Q, K, A)
+        else if (highCards.length > 0) {
+          highCards.forEach(i => suggested[i] = true);
+        }
+
+        updateDisplay("Suggested cards highlighted in blue. Click to hold/unhold.");
       }
 
       function changeBet() {
@@ -221,6 +273,7 @@
           deck = buildDeck();
           hand = drawHand();
           held = [false, false, false, false, false];
+          suggested = [false, false, false, false, false];
           inPlay = true;
           updateDisplay("Select cards to hold, then draw.");
         } else {
@@ -237,6 +290,7 @@
             }
           }
           inPlay = false;
+          suggested = [false, false, false, false, false];
           updateDisplay(payout > 0 ? `${result} (+${payout * bet})` : `${result} – Try Again!`);
         }
       }
@@ -247,13 +301,13 @@
         bet = 1;
         hand = [];
         held = [false, false, false, false, false];
+        suggested = [false, false, false, false, false];
         inPlay = false;
         updateDisplay("Credits reset. Good luck!");
       }
 
       function buildDeck() {
         const d = suits.flatMap(s => ranks.map(r => ({ rank: r, suit: s })));
-        // Fisher-Yates shuffle
         for (let i = d.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [d[i], d[j]] = [d[j], d[i]];
@@ -304,6 +358,7 @@
       // Event listeners
       elements.changeBetBtn.addEventListener("click", changeBet);
       elements.maxBetBtn.addEventListener("click", maxBet);
+      elements.suggestBtn.addEventListener("click", suggestHolds);
       elements.dealBtn.addEventListener("click", deal);
       elements.cashOutBtn.addEventListener("click", cashOut);
 
