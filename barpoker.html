@@ -48,6 +48,9 @@
     .suggested {
       border-color: #00f !important; /* Blue for suggested cards */
     }
+    .winner {
+      border-color: #ffd700 !important; /* Gold for winning cards */
+    }
     .btn {
       font-size: min(4vw, 16px);
       padding: 10px 20px;
@@ -132,6 +135,7 @@
       let hand = [];
       let held = [false, false, false, false, false];
       let suggested = [false, false, false, false, false];
+      let winningCards = [false, false, false, false, false];
       let highscore = Number(localStorage.getItem("pokerHighscore")) || 100;
       let inPlay = false;
 
@@ -159,7 +163,11 @@
 
         for (let i = 0; i < 5; i++) {
           const div = document.createElement("div");
-          div.className = "card" + (held[i] ? " held" : "") + (suggested[i] && !held[i] ? " suggested" : "");
+          let className = "card";
+          if (held[i]) className += " held";
+          if (suggested[i] && !held[i]) className += " suggested";
+          if (winningCards[i] && !inPlay) className += " winner";
+          div.className = className;
           div.setAttribute("aria-label", hand[i] ? `Card ${hand[i].rank} of ${hand[i].suit}` : "Card back");
           div.tabIndex = 0;
           const img = document.createElement("img");
@@ -274,12 +282,21 @@
           hand = drawHand();
           held = [false, false, false, false, false];
           suggested = [false, false, false, false, false];
+          winningCards = [false, false, false, false, false];
           inPlay = true;
           updateDisplay("Select cards to hold, then draw.");
         } else {
           hand = hand.map((card, i) => held[i] ? card : deck.pop());
-          const result = evaluateHand(hand);
+          const evaluation = evaluateHand(hand);
+          const result = evaluation.rank;
           const payout = getPayout(result);
+          
+          // Set winning cards
+          winningCards = [false, false, false, false, false];
+          evaluation.winningIndexes.forEach(index => {
+            winningCards[index] = true;
+          });
+          
           if (payout > 0) credits += payout * bet;
           if (credits > highscore) {
             highscore = credits;
@@ -302,6 +319,7 @@
         hand = [];
         held = [false, false, false, false, false];
         suggested = [false, false, false, false, false];
+        winningCards = [false, false, false, false, false];
         inPlay = false;
         updateDisplay("Credits reset. Good luck!");
       }
@@ -343,16 +361,60 @@
         const straight = idxs.every((v, i, a) => i === 0 || v - 1 === a[i - 1]);
         const hasJacks = h.some(c => ['J', 'Q', 'K', 'A'].includes(c.rank) && counts[c.rank] === 2);
 
-        if (flush && idxs.join() === "8,9,10,11,12") return "Royal Flush";
-        if (flush && straight) return "Straight Flush";
-        if (vals[0] === 4) return "Four of a Kind";
-        if (vals[0] === 3 && vals[1] === 2) return "Full House";
-        if (flush) return "Flush";
-        if (straight) return "Straight";
-        if (vals[0] === 3) return "Three of a Kind";
-        if (vals[0] === 2 && vals[1] === 2) return "Two Pair";
-        if (vals[0] === 2 && hasJacks) return "Jacks or Better";
-        return "No Win";
+        // Helper function to get indexes of cards with specific rank
+        const getCardIndexesByRank = (rank, count) => {
+          const indexes = [];
+          h.forEach((card, i) => {
+            if (card.rank === rank) indexes.push(i);
+          });
+          return indexes.slice(0, count);
+        };
+
+        // Helper function to get indexes of cards forming pairs
+        const getPairIndexes = () => {
+          const pairIndexes = [];
+          Object.keys(counts).forEach(rank => {
+            if (counts[rank] >= 2) {
+              const cardIndexes = getCardIndexesByRank(rank, counts[rank]);
+              pairIndexes.push(...cardIndexes);
+            }
+          });
+          return pairIndexes;
+        };
+
+        if (flush && idxs.join() === "8,9,10,11,12") {
+          return { rank: "Royal Flush", winningIndexes: [0, 1, 2, 3, 4] };
+        }
+        if (flush && straight) {
+          return { rank: "Straight Flush", winningIndexes: [0, 1, 2, 3, 4] };
+        }
+        if (vals[0] === 4) {
+          const fourOfAKindRank = Object.keys(counts).find(rank => counts[rank] === 4);
+          return { rank: "Four of a Kind", winningIndexes: getCardIndexesByRank(fourOfAKindRank, 4) };
+        }
+        if (vals[0] === 3 && vals[1] === 2) {
+          return { rank: "Full House", winningIndexes: [0, 1, 2, 3, 4] };
+        }
+        if (flush) {
+          return { rank: "Flush", winningIndexes: [0, 1, 2, 3, 4] };
+        }
+        if (straight) {
+          return { rank: "Straight", winningIndexes: [0, 1, 2, 3, 4] };
+        }
+        if (vals[0] === 3) {
+          const threeOfAKindRank = Object.keys(counts).find(rank => counts[rank] === 3);
+          return { rank: "Three of a Kind", winningIndexes: getCardIndexesByRank(threeOfAKindRank, 3) };
+        }
+        if (vals[0] === 2 && vals[1] === 2) {
+          return { rank: "Two Pair", winningIndexes: getPairIndexes() };
+        }
+        if (vals[0] === 2 && hasJacks) {
+          const jacksOrBetterRank = Object.keys(counts).find(rank => 
+            counts[rank] === 2 && ['J', 'Q', 'K', 'A'].includes(rank)
+          );
+          return { rank: "Jacks or Better", winningIndexes: getCardIndexesByRank(jacksOrBetterRank, 2) };
+        }
+        return { rank: "No Win", winningIndexes: [] };
       }
 
       // Event listeners
