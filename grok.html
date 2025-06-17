@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ben's Bar Video Poker</title>
+  <style>
+    html, body {
+      background: linear-gradient(to bottom, #1a3c34, #000);
+      color: #ff5555;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    #game-wrapper {
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      box-sizing: border-box;
+      max-width: 100vw;
+      margin: 0 auto;
+    }
+    .card {
+      width: min(18vw, 100px);
+      height: min(27vw, 150px);
+      display: inline-block;
+      margin: 5px;
+      border: 2px solid #ff5555;
+      border-radius: 4px;
+      background-color: #000;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      box-shadow: 2px 2px 5px rgba(255, 85, 85, 0.3);
+    }
+    .card.deal-animation {
+      animation: flip 0.5s ease-in-out;
+    }
+    @keyframes flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(90deg); }
+      100% { transform: rotateY(0deg); }
+    }
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .held {
+      border-color: #0f0 !important;
+    }
+    .suggested {
+      border-color: #00f !important;
+    }
+    .btn {
+      font-size: min(4vw, 16px);
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #000;
+      color: #ff5555;
+      border: 2px solid #ff5555;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn:hover:not(:disabled) {
+      background-color: #ff5555;
+      color: #000;
+      transform: scale(1.05);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #paytable {
+      margin: 20px auto;
+      font-size: min(3.5vw, 14px);
+      max-width: 90%;
+      line-height: 1.5;
+    }
+    .status {
+      font-size: min(4vw, 16px);
+      margin: 10px 0;
+    }
+    .error {
+      color: #ff0;
+    }
+    #highscore {
+      font-size: min(3.5vw, 14px);
+      line-height: 1.5;
+    }
+    @media (max-width: 600px) {
+      .card {
+        width: min(18vw, 70px);
+        height: min(27vw, 105px);
+        margin: 3px;
+      }
+      .btn {
+        font-size: min(5vw, 14px);
+        padding: 8px 16px;
+      }
+      #paytable {
+        font-size: min(4vw, 12px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-wrapper">
+    <h1>Ben's Bar Video Poker</h1>
+    <div id="credits">Credits: 100</div>
+    <div id="bet">Bet: 1</div>
+    <div id="error" class="status error"></div>
+    <div>
+      <button class="btn" id="changeBetBtn">Change Bet</button>
+      <button class="btn" id="maxBetBtn">Max Bet</button>
+      <button class="btn" id="suggestBtn">Suggest Holds</button>
+      <button class="btn" id="dealBtn">Deal / Draw</button>
+      <button class="btn" id="muteBtn">Mute</button>
+      <button class="btn" id="cashOutBtn">Cash Out</button>
+    </div>
+    <div id="hand" role="region" aria-label="Player's hand"></div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <div class="status" id="highscore"></div>
+    <div class="status" id="paytable">
+      <strong>Payouts:</strong><br>
+      Royal Flush: 250<br>
+      Straight Flush: 50<br>
+      Four of a Kind: 25<br>
+      Full House: 9<br>
+      Flush: 6<br>
+      Straight: 4<br>
+      Three of a Kind: 3<br>
+      Two Pair: 2<br>
+      Jacks or Better: 1
+    </div>
+  </div>
+  <script>
+    (function () {
+      const suits = ['S', 'H', 'D', 'C'];
+      const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'];
+      const cardImageBase = 'https://deckofcardsapi.com/static/img/';
+
+      let credits = 100;
+      let bet = 1;
+      let deck = [];
+      let hand = [];
+      let held = [false, false, false, false, false];
+      let suggested = [false, false, false, false, false];
+      let highscores = JSON.parse(localStorage.getItem('pokerHighscores')) || [];
+      let inPlay = false;
+      let isMuted = false;
+
+      const sounds = {
+        deal: new Audio('sounds/deal.mp3'),
+        win: new Audio('sounds/win.mp3'),
+      };
+
+      const elements = {
+        credits: document.getElementById('credits'),
+        bet: document.getElementById('bet'),
+        error: document.getElementById('error'),
+        status: document.getElementById('status'),
+        highscore: document.getElementById('highscore'),
+        hand: document.getElementById('hand'),
+        changeBetBtn: document.getElementById('changeBetBtn'),
+        maxBetBtn: document.getElementById('maxBetBtn'),
+        suggestBtn: document.getElementById('suggestBtn'),
+        dealBtn: document.getElementById('dealBtn'),
+        muteBtn: document.getElementById('muteBtn'),
+        cashOutBtn: document.getElementById('cashOutBtn'),
+      };
+
+      function updateDisplay(message = '') {
+        elements.credits.textContent = `Credits: ${credits}`;
+        elements.bet.textContent = `Bet: ${bet}`;
+        elements.highscore.innerHTML = `High Scores:<br>${highscores.length ? highscores.map(h => `${h.score} (${
