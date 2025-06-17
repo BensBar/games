@@ -1,1 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blinko Game MVP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,max-scale=1.0,user-scalable=no">
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --primary: #3e9fff;
+      --secondary: #ffcf4d;
+      --peg: #ffffff;
+      --ball: #ff4d4d;
+      --slot: #ffffff;
+      --slot-win: #6fff80;
+      --text: #222;
+      --board: #d1e3fa;
+      --glow: 0 0 18px 6px #ffcf4d77;
+      --confetti: #ffd700, #ff4d4d, #3e9fff, #6fff80, #ffcf4d;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: flex-start;
+    }
+    h1 {
+      margin-top: 18px;
+      font-size: 2em;
+      letter-spacing: 1px;
+    }
+    #game-container {
+      margin-top: 10px;
+      background: var(--board);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px #0002;
+      padding: 18px 8px 8px 8px;
+      max-width: 440px;
+      width: 98vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #blinko-canvas {
+      background: var(--bg);
+      border-radius: 12px;
+      width: 100%;
+      touch-action: none;
+      max-width: 400px;
+      aspect-ratio: 1/1.3;
+      box-shadow: 0 2px 12px #0001;
+      margin-bottom: 10px;
+      display: block;
+    }
+    #ui-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 1em;
+      font-weight: bold;
+      box-shadow: 0 2px 6px #0002;
+      cursor: pointer;
+      margin: 0 6px;
+      transition: background 0.15s;
+      outline: none;
+    }
+    .btn:active {
+      background: var(--secondary);
+    }
+    #mute-btn {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      font-size: 1.1em;
+      padding: 7px 10px;
+      border-radius: 50%;
+      width: 40px;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 6px;
+    }
+    #score-bar {
+      margin: 10px 0 6px 0;
+      font-size: 1.1em;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    #leaderboard {
+      margin-top: 10px;
+      background: #fff9;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.99em;
+      box-shadow: 0 2px 6px #0001;
+      display: none;
+    }
+    @media (max-width: 500px) {
+      #game-container {
+        padding: 10px 2px 6px 2px;
+        max-width: 100vw;
+      }
+      #blinko-canvas {
+        max-width: 98vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Blinko</h1>
+  <div id="game-container">
+    <div id="ui-bar">
+      <button id="start-btn" class="btn">Start Game</button>
+      <button id="play-again-btn" class="btn" style="display:none;">Play Again</button>
+      <button id="mute-btn" title="Toggle Sound">🔊</button>
+    </div>
+    <canvas id="blinko-canvas" width="360" height="480"></canvas>
+    <div id="score-bar">
+      <span>Last: <span id="last-score">0</span></span>
+      <span>Best: <span id="best-score">0</span></span>
+    </div>
+    <div id="leaderboard">
+      <b>Local Top Scores:</b>
+      <ol id="lb-list" style="margin:0;padding-left:18px;"></ol>
+    </div>
+  </div>
+  <script>
+    // ------- CONFIG -------
+    const PEG_ROWS = 8;
+    const PEG_COLS = 9;
+    const PEG_RADIUS = 10;
+    const SLOT_COUNT = 9;
+    const SLOT_HEIGHT = 32;
+    const SLOT_REWARDS = [10, 30, 50, 80, 100, 80, 50, 30, 10]; // must match SLOT_COUNT
+    const BALL_RADIUS = 14;
+    const GRAVITY = 0.32;
+    const BALL_BOUNCE = 0.65;
+    const FPS = 60;
+    const BOARD_MARGIN = 32;
+    const CONFETTI_COUNT = 50;
 
+    // ------- STATE -------
+    let gameState = 'idle'; // idle, running, result
+    let pegs = [], slots = [];
+    let ball = null;
+    let lastScore = 0, bestScore = 0;
+    let localLeaderboard = [];
+    let soundOn = true;
+    let confetti = [];
+
+    // ------- CANVAS -------
+    const canvas = document.getElementById('blinko-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // ------- DOM -------
+    const startBtn = document.getElementById('start-btn');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    const muteBtn = document.getElementById('mute-btn');
+    const lastScoreSpan = document.getElementById('last-score');
+    const bestScoreSpan = document.getElementById('best-score');
+    const leaderboardDiv = document.getElementById('leaderboard');
+    const lbList = document.getElementById('lb-list');
+
+    // ------- AUDIO -------
+    const SFX = {
+      bounce: new Audio('data:audio/wav;base64,UklGRhgAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAAA//8AACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg'),
+      slot: new Audio('data:audio/wav;base64,UklGRoQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAAA//8AACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg'),
+      win: new Audio('data:audio/wav;base64,UklGRhAAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAAA//8AACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg'),
+    };
+    for (let key in SFX) { SFX[key].volume = 0.27; }
+
+    function playSfx(name) {
+      if (!soundOn) return;
+      if (SFX[name]) {
+        SFX[name].currentTime = 0;
+        SFX[name].play();
+      }
+    }
+    muteBtn.onclick = () => {
+      soundOn = !soundOn;
+      muteBtn.innerText = soundOn ? '🔊' : '🔇';
+    };
+
+    // ------- PEGS & SLOTS -------
+    function setupBoard() {
+      pegs = [];
+      let yGap = (H - SLOT_HEIGHT - BOARD_MARGIN * 2) / (PEG_ROWS - 1);
+      let xGap = (W - BOARD_MARGIN * 2) / (PEG_COLS - 1);
+      for (let row = 0; row < PEG_ROWS; row++) {
+        for (let col = 0; col < PEG_COLS; col++) {
+          // Offset every other row for triangle grid
+          let x = BOARD_MARGIN + col * xGap + (row % 2 ? xGap / 2 : 0);
+          let y = BOARD_MARGIN + row * yGap;
+          if (x > W - BOARD_MARGIN || x < BOARD_MARGIN) continue;
+          pegs.push({ x, y });
+        }
+      }
+      slots = [];
+      let slotWidth = (W - BOARD_MARGIN * 2) / SLOT_COUNT;
+      for (let i = 0; i < SLOT_COUNT; i++) {
+        let x = BOARD_MARGIN + i * slotWidth;
+        slots.push({
+          x,
+          w: slotWidth,
+          reward: SLOT_REWARDS[i],
+        });
+      }
+    }
+
+    // ------- BALL -------
+    function spawnBall(dropX = W/2) {
+      ball = {
+        x: dropX,
+        y: BOARD_MARGIN - BALL_RADIUS - 2,
+        vx: 0,
+        vy: 0,
+        radius: BALL_RADIUS,
+        stopped: false,
+      };
+    }
+
+    function updateBall() {
+      if (!ball || ball.stopped) return;
+      ball.vy += GRAVITY;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      // Wall collision
+      if (ball.x - ball.radius < BOARD_MARGIN) {
+        ball.x = BOARD_MARGIN + ball.radius;
+        ball.vx = -ball.vx * BALL_BOUNCE;
+        playSfx('bounce');
+      }
+      if (ball.x + ball.radius > W - BOARD_MARGIN) {
+        ball.x = W - BOARD_MARGIN - ball.radius;
+        ball.vx = -ball.vx * BALL_BOUNCE;
+        playSfx('bounce');
+      }
+      // Peg collision
+      for (let peg of pegs) {
+        let dx = ball.x - peg.x, dy = ball.y - peg.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < PEG_RADIUS + ball.radius) {
+          // Simple elastic bounce
+          let angle = Math.atan2(dy, dx);
+          let speed = Math.sqrt(ball.vx*ball.vx + ball.vy*ball.vy) * BALL_BOUNCE;
+          ball.vx = Math.cos(angle) * speed + (Math.random()-0.5)*2;
+          ball.vy = Math.sin(angle) * speed;
+          // Push ball out of peg
+          let overlap = PEG_RADIUS + ball.radius - dist + 0.5;
+          ball.x += Math.cos(angle) * overlap;
+          ball.y += Math.sin(angle) * overlap;
+          playSfx('bounce');
+          break; // Only one peg per frame
+        }
+      }
+      // Bottom: check slot
+      if (ball.y + ball.radius >= H - SLOT_HEIGHT) {
+        let slotIdx = slots.findIndex(
+          slot => ball.x > slot.x && ball.x < slot.x + slot.w
+        );
+        if (slotIdx !== -1) {
+          ball.stopped = true;
+          ball.y = H - SLOT_HEIGHT - ball.radius;
+          triggerWin(slots[slotIdx].reward, slotIdx);
+        } else {
+          // Out of bounds
+          ball.stopped = true;
+          triggerWin(0, -1);
+        }
+      }
+    }
+
+    // ------- DRAW -------
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      // Slots
+      slots.forEach((slot, i) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(slot.x, H - SLOT_HEIGHT, slot.w, SLOT_HEIGHT);
+        ctx.fillStyle = slot.glow ? 'var(--slot-win)' : 'var(--slot)';
+        ctx.shadowColor = slot.glow ? '#6fff80' : '#0000';
+        ctx.shadowBlur = slot.glow ? 22 : 0;
+        ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = '#bbb';
+        ctx.strokeRect(slot.x, H - SLOT_HEIGHT, slot.w, SLOT_HEIGHT);
+        ctx.fillStyle = slot.glow ? '#222' : '#666';
+        ctx.font = 'bold 1.1em Segoe UI,Arial,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${slot.reward}`, slot.x + slot.w/2, H - SLOT_HEIGHT/2 + 8);
+      });
+      // Pegs
+      for (let peg of pegs) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(peg.x, peg.y, PEG_RADIUS, 0, 2 * Math.PI);
+        ctx.fillStyle = 'var(--peg)';
+        ctx.shadowColor = '#3e9fff66';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = '#bbb';
+        ctx.stroke();
+      }
+      // Ball
+      if (ball) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'var(--ball)';
+        ctx.shadowColor = '#ff4d4d77';
+        ctx.shadowBlur = 16;
+        ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = '#ff4d4d';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      // Confetti
+      for (let c of confetti) {
+        ctx.save();
+        ctx.fillStyle = c.color;
+        ctx.globalAlpha = c.a;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, 2*Math.PI);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // ------- GAME LOOP -------
+    function loop() {
+      if (gameState === 'running') updateBall();
+      updateConfetti();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    // ------- UI & EVENTS -------
+    function startGame() {
+      setupBoard();
+      confetti = [];
+      gameState = 'running';
+      startBtn.style.display = 'none';
+      playAgainBtn.style.display = 'none';
+      leaderboardDiv.style.display = 'none';
+      // Allow user to pick drop point
+      canvas.style.cursor = 'pointer';
+      draw();
+      // Wait for tap to drop
+      canvas.onclick = function(e) {
+        if (ball) return;
+        let rect = canvas.getBoundingClientRect();
+        let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        if (x < BOARD_MARGIN + BALL_RADIUS) x = BOARD_MARGIN + BALL_RADIUS + 2;
+        if (x > W - BOARD_MARGIN - BALL_RADIUS) x = W - BOARD_MARGIN - BALL_RADIUS - 2;
+        spawnBall(x);
+        canvas.onclick = null;
+        canvas.style.cursor = 'default';
+      };
+      // For touch devices
+      canvas.ontouchstart = function(e) {
+        if (ball) return;
+        let rect = canvas.getBoundingClientRect();
+        let x = e.touches[0].clientX - rect.left;
+        if (x < BOARD_MARGIN + BALL_RADIUS) x = BOARD_MARGIN + BALL_RADIUS + 2;
+        if (x > W - BOARD_MARGIN - BALL_RADIUS) x = W - BOARD_MARGIN - BALL_RADIUS - 2;
+        spawnBall(x);
+        canvas.onclick = null;
+        canvas.style.cursor = 'default';
+      };
+    }
+    function playAgain() {
+      ball = null;
+      for (let slot of slots) slot.glow = false;
+      confetti = [];
+      gameState = 'running';
+      playAgainBtn.style.display = 'none';
+      leaderboardDiv.style.display = 'none';
+      // Same as start: tap to drop
+      canvas.style.cursor = 'pointer';
+      draw();
+      canvas.onclick = function(e) {
+        if (ball) return;
+        let rect = canvas.getBoundingClientRect();
+        let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        if (x < BOARD_MARGIN + BALL_RADIUS) x = BOARD_MARGIN + BALL_RADIUS + 2;
+        if (x > W - BOARD_MARGIN - BALL_RADIUS) x = W - BOARD_MARGIN - BALL_RADIUS - 2;
+        spawnBall(x);
+        canvas.onclick = null;
+        canvas.style.cursor = 'default';
+      };
+      canvas.ontouchstart = function(e) {
+        if (ball) return;
+        let rect = canvas.getBoundingClientRect();
+        let x = e.touches[0].clientX - rect.left;
+        if (x < BOARD_MARGIN + BALL_RADIUS) x = BOARD_MARGIN + BALL_RADIUS + 2;
+        if (x > W - BOARD_MARGIN - BALL_RADIUS) x = W - BOARD_MARGIN - BALL_RADIUS - 2;
+        spawnBall(x);
+        canvas.onclick = null;
+        canvas.style.cursor = 'default';
+      };
+    }
+    function triggerWin(reward, slotIdx) {
+      lastScore = reward;
+      // Update best score
+      bestScore = Math.max(bestScore, reward);
+      lastScoreSpan.textContent = lastScore;
+      bestScoreSpan.textContent = bestScore;
+      // Win FX
+      if (reward > 0 && slotIdx !== -1) {
+        slots[slotIdx].glow = true;
+        playSfx('win');
+        launchConfetti(slots[slotIdx]);
+      } else {
+        playSfx('slot');
+      }
+      saveScore(lastScore);
+      setTimeout(() => {
+        playAgainBtn.style.display = '';
+        leaderboardDiv.style.display = '';
+        loadLeaderboard();
+        gameState = 'result';
+      }, 850);
+    }
+    startBtn.onclick = startGame;
+    playAgainBtn.onclick = playAgain;
+
+    // ------- CONFETTI -------
+    function launchConfetti(slot) {
+      let slotCenter = slot.x + slot.w/2;
+      for (let i = 0; i < CONFETTI_COUNT; i++) {
+        let angle = Math.random() * Math.PI - Math.PI/2;
+        let speed = Math.random() * 5 + 3;
+        confetti.push({
+          x: slotCenter, y: H-SLOT_HEIGHT-10,
+          vx: Math.cos(angle)*speed,
+          vy: Math.sin(angle)*speed - 2,
+          r: Math.random()*3+2,
+          color: randomConfettiColor(),
+          a: 1
+        });
+      }
+    }
+    function updateConfetti() {
+      for (let c of confetti) {
+        c.x += c.vx;
+        c.y += c.vy;
+        c.vy += 0.15;
+        c.a -= 0.01 + Math.random()*0.01;
+      }
+      confetti = confetti.filter(c => c.a > 0 && c.y < H);
+    }
+    function randomConfettiColor() {
+      let colors = ['#ffd700', '#ff4d4d', '#3e9fff', '#6fff80', '#ffcf4d'];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
+
+    // ------- SCORE PERSISTENCE -------
+    function saveScore(score) {
+      if (score <= 0) return;
+      let lb = JSON.parse(localStorage.getItem('blinko_lb') || '[]');
+      lb.push(score);
+      lb = lb.sort((a,b)=>b-a).slice(0,7);
+      localStorage.setItem('blinko_lb', JSON.stringify(lb));
+    }
+    function loadLeaderboard() {
+      let lb = JSON.parse(localStorage.getItem('blinko_lb') || '[]');
+      localLeaderboard = lb;
+      lbList.innerHTML = lb.map(s=>`<li>${s}</li>`).join('');
+      leaderboardDiv.style.display = lb.length ? '' : 'none';
+    }
+    function loadBestScore() {
+      let lb = JSON.parse(localStorage.getItem('blinko_lb') || '[]');
+      bestScore = lb.length ? lb[0] : 0;
+      bestScoreSpan.textContent = bestScore;
+    }
+    // ------- INIT -------
+    function init() {
+      setupBoard();
+      loadBestScore();
+      draw();
+      muteBtn.innerText = '🔊';
+    }
+    init();
+    loop();
+  </script>
+</body>
+</html>
