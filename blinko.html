@@ -1,9 +1,9 @@
-<!-- BenBlinko Slot Edge Pegs Version - Generated 2025-06-18 01:41:40 -->
+<!-- BenBlinko Tilt Control Version - Generated 2025-06-18 01:52:12 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>BenBlinko</title>
   <style>
     :root {
@@ -94,15 +94,18 @@
       <ol id="lb-list"></ol>
     </div>
   </div>
+
   <script>
     const canvas = document.getElementById("blinko-canvas");
     const ctx = canvas.getContext("2d");
     const W = canvas.width, H = canvas.height;
     const PEG_RADIUS = 4, BALL_RADIUS = 10, GRAVITY = 0.28, BOUNCE = 0.6;
-    const SLOT_HEIGHT = 36, SLOT_REWARDS = [10, 20, 40, 80, 100, 80, 40, 20, 10];
+    const SLOT_HEIGHT = 36;
+    const SLOT_REWARDS = [10, 20, 40, 80, 100, 80, 40, 20, 10];
     const SLOT_COLORS = ['#d6eaff','#cceeff','#b3f0e6','#a0ffc2','#ffe599','#a0ffc2','#b3f0e6','#cceeff','#d6eaff'];
     const SLOT_COUNT = SLOT_REWARDS.length;
     const BOARD_MARGIN = 32;
+
     let pegs = [], slots = [], ball = null;
     let gameState = 'idle', lastScore = 0, bestScore = 0;
 
@@ -118,7 +121,6 @@
           if (x > BOARD_MARGIN && x < W - BOARD_MARGIN) pegs.push({ x, y });
         }
       }
-
       slots = [];
       const slotW = (W - 2 * BOARD_MARGIN) / SLOT_COUNT;
       for (let i = 0; i < SLOT_COUNT; i++) {
@@ -126,7 +128,6 @@
         slots.push({ x, w: slotW, reward: SLOT_REWARDS[i], color: SLOT_COLORS[i], glow: false });
       }
 
-      // Add invisible pegs at slot edges
       for (let i = 0; i <= SLOT_COUNT; i++) {
         let pegX = BOARD_MARGIN + i * slotW;
         let pegY = H - SLOT_HEIGHT;
@@ -163,7 +164,10 @@
           let speed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2) * BOUNCE;
           ball.vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 1.2;
           ball.vy = Math.sin(angle) * speed;
-          break;
+
+          const overlap = BALL_RADIUS + PEG_RADIUS - dist + 0.5;
+          ball.x += Math.cos(angle) * overlap;
+          ball.y += Math.sin(angle) * overlap;
         }
       }
 
@@ -203,8 +207,7 @@
         ctx.textAlign = "center";
         ctx.fillText(slot.reward, slot.x + slot.w / 2, H - SLOT_HEIGHT / 2 + 6);
       });
-
-      for (let peg of pegs) {
+      pegs.forEach(peg => {
         ctx.beginPath();
         ctx.arc(peg.x, peg.y, PEG_RADIUS, 0, 2 * Math.PI);
         ctx.fillStyle = "var(--peg)";
@@ -213,8 +216,7 @@
         ctx.fill();
         ctx.strokeStyle = "#999";
         ctx.stroke();
-      }
-
+      });
       if (ball) {
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, 2 * Math.PI);
@@ -248,6 +250,13 @@
       spawnBall();
       gameState = 'running';
     };
+
+    window.addEventListener('deviceorientation', (e) => {
+      const gamma = e.gamma;
+      if (ball && !ball.stopped && Math.abs(gamma) < 45) {
+        ball.vx += gamma * 0.01;
+      }
+    });
 
     function init() {
       setupBoard();
