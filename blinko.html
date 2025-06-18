@@ -2,128 +2,223 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BenBlinko: Tilt Debug Test</title>
+  <title>BenBlinko: Tilt to Win</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <style>
-    body {
+    body, html {
       margin: 0;
-      font-family: sans-serif;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
       background: #0b0c10;
       color: #66fcf1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      padding-top: 40px;
     }
+    #welcome, #game-container {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+    }
+    #welcome {
+      background: url('/images/back.png') center/cover no-repeat;
+    }
+    #welcome h1 {
+      font-size: 2.4em;
+      margin: 0.5em;
+      text-shadow: 0 0 10px #000;
+    }
+    #welcome p {
+      font-size: 1.1em;
+      margin: 0.3em 0 1em;
+    }
+    #start-btn {
+      padding: 14px 28px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      background: #45a29e;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    #start-btn:hover {
+      background: #66fcf1;
+      color: #000;
+    }
+    #game-container { display: none; }
     canvas {
       background: #111;
       border: 2px solid #66fcf1;
-      border-radius: 10px;
+      border-radius: 12px;
+      touch-action: none;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
+    #debug, #haptic {
+      margin-top: 8px;
       font-size: 16px;
-      background: #45a29e;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
     }
-    #debug {
-      margin-top: 12px;
-    }
+    #haptic { color: yellow; display: none; }
   </style>
 </head>
 <body>
-  <h1>BenBlinko Tilt Test</h1>
-  <canvas id="game" width="360" height="520"></canvas>
-  <button id="start">Enable Tilt</button>
-  <div id="debug">Status: Waiting...</div>
+  <div id="welcome">
+    <h1>BenBlinko</h1>
+    <p>Tilt your phone to steer the ball.<br>Tap "Start Game" to begin.</p>
+    <button id="start-btn">Start Game</button>
+  </div>
+
+  <div id="game-container">
+    <canvas id="game" width="360" height="540"></canvas>
+    <div id="debug">γ: 0°</div>
+    <div id="haptic">HAPTIC!</div>
+  </div>
 
   <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
-    const debug = document.getElementById("debug");
-    const startBtn = document.getElementById("start");
+    const startBtn = document.getElementById('start-btn');
+    const welcome = document.getElementById('welcome');
+    const container = document.getElementById('game-container');
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const debugEl = document.getElementById('debug');
+    const hapticEl = document.getElementById('haptic');
 
-    let tilt = 0;
-    let tiltGranted = false;
+    let tilt = 0, tiltReady = false;
 
-    let ball = {
-      x: canvas.width / 2,
-      y: 40,
-      vx: 0,
-      vy: 0,
-      r: 12,
-      color: "#f04"
-    };
-
-    function updateBall() {
-      if (!tiltGranted) return;
-      ball.vy += 0.3;
-      ball.vx += tilt * 0.05;
-      ball.x += ball.vx;
-      ball.y += ball.vy;
-
-      if (ball.x < ball.r || ball.x > canvas.width - ball.r) {
-        ball.vx *= -0.5;
-        ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
-      }
-
-      if (ball.y > canvas.height - ball.r) {
-        ball.y = canvas.height - ball.r;
-        ball.vy = 0;
-        ball.vx = 0;
+    const PEG_RADIUS = 4;
+    const SLOT_COUNT = 7;
+    const SLOTS = Array.from({length: SLOT_COUNT}, (_, i) => ({
+      x: i * (canvas.width / SLOT_COUNT),
+      w: canvas.width / SLOT_COUNT,
+      reward: [10,20,50,100,50,20,10][i],
+      color: `hsl(${i * 50},80%,50%)`
+    }));
+    const PEGS = [];
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 9; col++) {
+        const xOffset = row % 2 ? canvas.width / 16 : 0;
+        PEGS.push({x: col * (canvas.width / 8) + xOffset, y: row * 50 + 40});
       }
     }
 
-    function drawBall() {
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = ball.color;
-      ctx.fill();
+    let ball = null;
+
+    function spawnBall() {
+      ball = {
+        x: canvas.width / 2,
+        y: 10,
+        r: 10,
+        vx: 0,
+        vy: 0,
+        hue: 0,
+        stopped: false
+      };
+    }
+
+    function showHaptic() {
+      hapticEl.style.display = 'block';
+      setTimeout(() => hapticEl.style.display = 'none', 200);
+    }
+
+    function update() {
+      if (!ball || ball.stopped) return;
+      ball.vy += 0.3;
+      ball.vx += tilt * 0.08;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      ball.hue = (ball.hue + 3) % 360;
+
+      if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
+        ball.vx *= -0.5;
+        showHaptic();
+      }
+
+      PEGS.forEach(p => {
+        const dx = ball.x - p.x;
+        const dy = ball.y - p.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < ball.r + PEG_RADIUS) {
+          const angle = Math.atan2(dy, dx);
+          const overlap = ball.r + PEG_RADIUS - dist + 0.5;
+          ball.x += Math.cos(angle) * overlap;
+          ball.y += Math.sin(angle) * overlap;
+          ball.vx = Math.cos(angle + Math.PI/2) * 2;
+          ball.vy *= 0.9;
+          showHaptic();
+        }
+      });
+
+      if (ball.y + ball.r >= canvas.height - 30) {
+        ball.stopped = true;
+        const landed = SLOTS.find(s => ball.x > s.x && ball.x < s.x + s.w);
+        if (landed) {
+          ball.x = landed.x + landed.w / 2;
+        }
+        showHaptic();
+        setTimeout(spawnBall, 800);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      SLOTS.forEach(s => {
+        ctx.fillStyle = s.color;
+        ctx.fillRect(s.x, canvas.height - 30, s.w, 30);
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(s.reward, s.x + s.w / 2, canvas.height - 10);
+      });
+      PEGS.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, PEG_RADIUS, 0, Math.PI*2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      });
+      if (ball) {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+        ctx.fillStyle = `hsl(${ball.hue},100%,60%)`;
+        ctx.shadowColor = '#fff';
+        ctx.shadowBlur = 20;
+        ctx.fill();
+      }
     }
 
     function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      updateBall();
-      drawBall();
+      update();
+      draw();
+      debugEl.textContent = `γ: ${tilt.toFixed(2)}° ${tiltReady? '✓':'×'}`;
       requestAnimationFrame(loop);
     }
 
-    startBtn.onclick = () => {
-      if (typeof DeviceOrientationEvent?.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission().then(permission => {
-          if (permission === "granted") {
-            window.addEventListener("deviceorientation", e => {
+    function initTilt() {
+      if (window.DeviceOrientationEvent?.requestPermission) {
+        DeviceOrientationEvent.requestPermission().then(p => {
+          if (p === 'granted') {
+            tiltReady = true;
+            window.addEventListener('deviceorientation', e => {
               tilt = e.gamma || 0;
-              debug.textContent = `γ: ${tilt.toFixed(2)}° — Tilt Active`;
             });
-            tiltGranted = true;
-            debug.textContent = "Tilt permission granted.";
-            startBtn.style.display = "none";
           } else {
-            debug.textContent = "Tilt permission denied.";
+            alert('Tilt permission denied.');
           }
-        }).catch(err => {
-          debug.textContent = "Error requesting tilt permission.";
-          console.error(err);
-        });
+        }).catch(console.error);
       } else {
-        window.addEventListener("deviceorientation", e => {
+        tiltReady = true;
+        window.addEventListener('deviceorientation', e => {
           tilt = e.gamma || 0;
-          debug.textContent = `γ: ${tilt.toFixed(2)}° — Tilt Active`;
         });
-        tiltGranted = true;
-        debug.textContent = "Tilt supported — permission not required.";
-        startBtn.style.display = "none";
       }
-    };
+    }
 
-    loop();
+    startBtn.onclick = () => {
+      welcome.style.display = 'none';
+      container.style.display = 'flex';
+      initTilt();
+      spawnBall();
+      loop();
+    };
   </script>
 </body>
 </html>
