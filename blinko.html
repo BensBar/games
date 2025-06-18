@@ -1,225 +1,192 @@
-# Generate and save the full HTML content for BenBlinko Final Boss Edition
-
-benblinko_html = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>BenBlinko: Final Boss Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8">
+  <title>BenBlinko: Tilt Master Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
+    :root {
+      --bg: #0b0c10;
+      --ball-color: hsl(0, 100%, 60%);
+      --text-color: #66fcf1;
+      --accent: #45a29e;
+      --highlight: #1f2833;
+      --border: #c5c6c7;
+    }
+
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: radial-gradient(ellipse at center, #111 0%, #000 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
       overflow: hidden;
-      color: #fff;
-      touch-action: none;
     }
-    canvas {
-      display: block;
-      margin: 0 auto;
-      background: #111;
-      border: 2px solid #fff;
+
+    h1 {
+      margin-top: 20px;
+      font-size: 2em;
+      color: var(--accent);
+    }
+
+    #game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--highlight);
+      padding: 16px;
       border-radius: 12px;
+      box-shadow: 0 0 20px #0006;
+      margin-top: 20px;
     }
-    #debug {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.6);
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      display: none;
+
+    canvas {
+      background: #111;
+      border-radius: 10px;
+      box-shadow: 0 0 12px #0009;
+      border: 2px solid var(--border);
     }
-    #vibrate-flag {
-      position: absolute;
-      top: 50px;
-      left: 10px;
-      background: #ff0;
+
+    button {
+      padding: 12px 20px;
+      font-size: 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      margin-top: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: var(--text-color);
       color: #000;
-      padding: 4px 8px;
-      border-radius: 4px;
+    }
+
+    #debug, #haptic {
+      font-size: 16px;
+      margin-top: 8px;
+      color: var(--text-color);
+    }
+
+    #haptic {
+      color: #ff0;
+      font-weight: bold;
       display: none;
     }
   </style>
 </head>
 <body>
-<canvas id="game" width="360" height="520"></canvas>
-<div id="debug">γ: 0°</div>
-<div id="vibrate-flag">VIBRATED</div>
+  <h1>BenBlinko</h1>
+  <div id="game-container">
+    <canvas id="game" width="360" height="520"></canvas>
+    <button id="start">Start</button>
+    <div id="debug">γ: 0°</div>
+    <div id="haptic">HAPTIC!</div>
+  </div>
 
-<script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-let tilt = 0;
-let debug = new URLSearchParams(window.location.search).get("debug");
-const debugEl = document.getElementById("debug");
-const vibrateFlag = document.getElementById("vibrate-flag");
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const startBtn = document.getElementById("start");
+    const debugEl = document.getElementById("debug");
+    const hapticEl = document.getElementById("haptic");
 
-let ball = {
-  x: canvas.width / 2,
-  y: 40,
-  r: 12,
-  vx: 0,
-  vy: 0,
-  colorHue: 0,
-  stopped: false
-};
+    let tilt = 0;
+    let tiltGranted = false;
 
-let pegs = [];
-let slots = [];
-const PEG_RADIUS = 6;
-const SLOT_COUNT = 7;
-const SLOT_WIDTH = canvas.width / SLOT_COUNT;
+    let ball = {
+      x: canvas.width / 2,
+      y: 50,
+      r: 14,
+      vx: 0,
+      vy: 0,
+      hue: 0,
+      stopped: false
+    };
 
-function setupPegs() {
-  pegs = [];
-  for (let row = 0; row < 9; row++) {
-    for (let col = 0; col < SLOT_COUNT; col++) {
-      let x = col * SLOT_WIDTH + (row % 2 ? SLOT_WIDTH / 2 : 0);
-      if (x < 20 || x > canvas.width - 20) continue;
-      pegs.push({ x: x, y: 80 + row * 40 });
-    }
-  }
-}
-
-function setupSlots() {
-  slots = [];
-  for (let i = 0; i < SLOT_COUNT; i++) {
-    slots.push({ x: i * SLOT_WIDTH, w: SLOT_WIDTH, points: (i+1)*10 });
-  }
-}
-
-function vibrateFeedback() {
-  if ("vibrate" in navigator) {
-    navigator.vibrate([40, 40, 40]);
-  }
-  vibrateFlag.style.display = "block";
-  setTimeout(() => vibrateFlag.style.display = "none", 300);
-}
-
-function drawBall() {
-  ctx.save();
-  ctx.fillStyle = `hsl(${ball.colorHue}, 100%, 60%)`;
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.r, 0, 2 * Math.PI);
-  ctx.shadowColor = "#fff";
-  ctx.shadowBlur = 15;
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawPegs() {
-  ctx.fillStyle = "#fff";
-  pegs.forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, PEG_RADIUS, 0, 2 * Math.PI);
-    ctx.fill();
-  });
-}
-
-function drawSlots() {
-  slots.forEach((slot, i) => {
-    ctx.fillStyle = `hsl(${(i * 60) % 360}, 100%, 30%)`;
-    ctx.fillRect(slot.x, canvas.height - 40, slot.w, 40);
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 14px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(`${slot.points}`, slot.x + slot.w / 2, canvas.height - 15);
-  });
-}
-
-function update() {
-  if (!ball.stopped) {
-    ball.vy += 0.3;
-    ball.vx += tilt * 0.05;
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-    ball.colorHue = (ball.colorHue + 3) % 360;
-
-    // Wall bounce
-    if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
-      ball.vx = -ball.vx * 0.6;
-      ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
+    function drawBall() {
+      const color = `hsl(${ball.hue}, 100%, 60%)`;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 20;
+      ctx.fill();
+      ctx.restore();
     }
 
-    // Peg collisions
-    for (let peg of pegs) {
-      let dx = ball.x - peg.x;
-      let dy = ball.y - peg.y;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < ball.r + PEG_RADIUS) {
-        let angle = Math.atan2(dy, dx);
-        ball.vx = Math.cos(angle) * 2;
-        ball.vy = Math.sin(angle) * 2;
-        vibrateFeedback();
-        break;
-      }
-    }
+    function updateBall() {
+      if (!ball.stopped) {
+        ball.vy += 0.35;
+        ball.vx += tilt * 0.15;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+        ball.hue = (ball.hue + 4) % 360;
 
-    // Slot landing
-    if (ball.y + ball.r >= canvas.height - 40) {
-      for (let slot of slots) {
-        if (ball.x > slot.x && ball.x < slot.x + slot.w) {
-          ball.x = slot.x + slot.w / 2;
+        if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
+          ball.vx = -ball.vx * 0.6;
+          ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
+          triggerHaptic();
+        }
+
+        if (ball.y + ball.r >= canvas.height) {
+          ball.y = canvas.height - ball.r;
           ball.vx = 0;
           ball.vy = 0;
           ball.stopped = true;
-          vibrateFeedback();
+          triggerHaptic();
         }
       }
     }
-  }
-}
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawSlots();
-  drawPegs();
-  drawBall();
-}
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+    }
 
-function loop() {
-  update();
-  draw();
-  if (debug) {
-    debugEl.style.display = "block";
-    debugEl.textContent = `γ: ${tilt.toFixed(2)}°`;
-  }
-  requestAnimationFrame(loop);
-}
+    function triggerHaptic() {
+      hapticEl.style.display = "block";
+      setTimeout(() => hapticEl.style.display = "none", 300);
+    }
 
-// Tilt setup
-function handleTilt(event) {
-  tilt = event.gamma || 0;
-}
-function initTilt() {
-  if (typeof DeviceOrientationEvent.requestPermission === "function") {
-    DeviceOrientationEvent.requestPermission()
-      .then(p => {
-        if (p === "granted") {
-          window.addEventListener("deviceorientation", handleTilt);
-        }
-      }).catch(console.error);
-  } else {
-    window.addEventListener("deviceorientation", handleTilt);
-  }
-}
+    function gameLoop() {
+      updateBall();
+      draw();
+      debugEl.textContent = `γ: ${tilt.toFixed(2)}° ${tiltGranted ? '✓' : '×'}`;
+      requestAnimationFrame(gameLoop);
+    }
 
-setupPegs();
-setupSlots();
-initTilt();
-loop();
-</script>
+    function initTilt() {
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission().then(p => {
+          if (p === "granted") {
+            tiltGranted = true;
+            window.addEventListener("deviceorientation", e => {
+              tilt = e.gamma || 0;
+            });
+          }
+        }).catch(console.error);
+      } else {
+        tiltGranted = true;
+        window.addEventListener("deviceorientation", e => {
+          tilt = e.gamma || 0;
+        });
+      }
+    }
+
+    startBtn.onclick = () => {
+      startBtn.style.display = "none";
+      initTilt();
+    };
+
+    gameLoop();
+  </script>
 </body>
 </html>
-"""
-
-# Save the final HTML version to a file
-html_file_path = "/mnt/data/benblinko_final_boss.html"
-with open(html_file_path, "w") as f:
-    f.write(benblinko_html)
-
-html_file_path
