@@ -1,4 +1,4 @@
-<!-- BenBlinko Tilt Control Version - Generated 2025-06-18 01:52:12 -->
+<!-- BenBlinko Haptics + Tilt Sensitivity Version - Generated 2025-06-18 02:05:10 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,6 +109,10 @@
     let pegs = [], slots = [], ball = null;
     let gameState = 'idle', lastScore = 0, bestScore = 0;
 
+    function vibrate(ms) {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
+
     function setupBoard() {
       pegs = [];
       const rows = 8, cols = 9;
@@ -168,6 +172,8 @@
           const overlap = BALL_RADIUS + PEG_RADIUS - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
+
+          vibrate(10); // Light tap feedback
         }
       }
 
@@ -192,6 +198,7 @@
         document.getElementById("last-score").textContent = lastScore;
         document.getElementById("best-score").textContent = bestScore;
         updateLeaderboard(lastScore);
+        vibrate(40); // Landing feedback
       }
     }
 
@@ -254,7 +261,7 @@
     window.addEventListener('deviceorientation', (e) => {
       const gamma = e.gamma;
       if (ball && !ball.stopped && Math.abs(gamma) < 45) {
-        ball.vx += gamma * 0.01;
+        ball.vx += gamma * 0.005; // Tuned sensitivity
       }
     });
 
