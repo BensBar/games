@@ -1,192 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>BenBlinko: Tilt Master Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <title>BenBlinko: Tilt Debug Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <style>
-    :root {
-      --bg: #0b0c10;
-      --ball-color: hsl(0, 100%, 60%);
-      --text-color: #66fcf1;
-      --accent: #45a29e;
-      --highlight: #1f2833;
-      --border: #c5c6c7;
-    }
-
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg);
-      color: var(--text-color);
+      font-family: sans-serif;
+      background: #0b0c10;
+      color: #66fcf1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       height: 100vh;
-      overflow: hidden;
+      padding-top: 40px;
     }
-
-    h1 {
-      margin-top: 20px;
-      font-size: 2em;
-      color: var(--accent);
-    }
-
-    #game-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--highlight);
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #0006;
-      margin-top: 20px;
-    }
-
     canvas {
       background: #111;
+      border: 2px solid #66fcf1;
       border-radius: 10px;
-      box-shadow: 0 0 12px #0009;
-      border: 2px solid var(--border);
     }
-
     button {
-      padding: 12px 20px;
-      font-size: 18px;
-      background: var(--accent);
-      color: #fff;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #45a29e;
       border: none;
       border-radius: 8px;
-      margin-top: 12px;
+      color: white;
       cursor: pointer;
-      transition: background 0.2s;
     }
-
-    button:hover {
-      background: var(--text-color);
-      color: #000;
-    }
-
-    #debug, #haptic {
-      font-size: 16px;
-      margin-top: 8px;
-      color: var(--text-color);
-    }
-
-    #haptic {
-      color: #ff0;
-      font-weight: bold;
-      display: none;
+    #debug {
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
-  <h1>BenBlinko</h1>
-  <div id="game-container">
-    <canvas id="game" width="360" height="520"></canvas>
-    <button id="start">Start</button>
-    <div id="debug">γ: 0°</div>
-    <div id="haptic">HAPTIC!</div>
-  </div>
+  <h1>BenBlinko Tilt Test</h1>
+  <canvas id="game" width="360" height="520"></canvas>
+  <button id="start">Enable Tilt</button>
+  <div id="debug">Status: Waiting...</div>
 
   <script>
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
+    const debug = document.getElementById("debug");
     const startBtn = document.getElementById("start");
-    const debugEl = document.getElementById("debug");
-    const hapticEl = document.getElementById("haptic");
 
     let tilt = 0;
     let tiltGranted = false;
 
     let ball = {
       x: canvas.width / 2,
-      y: 50,
-      r: 14,
+      y: 40,
       vx: 0,
       vy: 0,
-      hue: 0,
-      stopped: false
+      r: 12,
+      color: "#f04"
     };
 
+    function updateBall() {
+      if (!tiltGranted) return;
+      ball.vy += 0.3;
+      ball.vx += tilt * 0.05;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      if (ball.x < ball.r || ball.x > canvas.width - ball.r) {
+        ball.vx *= -0.5;
+        ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
+      }
+
+      if (ball.y > canvas.height - ball.r) {
+        ball.y = canvas.height - ball.r;
+        ball.vy = 0;
+        ball.vx = 0;
+      }
+    }
+
     function drawBall() {
-      const color = `hsl(${ball.hue}, 100%, 60%)`;
-      ctx.save();
       ctx.beginPath();
       ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 20;
+      ctx.fillStyle = ball.color;
       ctx.fill();
-      ctx.restore();
     }
 
-    function updateBall() {
-      if (!ball.stopped) {
-        ball.vy += 0.35;
-        ball.vx += tilt * 0.15;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-        ball.hue = (ball.hue + 4) % 360;
-
-        if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
-          ball.vx = -ball.vx * 0.6;
-          ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
-          triggerHaptic();
-        }
-
-        if (ball.y + ball.r >= canvas.height) {
-          ball.y = canvas.height - ball.r;
-          ball.vx = 0;
-          ball.vy = 0;
-          ball.stopped = true;
-          triggerHaptic();
-        }
-      }
-    }
-
-    function draw() {
+    function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBall();
-    }
-
-    function triggerHaptic() {
-      hapticEl.style.display = "block";
-      setTimeout(() => hapticEl.style.display = "none", 300);
-    }
-
-    function gameLoop() {
       updateBall();
-      draw();
-      debugEl.textContent = `γ: ${tilt.toFixed(2)}° ${tiltGranted ? '✓' : '×'}`;
-      requestAnimationFrame(gameLoop);
-    }
-
-    function initTilt() {
-      if (typeof DeviceOrientationEvent.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission().then(p => {
-          if (p === "granted") {
-            tiltGranted = true;
-            window.addEventListener("deviceorientation", e => {
-              tilt = e.gamma || 0;
-            });
-          }
-        }).catch(console.error);
-      } else {
-        tiltGranted = true;
-        window.addEventListener("deviceorientation", e => {
-          tilt = e.gamma || 0;
-        });
-      }
+      drawBall();
+      requestAnimationFrame(loop);
     }
 
     startBtn.onclick = () => {
-      startBtn.style.display = "none";
-      initTilt();
+      if (typeof DeviceOrientationEvent?.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission().then(permission => {
+          if (permission === "granted") {
+            window.addEventListener("deviceorientation", e => {
+              tilt = e.gamma || 0;
+              debug.textContent = `γ: ${tilt.toFixed(2)}° — Tilt Active`;
+            });
+            tiltGranted = true;
+            debug.textContent = "Tilt permission granted.";
+            startBtn.style.display = "none";
+          } else {
+            debug.textContent = "Tilt permission denied.";
+          }
+        }).catch(err => {
+          debug.textContent = "Error requesting tilt permission.";
+          console.error(err);
+        });
+      } else {
+        window.addEventListener("deviceorientation", e => {
+          tilt = e.gamma || 0;
+          debug.textContent = `γ: ${tilt.toFixed(2)}° — Tilt Active`;
+        });
+        tiltGranted = true;
+        debug.textContent = "Tilt supported — permission not required.";
+        startBtn.style.display = "none";
+      }
     };
 
-    gameLoop();
+    loop();
   </script>
 </body>
 </html>
