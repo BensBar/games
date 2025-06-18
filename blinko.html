@@ -1,4 +1,4 @@
-<!-- BenBlinko Haptics + Tilt Sensitivity Version - Generated 2025-06-18 02:05:10 -->
+<!-- BenBlinko Badass Edition: Slot Lock, Strong Haptics, Debug Tilt - Generated 2025-06-18 02:11:41 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +38,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+    }
+    #tilt-debug {
+      position: absolute;
+      top: 4px;
+      left: 12px;
+      font-size: 0.9em;
+      color: #555;
+      opacity: 0.8;
     }
     canvas {
       width: 100%;
@@ -83,6 +92,7 @@
 <body>
   <h1>BenBlinko</h1>
   <div id="game-container">
+    <div id="tilt-debug">γ: 0°</div>
     <button class="btn" id="start-btn">Drop Ball</button>
     <canvas id="blinko-canvas" width="360" height="480"></canvas>
     <div id="score-bar">
@@ -109,6 +119,8 @@
     let pegs = [], slots = [], ball = null;
     let gameState = 'idle', lastScore = 0, bestScore = 0;
 
+    const tiltDebug = document.getElementById("tilt-debug");
+
     function vibrate(ms) {
       if (navigator.vibrate) navigator.vibrate(ms);
     }
@@ -131,7 +143,6 @@
         let x = BOARD_MARGIN + i * slotW;
         slots.push({ x, w: slotW, reward: SLOT_REWARDS[i], color: SLOT_COLORS[i], glow: false });
       }
-
       for (let i = 0; i <= SLOT_COUNT; i++) {
         let pegX = BOARD_MARGIN + i * slotW;
         let pegY = H - SLOT_HEIGHT;
@@ -168,12 +179,10 @@
           let speed = Math.sqrt(ball.vx ** 2 + ball.vy ** 2) * BOUNCE;
           ball.vx = Math.cos(angle) * speed + (Math.random() - 0.5) * 1.2;
           ball.vy = Math.sin(angle) * speed;
-
           const overlap = BALL_RADIUS + PEG_RADIUS - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-
-          vibrate(10); // Light tap feedback
+          vibrate([10]);
         }
       }
 
@@ -187,6 +196,7 @@
         const slot = slots.find(s => ball.x >= s.x && ball.x <= s.x + s.w);
         if (slot) {
           slot.glow = true;
+          ball.x = slot.x + slot.w / 2; // LOCK IN CENTER
           lastScore = slot.reward;
         } else {
           lastScore = 0;
@@ -198,7 +208,7 @@
         document.getElementById("last-score").textContent = lastScore;
         document.getElementById("best-score").textContent = bestScore;
         updateLeaderboard(lastScore);
-        vibrate(40); // Landing feedback
+        vibrate([30, 30, 30]);
       }
     }
 
@@ -260,8 +270,9 @@
 
     window.addEventListener('deviceorientation', (e) => {
       const gamma = e.gamma;
+      tiltDebug.textContent = `γ: ${Math.round(gamma)}°`;
       if (ball && !ball.stopped && Math.abs(gamma) < 45) {
-        ball.vx += gamma * 0.005; // Tuned sensitivity
+        ball.vx += gamma * 0.005;
       }
     });
 
