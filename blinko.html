@@ -57,7 +57,7 @@
     }
     #game-canvas {
       display: block;
-      margin: 0 auto;
+      margin: 0 auto 100px auto; /* Add bottom margin for bottom bar */
       max-width: 100vw;
       background: #232f47;
       border-radius: 22px;
@@ -186,11 +186,13 @@
       #bottom-bar { font-size: 0.98em; padding: 7px 0; }
       .score, #multiplier-box { font-size: 0.97em; padding: 6px 8px; min-width: 56px;}
       .btn, #help-btn { font-size: 0.97em; padding: 8px 9px;}
+      #game-canvas { margin-bottom: 85px; }
     }
     @media (max-width: 480px) {
       #bottom-bar { padding: 4px 0; }
       .score, #multiplier-box { font-size: 0.95em; padding: 4px 5px; min-width: 40px;}
       .btn, #help-btn { margin: 0; font-size: 0.91em; }
+      #game-canvas { margin-bottom: 75px; max-width: 95vw; }
     }
   </style>
 </head>
@@ -198,6 +200,7 @@
   <div id="top-bar">
     <img src="img/logo.png" id="logo-img" alt="BenBlinko" />
     <button id="help-btn" class="btn">Help</button>
+    <button id="restart-btn" class="btn">Restart</button>
   </div>
   <canvas id="game-canvas" width="480" height="640" tabindex="1"></canvas>
   <div id="bottom-bar">
@@ -231,6 +234,13 @@
   const BALL_START_Y = 48;
   const BALL_SPEED = 2.0; // SLOW HORIZONTAL SPEED
   const BALL_DROP_DELAY = 900; // Slightly longer pause
+  
+  // --- SCORING BOXES ---
+  const SCORE_BOX_HEIGHT = 80;
+  const SCORE_BOX_Y = canvas.height - SCORE_BOX_HEIGHT;
+  const NUM_SCORE_BOXES = 7;
+  const SCORE_BOX_WIDTH = canvas.width / NUM_SCORE_BOXES;
+  const SCORE_VALUES = [100, 500, 1000, 5000, 1000, 500, 100]; // Center box has highest value
 
   // --- GAME STATE ---
   let pegs = [];
@@ -250,11 +260,42 @@
     for (let row = 0; row < ROWS; ++row) {
       for (let col = 0; col < COLS; ++col) {
         let offset = (row % 2 === 0) ? 0 : PEG_GAP / 2;
+        
+        // Determine peg type (normal, bonus, multiplier, special)
+        let pegType = 'normal';
+        let pegValue = 10;
+        let pegColor = '#b7aaf7';
+        
+        // Add some special pegs randomly
+        let rand = Math.random();
+        if (rand < 0.05) { // 5% chance for multiplier peg
+          pegType = 'multiplier';
+          pegValue = 50;
+          pegColor = '#ff89aa';
+        } else if (rand < 0.12) { // 7% chance for bonus peg
+          pegType = 'bonus';
+          pegValue = 25;
+          pegColor = '#ffe24b';
+        }
+        
+        // Make center pegs in later rows more valuable
+        if (row >= 5 && Math.abs(col - COLS/2) < 2) {
+          if (Math.random() < 0.3) {
+            pegType = 'super';
+            pegValue = 100;
+            pegColor = '#7fd7f8';
+          }
+        }
+        
         pegs.push({
           x: 40 + col * PEG_GAP + offset,
           y: PEG_Y_START + row * PEG_GAP,
           hit: false,
-          anim: 0
+          anim: 0,
+          type: pegType,
+          value: pegValue,
+          color: pegColor,
+          originalColor: pegColor
         });
       }
     }
@@ -273,6 +314,15 @@
     makePegs();
     updateUI();
     setTimeout(dropBall, 1000);
+  }
+  
+  function gameOver() {
+    // Show game over message and restart option
+    setTimeout(() => {
+      if (confirm(`Game Over!\nFinal Score: ${score}\nHigh Score: ${highscore}\n\nPlay Again?`)) {
+        resetGame();
+      }
+    }, 1000);
   }
 
   function updateUI() {
@@ -315,7 +365,8 @@
       vy: 0,
       radius: BALL_RADIUS,
       color: "#ffe24b",
-      landed: false
+      landed: false,
+      scored: false
     });
   }
 
@@ -343,13 +394,30 @@
           peg.hit = true;
           peg.anim = 1.0;
           ball.vy = -Math.abs(ball.vy) * BOUNCE_DAMPING;
+          
+          // Handle different peg types
+          let points = peg.value * multiplier;
+          if (peg.type === 'multiplier') {
+            multiplier += 2; // Extra multiplier boost
+            points = peg.value * multiplier;
+          } else if (peg.type === 'bonus') {
+            points = peg.value * multiplier;
+          } else if (peg.type === 'super') {
+            points = peg.value * multiplier;
+            multiplier += 1;
+          } else {
+            points = peg.value * multiplier;
+            multiplier++;
+          }
+          
           animateScore('score-val');
-          score += 10 * multiplier;
+          score += points;
           comboActive = true;
-          multiplier ++;
           animateScore('multiplier-box');
-          // Confetti
-          for (let j=0;j<9;++j) {
+          
+          // Confetti - more for special pegs
+          let confettiCount = peg.type === 'normal' ? 9 : 15;
+          for (let j=0;j<confettiCount;++j) {
             confetti.push({
               x: peg.x, y: peg.y,
               vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
@@ -358,6 +426,28 @@
               shape: Math.random()<0.5?'circle':'star'
             });
           }
+        }
+      }
+
+      // Check collision with scoring boxes
+      if (ball.y > SCORE_BOX_Y - ball.radius && ball.y < canvas.height - ball.radius && !ball.scored) {
+        let boxIndex = Math.floor(ball.x / SCORE_BOX_WIDTH);
+        boxIndex = Math.max(0, Math.min(NUM_SCORE_BOXES - 1, boxIndex));
+        
+        let boxPoints = SCORE_VALUES[boxIndex] * multiplier;
+        score += boxPoints;
+        ball.scored = true;
+        animateScore('score-val');
+        
+        // Special confetti for scoring boxes
+        for (let j=0;j<12;++j) {
+          confetti.push({
+            x: ball.x, y: SCORE_BOX_Y + SCORE_BOX_HEIGHT/2,
+            vx: (Math.random()-0.5)*4, vy: (Math.random()-0.5)*3,
+            color: boxIndex === 3 ? '#7fd7f8' : ['#ffe24b','#ff89aa','#b7aaf7'][j%3],
+            t: 0,
+            shape: 'star'
+          });
         }
       }
 
@@ -375,7 +465,12 @@
           }
           comboActive = false;
           updateUI();
-          if (ballsLeft > 0) setTimeout(dropBall, BALL_DROP_DELAY);
+          if (ballsLeft > 0) {
+            setTimeout(dropBall, BALL_DROP_DELAY);
+          } else {
+            // Game over
+            gameOver();
+          }
         }, 700);
       }
     }
@@ -402,19 +497,75 @@
     ctx.fillStyle = grd;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
+    // Draw scoring boxes at bottom
+    for (let i = 0; i < NUM_SCORE_BOXES; i++) {
+      let x = i * SCORE_BOX_WIDTH;
+      let isCenter = i === 3; // Center box (highest value)
+      
+      ctx.save();
+      // Box background
+      let boxGrad = ctx.createLinearGradient(x, SCORE_BOX_Y, x, canvas.height);
+      if (isCenter) {
+        boxGrad.addColorStop(0, "#7fd7f8");
+        boxGrad.addColorStop(1, "#ffe24b");
+      } else {
+        boxGrad.addColorStop(0, "#b7aaf7");
+        boxGrad.addColorStop(1, "#8dd6e8");
+      }
+      ctx.fillStyle = boxGrad;
+      ctx.fillRect(x, SCORE_BOX_Y, SCORE_BOX_WIDTH, SCORE_BOX_HEIGHT);
+      
+      // Box border
+      ctx.strokeStyle = isCenter ? "#ffe24b" : "#7fd7f8";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x, SCORE_BOX_Y, SCORE_BOX_WIDTH, SCORE_BOX_HEIGHT);
+      
+      // Score text
+      ctx.fillStyle = "#1d2438";
+      ctx.font = "bold 14px 'Orbitron', Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(SCORE_VALUES[i].toString(), 
+                   x + SCORE_BOX_WIDTH/2, 
+                   SCORE_BOX_Y + SCORE_BOX_HEIGHT/2 + 5);
+      ctx.restore();
+    }
+
     // Draw pegs
     for (let peg of pegs) {
       ctx.save();
       ctx.beginPath();
       let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*6 : 0);
       ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
-      ctx.fillStyle = peg.hit ? "#ffe24b" : "#b7aaf7";
+      
+      // Use peg-specific colors
+      if (peg.hit) {
+        ctx.fillStyle = "#ffe24b";
+      } else {
+        ctx.fillStyle = peg.color;
+      }
+      
       if (peg.anim>0) {
-        ctx.shadowColor = "#ffe24b";
+        ctx.shadowColor = peg.hit ? "#ffe24b" : peg.color;
         ctx.shadowBlur = 18*peg.anim;
       }
-      ctx.globalAlpha = peg.hit ? 0.9 : 0.7;
+      
+      // Add glow for special pegs
+      if (peg.type !== 'normal' && !peg.hit) {
+        ctx.shadowColor = peg.color;
+        ctx.shadowBlur = 8;
+      }
+      
+      ctx.globalAlpha = peg.hit ? 0.9 : 0.8;
       ctx.fill();
+      
+      // Add a ring for special pegs
+      if (peg.type !== 'normal' && !peg.hit) {
+        ctx.strokeStyle = peg.color;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = 0.6;
+        ctx.stroke();
+      }
+      
       ctx.restore();
     }
 
@@ -480,7 +631,8 @@
       vy: 0,
       radius: BALL_RADIUS,
       color: "#ffe24b",
-      landed: false
+      landed: false,
+      scored: false
     });
     ballsLeft--;
     updateUI();
@@ -489,7 +641,13 @@
   });
 
   document.getElementById('help-btn').onclick = function() {
-    alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Good luck!");
+    alert("BenBlinko\n\nDrop the balls and hit pegs to score!\n\n🟣 Normal Pegs: 10 points\n🟡 Bonus Pegs: 25 points\n🩷 Multiplier Pegs: 50 points + extra multiplier\n🔵 Super Pegs: 100 points + multiplier boost\n\nThe more pegs you hit in a row, the higher your combo multiplier.\n\nBalls land in scoring boxes for bonus points!\nCenter box gives the highest score!\n\nClick anywhere to drop a ball or press SPACE.\n\nGood luck!");
+  };
+
+  document.getElementById('restart-btn').onclick = function() {
+    if (confirm("Restart game and lose current progress?")) {
+      resetGame();
+    }
   };
 
   // Keyboard: space to drop
