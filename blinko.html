@@ -10,64 +10,20 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
+      width: 100%;
+      background: #0a0a17;
       font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
-      background: #1a1b2f;
+      overflow: hidden;
       color: #fff;
-    }
-    #gradient-bg {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-    }
-    #welcome, #game-container, #instructions {
-      position: absolute;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      display: flex;
-      align-items: center; justify-content: center;
-      flex-direction: column;
-      z-index: 2;
-    }
-    #welcome {
-      background: rgba(16,18,38,0.85);
-      z-index: 3;
-    }
-    #welcome h1 {
-      font-size: 2.8em;
-      margin: 0.5em;
-      text-shadow: 0 0 20px #0ff, 0 0 40px #0ff6;
-      letter-spacing: 2px;
-    }
-    #welcome p {
-      font-size: 1.2em;
-      margin: 0.3em 0 1em;
-      color: #fff;
-      text-shadow: 0 0 8px #0008;
-    }
-    #start-btn {
-      padding: 16px 36px;
-      font-size: 1.3em;
-      border: none;
-      border-radius: 16px;
-      background: linear-gradient(90deg, #45a29e 40%, #58e0ff 100%);
-      color: #1a1b2f;
-      cursor: pointer;
-      font-weight: bold;
-      box-shadow: 0 8px 32px #0ff4, 0 2px 8px #0006;
-      transition: 0.2s;
-      margin-top: 1em;
-    }
-    #start-btn:hover {
-      background: linear-gradient(90deg, #66fcf1, #0ff);
-      color: #000;
-      transform: scale(1.05);
     }
     #game-container {
-      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       z-index: 2;
     }
     #ui-bar {
@@ -76,59 +32,88 @@
       justify-content: center;
       align-items: center;
       gap: 32px;
-      margin: 18px 0 6px 0;
+      margin: 16px 0 4px 0;
       z-index: 4;
       text-shadow: 0 2px 18px #0ff8, 0 0 2px #333;
       font-size: 1.2em;
-      user-select: none;
       pointer-events: none;
+      user-select: none;
     }
     #score-box, #highscore-box {
       background: rgba(0,0,0,0.35);
       padding: 7px 18px;
       border-radius: 10px;
-      border: 1.5px solid #45a29e;
+      border: 1.5px solid #17f7d1;
       font-weight: bold;
+      color: #17f7d1;
+      text-shadow: 0 0 10px #17f7d1, 0 0 4px #000;
+      letter-spacing: 0.5px;
     }
     #help-btn {
       margin-left: 16px;
       padding: 6px 16px;
       border-radius: 8px;
-      border: 1px solid #0ff;
-      background: #222e;
-      color: #0ff;
+      border: 1px solid #00fff0;
+      background: #15151e;
+      color: #00fff0;
       font-size: 1em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      transition: 0.15s;
-      box-shadow: 0 2px 8px #0ff3;
+      box-shadow: 0 2px 8px #00fff04d;
       pointer-events: auto;
+      transition: 0.13s;
     }
     #help-btn:hover {
-      background: #0ff;
-      color: #222;
-      border-color: #66fcf1;
+      background: #00fff0;
+      color: #15151e;
+      border-color: #17f7d1;
+    }
+    #game-canvas {
+      display: block;
+      background: #151528;
+      border: 3px solid #17f7d1;
+      border-radius: 30px;
+      box-shadow: 0 0 80px #00fff088, 0 0 24px #110b22;
+      margin: auto;
+      z-index: 2;
+      /* Size will be set by JS */
+    }
+    #debug {
+      font-size: 1.07em;
+      margin-top: 2px;
+      color: #0ff8;
+      text-shadow: 0 0 8px #0ff5, 0 0 2px #111;
+      text-align: center;
+      width: 100vw;
     }
     #instructions {
-      background: rgba(18,18,48, 0.92);
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(16,18,38,0.97);
       display: none;
-      align-items: center;
-      justify-content: center;
+      align-items: center; justify-content: center;
       z-index: 10;
       text-align: center;
       flex-direction: column;
-      border-radius: 24px;
-      padding: 32px 28px 20px 28px;
-      box-shadow: 0 8px 40px #0ff5;
+      border-radius: 0;
+      padding: 0;
     }
     #instructions.visible { display: flex; }
+    #instructions-content {
+      background: rgba(25,32,56,0.96);
+      border-radius: 24px;
+      padding: 32px 28px 20px 28px;
+      box-shadow: 0 8px 40px #17f7d199;
+      border: 2.5px solid #17f7d1;
+      max-width: 95vw;
+    }
     #instructions h2 {
       font-size: 2em;
       margin-bottom: 0.3em;
-      color: #0ff;
+      color: #17f7d1;
+      text-shadow: 0 0 22px #0ff;
       letter-spacing: 1px;
-      text-shadow: 0 0 12px #0ff6;
     }
     #instructions ul {
       text-align: left;
@@ -136,7 +121,7 @@
       padding-left: 20px;
       max-width: 420px;
       color: #fff;
-      font-size: 1.05em;
+      font-size: 1.12em;
       line-height: 1.7;
       text-shadow: 0 0 6px #0ff2, 0 0 2px #111;
     }
@@ -146,141 +131,179 @@
       padding: 8px 24px;
       border-radius: 8px;
       border: none;
-      background: linear-gradient(90deg,#45a29e,#0ff);
-      color: #1a1b2f;
+      background: linear-gradient(90deg,#17f7d1,#00fff0);
+      color: #15151e;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 2px 7px #0ff3;
+      box-shadow: 0 2px 7px #17f7d1c9;
       transition: 0.12s;
     }
     #instructions button:hover {
-      background: #66fcf1;
+      background: #00fff0;
+      color: #222;
+    }
+    #welcome {
+      position: absolute;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(16,18,38,0.94);
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #welcome h1 {
+      font-size: 3em;
+      margin: 0.5em;
+      text-shadow: 0 0 34px #17f7d1, 0 0 60px #0ffb;
+      letter-spacing: 3px;
+      color: #00fff0;
+    }
+    #welcome p {
+      font-size: 1.25em;
+      margin: 0.3em 0 1em;
+      color: #fff;
+      text-shadow: 0 0 10px #111a;
+      max-width: 420px;
+    }
+    #start-btn {
+      padding: 16px 36px;
+      font-size: 1.4em;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(90deg, #17f7d1 40%, #00fff0 100%);
+      color: #15151e;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 8px 32px #00fff0bb, 0 2px 8px #0ff6;
+      transition: 0.15s;
+      margin-top: 1em;
+    }
+    #start-btn:hover {
+      background: linear-gradient(90deg, #00fff0, #17f7d1);
       color: #000;
+      transform: scale(1.07);
     }
-    #game {
-      background: transparent;
-      border: 2.5px solid #66fcf1;
-      border-radius: 18px;
-      box-shadow: 0 0 60px #0ff4, 0 0 12px #222;
-      margin-bottom: 0.8em;
-      z-index: 2;
-    }
-    #debug {
-      font-size: 1.07em;
-      margin-top: 2px;
-      color: #0ff8;
-      text-shadow: 0 0 8px #0ff5, 0 0 2px #111;
-    }
-    @media (max-width: 500px) {
-      #game { width: 96vw !important; height: 63vw !important; }
-      #ui-bar { font-size: 1em; }
-      #instructions { font-size: 1em; }
+    @media (max-width: 700px) {
+      #instructions-content { font-size: 1em; }
     }
   </style>
 </head>
 <body>
-  <canvas id="gradient-bg"></canvas>
-  <div id="welcome">
-    <h1>BenBlinko</h1>
-    <p>Tilt your device (or use arrow keys) to steer the glowing ball.<br>
-    Bounce off pegs and land in a slot for points!<br>
-    How high can you score?</p>
-    <button id="start-btn">Start Game</button>
-    <button id="help-btn" style="margin-top:20px;">How to Play</button>
-  </div>
   <div id="game-container">
     <div id="ui-bar">
       <span id="score-box">Score: <span id="score-val">0</span></span>
       <span id="highscore-box">High: <span id="highscore-val">0</span></span>
       <button id="help-btn" style="pointer-events:auto;">?</button>
     </div>
-    <canvas id="game" width="360" height="540"></canvas>
+    <canvas id="game-canvas"></canvas>
     <div id="debug">γ: 0°</div>
   </div>
   <div id="instructions">
-    <h2>How to Play</h2>
-    <ul>
-      <li><b>Tilt your device</b> (or use <b>left/right arrow keys</b> on desktop) to steer the ball as it falls.</li>
-      <li>The ball bounces off glowing pegs. Try to land it in the center slot for the most points!</li>
-      <li>Each slot is worth a different reward. Collect as many points as you can!</li>
-      <li>Your <b>high score</b> is saved. Can you beat it?</li>
-    </ul>
-    <button id="close-instructions">Back</button>
+    <div id="instructions-content">
+      <h2>How to Play</h2>
+      <ul>
+        <li><b>Tilt your device</b> (or use <b>left/right arrow keys</b> on desktop) to steer the neon ball as it falls.</li>
+        <li>The ball bounces off glowing pegs. Aim for the <b>biggest reward slot!</b></li>
+        <li>Your <b>score</b> and <b>high score</b> are always shown at the top.</li>
+      </ul>
+      <button id="close-instructions">Back</button>
+    </div>
+  </div>
+  <div id="welcome">
+    <h1>BenBlinko</h1>
+    <p>Tilt your device (or use arrow keys) to steer the glowing neon ball.<br>
+    Bounce off pegs and land in a slot for points!<br>
+    Try to beat your high score!</p>
+    <button id="start-btn">Start Game</button>
+    <button id="help-btn-welcome" style="margin-top:20px;">How to Play</button>
   </div>
   <script>
-    // Animated gradient background
-    const gradientBg = document.getElementById('gradient-bg');
-    gradientBg.width = window.innerWidth;
-    gradientBg.height = window.innerHeight;
-    const gctx = gradientBg.getContext('2d');
-    let gradTime = 0;
-    function drawGradientBg() {
-      gradTime += 0.006;
-      let w = gradientBg.width, h = gradientBg.height;
-      let g = gctx.createLinearGradient(
-        w/2 + Math.sin(gradTime)*w/4,
-        h/2 + Math.cos(gradTime/2)*h/4,
-        w/2 + Math.cos(gradTime)*w/3,
-        h/2 + Math.sin(gradTime/3)*h/3
-      );
-      g.addColorStop(0, `hsl(${(190+Math.sin(gradTime)*30)%360},90%,12%)`);
-      g.addColorStop(0.38, `hsl(${(230+Math.cos(gradTime*2)*50)%360},97%,24%)`);
-      g.addColorStop(0.66, `hsl(${(290+Math.sin(gradTime*1.3)*50)%360},99%,22%)`);
-      g.addColorStop(1, `hsl(${(330+Math.cos(gradTime*1.7)*40)%360},92%,15%)`);
-      gctx.fillStyle = g;
-      gctx.fillRect(0,0,w,h);
-      requestAnimationFrame(drawGradientBg);
-    }
-    drawGradientBg();
-    window.addEventListener('resize', () => {
-      gradientBg.width = window.innerWidth;
-      gradientBg.height = window.innerHeight;
-    });
-
-    // Main Game Code
-    const startBtn = document.getElementById('start-btn');
-    const welcome = document.getElementById('welcome');
-    const container = document.getElementById('game-container');
-    const canvas = document.getElementById('game');
+    // Responsive Canvas
+    const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-    const debugEl = document.getElementById('debug');
-    const helpBtns = document.querySelectorAll('#help-btn');
-    const instructions = document.getElementById('instructions');
-    const closeInstructions = document.getElementById('close-instructions');
-    const scoreVal = document.getElementById('score-val');
-    const highscoreVal = document.getElementById('highscore-val');
-    let tilt = 0, tiltReady = false;
-
-    // Game parameters
-    const PEG_RADIUS = 7.5;
-    const SLOT_COUNT = 7;
-    const SLOTS = Array.from({length: SLOT_COUNT}, (_, i) => ({
-      x: i * (canvas.width / SLOT_COUNT),
-      w: canvas.width / SLOT_COUNT,
-      reward: [10,30,75,180,75,30,10][i],
-      color: `hsl(${i * 50},85%,62%)`
-    }));
-    const PEGS = [];
-    for (let row = 0; row < 9; row++) {
-      for (let col = 0; col < 10; col++) {
-        const xOffset = row % 2 ? canvas.width / 20 : 0;
-        PEGS.push({x: col * (canvas.width / 9) + xOffset, y: row * 52 + 48, sparkle: 0});
-      }
+    function resizeCanvas() {
+      // 9:16 aspect ratio, fill screen
+      const ww = window.innerWidth;
+      const wh = window.innerHeight - 20; // allow for score bar
+      let w = ww, h = wh;
+      if (w / h > 9/16) w = h * 9/16;
+      else h = w * 16/9;
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
     }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    let ball = null;
+    // Game elements scale
+    let tilt = 0, tiltReady = false;
     let score = 0;
     let highscore = parseInt(localStorage.getItem('blinkoHighScore')||'0')||0;
-    highscoreVal.textContent = highscore;
+    document.getElementById('score-val').textContent = score;
+    document.getElementById('highscore-val').textContent = highscore;
 
-    // Ball trail
-    let ballTrail = [];
+    // Board setup (relative to canvas)
+    function getBoardSpec() {
+      const w = canvas.width, h = canvas.height;
+      // Board area
+      const boardMarginX = w*0.04, boardMarginY = h*0.04;
+      const boardW = w - 2*boardMarginX;
+      const boardH = h - 2*boardMarginY - h*0.10;
+      const slotCount = 7;
+      const pegRows = 10;
+      const pegCols = 10;
+      const pegRadius = boardW*0.021;
+      const ballRadius = boardW*0.038;
+      const slotH = boardH*0.09;
+      return {
+        x: boardMarginX,
+        y: boardMarginY,
+        w: boardW,
+        h: boardH,
+        slotCount,
+        pegRows,
+        pegCols,
+        pegRadius,
+        ballRadius,
+        slotH
+      };
+    }
+
+    // Peg/Slot/Reward/Color
+    function getSlots(spec) {
+      return Array.from({length: spec.slotCount}, (_, i) => ({
+        x: spec.x + i*(spec.w/spec.slotCount),
+        w: spec.w/spec.slotCount,
+        reward: [10,30,100,250,100,30,10][i],
+        color: `hsl(${180+(i-3)*28}, 99%, 60%)`
+      }));
+    }
+    function getPegs(spec) {
+      let pegs = [];
+      for (let row = 0; row < spec.pegRows; row++) {
+        for (let col = 0; col < spec.pegCols; col++) {
+          let xOffset = (row%2 ? (spec.w/spec.pegCols)/2 : 0);
+          let px = spec.x + col*(spec.w/spec.pegCols) + xOffset;
+          let py = spec.y + row*((spec.h-spec.slotH*1.15)/spec.pegRows) + spec.pegRadius*1.5;
+          pegs.push({x: px, y: py, sparkle: 0});
+        }
+      }
+      return pegs;
+    }
+
+    // Ball, Trail, Confetti
+    let ball = null, ballTrail = [], slots = [], pegs = [], spec = getBoardSpec();
 
     function spawnBall() {
+      spec = getBoardSpec();
+      slots = getSlots(spec);
+      pegs = getPegs(spec);
       ball = {
-        x: canvas.width / 2,
-        y: 20,
-        r: 13,
+        x: spec.x + spec.w/2,
+        y: spec.y + spec.ballRadius,
+        r: spec.ballRadius,
         vx: 0,
         vy: 0,
         hue: Math.floor(Math.random()*360),
@@ -293,51 +316,55 @@
 
     function update() {
       if (!ball || ball.stopped) return;
-      // Gentle, smooth physics
-      ball.vy += 0.075;
-      ball.vx += tilt * 0.018;
+      // Neon, smooth physics
+      ball.vy += spec.h*0.00019; // gravity scales to height
+      ball.vx += tilt * 0.012;
       ball.x += ball.vx;
       ball.y += ball.vy;
       ball.hue = (ball.hue + 2) % 360;
 
-      // Ball trail
+      // Ball trail (neon)
       ballTrail.unshift({x: ball.x, y: ball.y, hue: ball.hue});
-      if (ballTrail.length > 28) ballTrail.pop();
+      if (ballTrail.length > 34) ballTrail.pop();
 
       // Wall bounce
-      if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
-        ball.x = Math.max(ball.r, Math.min(canvas.width - ball.r, ball.x));
-        ball.vx *= -0.43;
+      if (ball.x - ball.r < spec.x) {
+        ball.x = spec.x + ball.r;
+        ball.vx *= -0.45;
+      }
+      if (ball.x + ball.r > spec.x + spec.w) {
+        ball.x = spec.x + spec.w - ball.r;
+        ball.vx *= -0.45;
       }
 
       // Peg collisions
-      PEGS.forEach(p => {
+      pegs.forEach(p => {
         const dx = ball.x - p.x;
         const dy = ball.y - p.y;
         const dist = Math.hypot(dx, dy);
-        if (dist < ball.r + PEG_RADIUS) {
+        if (dist < ball.r + spec.pegRadius) {
           const angle = Math.atan2(dy, dx);
-          const overlap = ball.r + PEG_RADIUS - dist + 1;
+          const overlap = ball.r + spec.pegRadius - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          ball.vx = Math.cos(angle + Math.PI/2) * 0.7 + (Math.random()-0.5)*0.2;
-          ball.vy *= 0.87 + (Math.random()-0.5)*0.1;
+          ball.vx = Math.cos(angle + Math.PI/2) * 0.62 + (Math.random()-0.5)*0.16;
+          ball.vy *= 0.88 + (Math.random()-0.5)*0.09;
           p.sparkle = 1.0;
         }
         p.sparkle *= 0.93;
       });
 
       // Ball lands in slot
-      if (ball.y + ball.r >= canvas.height - 30) {
+      if (ball.y + ball.r >= spec.y + spec.h - spec.slotH) {
         ball.stopped = true;
-        const idx = SLOTS.findIndex(s => ball.x > s.x && ball.x < s.x + s.w);
+        const idx = slots.findIndex(s => ball.x > s.x && ball.x < s.x + s.w);
         if (idx !== -1) {
-          ball.x = SLOTS[idx].x + SLOTS[idx].w / 2;
-          score += SLOTS[idx].reward;
-          scoreVal.textContent = score;
+          ball.x = slots[idx].x + slots[idx].w / 2;
+          score += slots[idx].reward;
+          document.getElementById('score-val').textContent = score;
           if (score > highscore) {
             highscore = score;
-            highscoreVal.textContent = highscore;
+            document.getElementById('highscore-val').textContent = highscore;
             localStorage.setItem('blinkoHighScore', highscore);
           }
           ball.slotIdx = idx;
@@ -345,15 +372,15 @@
           for (let i=0; i<21; ++i) {
             ball.confetti.push({
               x: ball.x,
-              y: canvas.height - 30,
-              vx: Math.cos(i/21*2*Math.PI)* (1.2+Math.random()*1.7),
-              vy: -2 - Math.random()*3,
-              color: `hsl(${SLOTS[idx].color.match(/\d+/g)[0]*1+Math.random()*90},98%,70%)`,
+              y: spec.y + spec.h - spec.slotH,
+              vx: Math.cos(i/21*2*Math.PI)* (1.2+Math.random()*1.7) * (spec.w/320),
+              vy: -2.2 - Math.random()*3 * (spec.h/540),
+              color: `hsl(${180+(idx-3)*28+Math.random()*60},99%,70%)`,
               t: 0
             });
           }
         }
-        setTimeout(spawnBall, 1250);
+        setTimeout(spawnBall, 1200);
       }
 
       // Confetti physics
@@ -361,7 +388,7 @@
         for (let c of ball.confetti) {
           c.x += c.vx;
           c.y += c.vy;
-          c.vy += 0.08;
+          c.vy += spec.h*0.00014;
           c.t += 1;
         }
         ball.confetti = ball.confetti.filter(c => c.y < canvas.height && c.t < 70);
@@ -370,70 +397,75 @@
 
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Draw slots, highlight if ball landed
-      SLOTS.forEach((s, i) => {
+
+      // Draw slots
+      slots.forEach((s, i) => {
         ctx.save();
         let pulse = (ball && ball.stopped && ball.slotIdx === i) ? (1+Math.sin(performance.now()/80))/2 : 0;
-        ctx.fillStyle = `hsl(${i*50},80%,${62+10*pulse}%)`;
-        ctx.shadowColor = "#fff";
-        ctx.shadowBlur = 22*pulse;
-        ctx.fillRect(s.x, canvas.height - 30, s.w, 30);
+        ctx.fillStyle = `hsl(${180+(i-3)*28},99%,${62+18*pulse}%)`;
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = 38*pulse;
+        ctx.fillRect(s.x, spec.y + spec.h - spec.slotH, s.w, spec.slotH);
         ctx.shadowBlur = 0;
-        ctx.fillStyle = '#111a';
-        ctx.fillRect(s.x, canvas.height - 38, s.w, 8);
+        ctx.globalAlpha = 0.22;
         ctx.fillStyle = '#000';
-        ctx.font = 'bold 16px Orbitron, monospace';
+        ctx.fillRect(s.x, spec.y + spec.h - spec.slotH - 8, s.w, 8);
+        ctx.globalAlpha = 1;
+        ctx.font = `bold ${Math.round(spec.slotH*0.36)}px Orbitron, monospace`;
+        ctx.fillStyle = '#1affff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(s.reward, s.x + s.w / 2, canvas.height - 13);
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = 12;
+        ctx.fillText(s.reward, s.x + s.w / 2, spec.y + spec.h - spec.slotH/2);
         ctx.restore();
       });
 
       // Draw pegs
-      PEGS.forEach(p => {
+      pegs.forEach(p => {
         ctx.save();
         if (p.sparkle > 0.05) {
-          ctx.shadowColor = "#fff";
-          ctx.shadowBlur = 14*p.sparkle;
-          ctx.fillStyle = `rgba(255,255,255,${p.sparkle})`;
+          ctx.shadowColor = "#0ff";
+          ctx.shadowBlur = 22*p.sparkle;
+          ctx.fillStyle = `rgba(36,255,255,${p.sparkle})`;
         } else {
           ctx.shadowBlur = 0;
-          ctx.fillStyle = '#e0faff';
+          ctx.fillStyle = '#18ffe6';
         }
         ctx.beginPath();
-        ctx.arc(p.x, p.y, PEG_RADIUS, 0, Math.PI*2);
+        ctx.arc(p.x, p.y, spec.pegRadius, 0, Math.PI*2);
         ctx.fill();
         ctx.restore();
       });
 
-      // Ball trail
+      // Ball trail (neon)
       for (let i=ballTrail.length-1; i>0; i--) {
         let t = i/ballTrail.length;
         ctx.save();
         ctx.beginPath();
-        ctx.arc(ballTrail[i].x, ballTrail[i].y, ball.r*(0.8+0.4*t), 0, Math.PI*2);
-        ctx.globalAlpha = 0.09 + 0.13*t;
+        ctx.arc(ballTrail[i].x, ballTrail[i].y, ball.r*(0.83+0.26*t), 0, Math.PI*2);
+        ctx.globalAlpha = 0.10 + 0.13*t;
         ctx.fillStyle = `hsl(${ballTrail[i].hue},100%,${60+10*t}%)`;
-        ctx.shadowColor = "#0ff";
+        ctx.shadowColor = "#14fff9";
         ctx.shadowBlur = 22*t;
         ctx.fill();
         ctx.restore();
       }
 
-      // Draw ball
+      // Draw ball (neon)
       if (ball) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-        ctx.fillStyle = `hsl(${ball.hue},100%,60%)`;
-        ctx.shadowColor = '#fff';
-        ctx.shadowBlur = 36;
-        ctx.globalAlpha = 0.99;
+        ctx.fillStyle = `hsl(${ball.hue},100%,70%)`;
+        ctx.shadowColor = '#00fff0';
+        ctx.shadowBlur = 40;
+        ctx.globalAlpha = 0.97;
         ctx.fill();
         ctx.restore();
       }
 
-      // Draw confetti
+      // Confetti
       if (ball && ball.confetti) {
         for (let c of ball.confetti) {
           ctx.save();
@@ -450,7 +482,7 @@
     function loop() {
       update();
       draw();
-      debugEl.textContent = `γ: ${tilt.toFixed(2)}° ${tiltReady ? '✓':'×'}`;
+      document.getElementById('debug').textContent = `γ: ${tilt.toFixed(2)}° ${tiltReady ? '✓':'×'}`;
       requestAnimationFrame(loop);
     }
 
@@ -469,38 +501,45 @@
     }
     function onTilt(e) { tilt = e.gamma || 0; }
 
-    startBtn.onclick = () => {
-      welcome.style.display = 'none';
-      container.style.display = 'flex';
+    // Start
+    document.getElementById('start-btn').onclick = () => {
+      document.getElementById('welcome').style.display = 'none';
+      document.getElementById('game-container').style.display = 'flex';
+      resizeCanvas(); // ensure full screen
       spawnBall();
       score = 0;
-      scoreVal.textContent = score;
+      document.getElementById('score-val').textContent = score;
       initTilt();
       requestAnimationFrame(loop);
     };
 
     // Help/instructions modal
-    for (let btn of helpBtns) btn.onclick = () => {
-      instructions.classList.add('visible');
-      instructions.focus();
-    };
-    closeInstructions.onclick = () => {
-      instructions.classList.remove('visible');
-    };
+    function showInstructions() { document.getElementById('instructions').classList.add('visible'); }
+    function hideInstructions() { document.getElementById('instructions').classList.remove('visible'); }
+    document.getElementById('help-btn').onclick = showInstructions;
+    document.getElementById('help-btn-welcome').onclick = showInstructions;
+    document.getElementById('close-instructions').onclick = hideInstructions;
 
-    // For desktop: arrow key tilt
+    // Keyboard for desktop
     window.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft') tilt -= 2;
       if (e.key === 'ArrowRight') tilt += 2;
-      if (e.key === 'Escape') instructions.classList.remove('visible');
+      if (e.key === 'Escape') hideInstructions();
     });
 
-    // Persistent highscore update on reload
+    // Highscore on reload
     window.addEventListener('DOMContentLoaded', ()=>{
       highscore = parseInt(localStorage.getItem('blinkoHighScore')||'0')||0;
-      highscoreVal.textContent = highscore;
+      document.getElementById('highscore-val').textContent = highscore;
     });
 
+    // Recalc and redraw on resize
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      spec = getBoardSpec();
+      slots = getSlots(spec);
+      pegs = getPegs(spec);
+    });
   </script>
 </body>
 </html>
