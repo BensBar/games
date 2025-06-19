@@ -10,115 +10,120 @@
       margin: 0; padding: 0; height: 100%; width: 100vw;
       background: #161c2c;
       font-family: 'Manrope', 'Orbitron', Arial, sans-serif;
-      overflow: hidden;
+      overflow-x: hidden;
       color: #fff;
     }
-    /* Top bar layout */
+    /* Super top bar */
     #top-bar {
       position: fixed;
       top: 0; left: 0; width: 100vw;
-      height: 110px;
-      background: linear-gradient(90deg,#202a40cc,#1e3b5aee 80%);
-      box-shadow: 0 10px 32px #0007;
       z-index: 1000;
+      background: linear-gradient(90deg,#202a40cc,#1e3b5add 80%);
+      box-shadow: 0 8px 28px #0009;
+      min-height: 128px;
+      height: 128px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 30px; /* Space between logo and scores */
+      gap: 40px;
+      padding: 0;
     }
-    /* Large, readable logo */
     #logo-img {
-      height: 80px;
+      height: 92px;
       width: auto;
-      max-width: 320px;
-      background: rgba(255,255,255,0.93);
-      border-radius: 20px;
-      padding: 14px 32px;
-      margin: 0;
-      box-shadow: 0 2px 48px #7fd7f8ee, 0 0 18px #ffe24b99;
-      filter: drop-shadow(0 2px 12px #7fd7f8cc);
+      max-width: 340px;
+      background: rgba(255,255,255,0.97);
+      border-radius: 25px;
+      padding: 18px 34px;
+      margin-left: 0;
+      margin-right: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      box-shadow: 0 2px 38px #7fd7f8ee, 0 0 12px #ffe24b99;
+      filter: drop-shadow(0 2px 16px #7fd7f8cc);
       object-fit: contain;
       display: block;
     }
-    /* Scores bar centered and modern */
     #score-bar {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 36px;
       background: rgba(34, 53, 88, 0.94);
-      border-radius: 16px;
+      border-radius: 20px;
       box-shadow: 0 2px 18px #7fd7f8aa inset,0 0 0 2px #ffe24b44;
-      padding: 20px 38px;
-      margin-left: 0;
+      padding: 24px 44px;
       font-size: 1.38em;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      justify-content: center;
     }
     .score {
       background: rgba(255,255,255,0.13);
-      padding: 9px 19px;
-      border-radius: 12px;
-      border: 2.5px solid #7fd7f8cc;
+      padding: 11px 23px;
+      border-radius: 15px;
+      border: 3px solid #7fd7f8cc;
       font-weight: bold;
-      color: #fff;
+      color: #222;
+      background: rgba(255,255,255,0.73);
       text-shadow: 0 0 10px #b7aaf7, 0 0 2px #000;
       letter-spacing: 1.2px;
-      box-shadow: 0 0 12px #7fd7f8aa inset;
+      box-shadow: 0 0 15px #7fd7f8aa inset;
       display: flex;
       align-items: center;
-      min-width: 60px;
+      min-width: 70px;
       justify-content: center;
-      gap: 7px;
+      gap: 8px;
       font-size: 1.17em;
+      color: #151c30;
     }
     #multiplier-box {
-      min-width: 90px;
+      min-width: 96px;
       background: linear-gradient(90deg,#ffe24bdf 44%,#ff89aa99 100%);
       color: #222;
-      border: 2.5px solid #ffe24b;
+      border: 3px solid #ffe24b;
       font-weight: bold;
-      font-size: 1.06em;
+      font-size: 1.1em;
       display: flex;
       align-items: center;
       justify-content: center;
-      letter-spacing: 0.9px;
+      letter-spacing: 1px;
       white-space: nowrap;
       gap: 0;
       transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
-      box-shadow: 0 0 22px #ffe24b88, 0 0 8px #ff89aa44;
+      box-shadow: 0 0 18px #ffe24b66, 0 0 8px #ff89aa44;
     }
     #multiplier-box.inactive {
-      background: rgba(34,53,88,0.92);
+      background: rgba(255,255,255,0.73);
       color: #bbb;
-      border: 2.5px solid #7fd7f8;
-      opacity: 0.7;
+      border: 3px solid #7fd7f8;
+      opacity: 0.8;
       box-shadow: none;
     }
     #multiplier-box .bonus-label {
-      margin-left: 7px;
+      margin-left: 9px;
       font-size: 1em;
-      opacity: 0.89;
+      opacity: 0.91;
       font-weight: 900;
       white-space: nowrap;
       padding-left: 0;
       padding-right: 0;
+      color: #a97f00;
     }
     #multiplier-box .bonus-label.inactive {
       color: #bbb;
-      opacity: 0.7;
+      opacity: 0.65;
     }
     #help-btn {
-      margin-left: 10px;
-      padding: 11px 18px;
-      border-radius: 12px;
-      border: 2.5px solid #7fd7f8;
+      margin-left: 12px;
+      padding: 13px 24px;
+      border-radius: 14px;
+      border: 3px solid #7fd7f8;
       background: linear-gradient(90deg, #242a42 70%, #7fd7f822 100%);
       color: #7fd7f8;
-      font-size: 1.21em;
+      font-size: 1.25em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      box-shadow: 0 2px 9px #7fd7f855;
-      pointer-events: auto;
+      box-shadow: 0 2px 14px #7fd7f855;
       transition: 0.13s;
       backdrop-filter: blur(1px);
       animation: pulseBtn 1.2s infinite alternate;
@@ -141,7 +146,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 140px;
+      padding-top: 148px; /* match or exceed #top-bar height for safety */
     }
     #game-canvas {
       width: 98vw;
@@ -154,7 +159,7 @@
       border-radius: 30px;
       box-shadow: 0 0 48px #b7aaf7b9, 0 0 18px #1a2237;
       margin-bottom: 18px;
-      margin-top: 46px; /* Extra space above board */
+      margin-top: 58px; /* Extra space above board */
     }
     /* --- INSTRUCTIONS MODAL --- */
     #instructions {
@@ -172,10 +177,10 @@
     #instructions.visible { display: flex; }
     #instructions-content {
       background: rgba(30,38,58,0.98);
-      border-radius: 28px;
-      padding: 38px 6vw 18px 6vw;
+      border-radius: 34px;
+      padding: 46px 7vw 22px 7vw;
       box-shadow: 0 8px 48px #7fd7f8e0, 0 0 0 2px #b7aaf711;
-      border: 3px solid #7fd7f8;
+      border: 4px solid #7fd7f8;
       max-width: 99vw;
       min-width: 200px;
       min-height: 80px;
@@ -187,36 +192,36 @@
       justify-content: center;
     }
     #instructions-logo {
-      max-width: 290px;
-      width: 40vw;
+      max-width: 330px;
+      width: 44vw;
       min-width: 120px;
-      margin-bottom: 24px;
-      border-radius: 26px;
-      box-shadow: 0 0 34px #7fd7f8bb, 0 0 8px #ffe24b;
-      background: rgba(255,255,255,0.98);
-      padding: 14px 28px;
+      margin-bottom: 30px;
+      border-radius: 34px;
+      box-shadow: 0 0 44px #7fd7f8bb, 0 0 12px #ffe24b;
+      background: rgba(255,255,255,0.99);
+      padding: 18px 36px;
       animation: logoGlow 2.7s infinite alternate;
       object-fit: contain;
       display: block;
     }
     #instructions .modal-header {
       font-family: Orbitron, Manrope, Arial, sans-serif;
-      font-size: 1.45em;
+      font-size: 1.55em;
       color: #ffe24b;
       letter-spacing: 1.2px;
       font-weight: 900;
       text-shadow: 0 0 22px #ffe24b66, 0 0 5px #7fd7f8, 0 0 1px #fff;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       margin-top: 0px;
       line-height: 1.08;
     }
     #instructions .quick-steps {
       display: flex;
       flex-direction: row;
-      gap: 30px;
+      gap: 32px;
       justify-content: center;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
     }
     #instructions .step {
@@ -225,29 +230,29 @@
       align-items: center;
       min-width: 35px;
       max-width: 75px;
-      gap: 5px;
-      font-size: 1.13em;
+      gap: 7px;
+      font-size: 1.18em;
       color: #e7fafd;
       font-weight: 700;
     }
     #instructions .step-icon {
-      font-size: 1.6em;
+      font-size: 1.8em;
       text-shadow: 0 0 9px #7fd7f8, 0 0 4px #ffe24b;
       margin-bottom: 2px;
     }
     #instructions .input-hint {
-      margin-top: 13px;
+      margin-top: 18px;
       color: #b7aaf7;
-      font-size: 1.12em;
+      font-size: 1.18em;
       letter-spacing: 0.4px;
-      opacity: 0.97;
+      opacity: 0.98;
       text-shadow: 0 0 3px #7fd7f866;
     }
     #instructions .modal-btn {
-      margin-top: 17px;
-      font-size: 1.18em;
-      padding: 13px 50px;
-      border-radius: 18px;
+      margin-top: 25px;
+      font-size: 1.19em;
+      padding: 16px 62px;
+      border-radius: 24px;
       border: none;
       background: linear-gradient(90deg,#7fd7f8 40%, #ffe24b 100%);
       color: #1d2438;
@@ -265,7 +270,7 @@
       transform: scale(1.05);
     }
     #instructions .credit {
-      margin-top: 16px;
+      margin-top: 18px;
       font-size: 1.1em;
       color: #7fd7f8bb;
       opacity: 0.93;
@@ -273,9 +278,9 @@
     }
     #instructions .close-x {
       position: absolute;
-      right: 18px;
-      top: 18px;
-      font-size: 1.6em;
+      right: 28px;
+      top: 28px;
+      font-size: 1.8em;
       color: #b7aaf7;
       background: none;
       border: none;
@@ -302,38 +307,38 @@
     #gameover-modal.visible { display: flex; }
     #gameover-content {
       background: rgba(32,38,56,0.99);
-      border-radius: 28px;
-      padding: 35px 23px 23px 23px;
+      border-radius: 32px;
+      padding: 38px 26px 26px 26px;
       box-shadow: 0 8px 44px #7fd7f8cc;
-      border: 3px solid #7fd7f8;
+      border: 4px solid #7fd7f8;
       max-width: 99vw;
       animation: popIn 0.4s cubic-bezier(.32,1.56,.53,.92);
       text-align: center;
     }
     #gameover-content h2 {
       color: #ffe24b;
-      font-size: 1.25em;
+      font-size: 1.32em;
       margin-bottom:0.2em;
       text-shadow: 0 0 16px #ffe24b, 0 0 6px #fff3;
       font-family: Orbitron, Manrope, Arial, sans-serif;
     }
     #gameover-content .final-score {
-      font-size: 1.18em;
+      font-size: 1.23em;
       color: #fff;
       margin: 0.4em 0 0.1em 0;
       text-shadow: 0 0 14px #7fd7f8b0;
     }
     #gameover-content .highscore {
-      font-size: 1.02em;
+      font-size: 1.09em;
       margin-bottom: 1em;
       color: #7fd7f8;
       text-shadow: 0 0 12px #b7aaf7;
     }
     #gameover-content button {
       margin-top: 11px;
-      font-size: 1.12em;
-      padding: 11px 36px;
-      border-radius: 13px;
+      font-size: 1.18em;
+      padding: 13px 50px;
+      border-radius: 17px;
       border: none;
       background: linear-gradient(90deg,#7fd7f8,#ffe24b);
       color: #1d2438;
@@ -355,11 +360,11 @@
       100% { transform: scale(1);}
     }
     @media (max-width: 800px) {
-      #top-bar { height: 70px; gap: 10px;}
-      #logo-img { height: 50px; padding: 5px 8px;}
+      #top-bar { min-height: 80px; height: 80px; gap: 10px;}
+      #logo-img { height: 48px; padding: 5px 8px;}
       #score-bar { font-size: 1em; padding: 6px 10px;}
       #instructions-logo { max-width: 120px; padding: 5px 10px;}
-      #game-container { padding-top: 85px; }
+      #game-container { padding-top: 90px; }
       #game-canvas { margin-top: 10px; }
       #instructions-content { padding: 10px 3vw 8px 3vw;}
     }
@@ -436,7 +441,7 @@
     function resizeCanvas() {
       const topBar = document.getElementById('top-bar');
       const barHeight = topBar.offsetHeight;
-      const H = window.innerHeight - barHeight - 40;
+      const H = window.innerHeight - barHeight - 50;
       const W = window.innerWidth;
       let w = W, h = H;
       if (w / h > 9/16) w = h * 9/16;
@@ -590,28 +595,28 @@
 
     function update() {
       if (!ball || ball.stopped) return;
-      // SLOWER gravity and ball velocity for smoother, more relaxed gameplay
-      ball.vy += spec.h * 0.000052; // slower gravity
-      ball.vx += tilt * 0.008;      // slower left/right response
+      // SLOWEST gravity and side movement for relaxed gameplay
+      ball.vy += spec.h * 0.000022; // SLOWEST gravity yet
+      ball.vx += tilt * 0.004;      // SLOWEST left/right response
       if (ball.y > spec.y + spec.h * 0.6) {
         let c = spec.x + spec.w/2;
-        ball.vx += (c-ball.x) * 0.000027;
+        ball.vx += (c-ball.x) * 0.000012;
       }
       ball.x += ball.vx;
       ball.y += ball.vy;
       ball.hue = (ball.hue + 2) % 360;
-      ball.vx *= 0.981; // More air drag
+      ball.vx *= 0.99; // SLOWEST decay
 
       ballTrail.unshift({x: ball.x, y: ball.y, hue: ball.hue});
       if (ballTrail.length > 60) ballTrail.pop();
 
       if (ball.x - ball.r < spec.x) {
         ball.x = spec.x + ball.r + 0.2;
-        ball.vx = Math.abs(ball.vx)*0.62 + 0.65*Math.random()+0.18; // less bouncy
+        ball.vx = Math.abs(ball.vx)*0.5 + 0.3*Math.random(); // SLOWEST wall bounce
       }
       if (ball.x + ball.r > spec.x + spec.w) {
         ball.x = spec.x + spec.w - ball.r - 0.2;
-        ball.vx = -Math.abs(ball.vx)*0.62 - 0.65*Math.random()-0.18;
+        ball.vx = -Math.abs(ball.vx)*0.5 - 0.3*Math.random();
       }
 
       pegs.forEach((p, i) => {
@@ -623,11 +628,11 @@
           const overlap = ball.r + spec.pegRadius - dist + 0.8;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          const nudge = (Math.random()-0.5)*0.8;
-          ball.vx = Math.cos(angle + Math.PI/2) * 0.85 + nudge;
-          ball.vy *= 0.95 + (Math.random()-0.5)*0.1;
-          if (ball.x < spec.x + spec.w*0.16) ball.vx += 0.4 + Math.random()*0.2;
-          if (ball.x > spec.x + spec.w*0.84) ball.vx -= 0.4 + Math.random()*0.2;
+          const nudge = (Math.random()-0.5)*0.6;
+          ball.vx = Math.cos(angle + Math.PI/2) * 0.55 + nudge; // SLOWEST peg bounce
+          ball.vy *= 0.95 + (Math.random()-0.5)*0.05;
+          if (ball.x < spec.x + spec.w*0.16) ball.vx += 0.2 + Math.random()*0.1;
+          if (ball.x > spec.x + spec.w*0.84) ball.vx -= 0.2 + Math.random()*0.1;
           p.sparkle = 1.0;
           p.pulse = 1.0;
           if (p.combo && !comboActive) {
@@ -648,8 +653,8 @@
       else xSameCount = 0;
       lastX = ball.x;
       if (xSameCount > 10) {
-        if (ball.x < spec.x + spec.w/2) ball.vx += 0.8+Math.random();
-        else ball.vx -= 0.8+Math.random();
+        if (ball.x < spec.x + spec.w/2) ball.vx += 0.6+Math.random();
+        else ball.vx -= 0.6+Math.random();
         xSameCount = 0;
       }
 
