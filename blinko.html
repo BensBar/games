@@ -66,6 +66,7 @@
       margin-bottom: 2vh;
       animation:blinker 1.2s infinite alternate;
       z-index:1;user-select:none;
+      cursor: pointer;
     }
     @keyframes blinker { 0%{opacity:1;} 100%{opacity:0.55;} }
     #enable-tilt-btn {
@@ -134,15 +135,15 @@
     #play-again-btn { font-size:clamp(1.2em,4vw,1.6em);padding:0.8em 2em;background:linear-gradient(90deg,#38b6ff 0%,#ffe24b 100%);color:#080c1c;font-family:'Orbitron','Manrope',Arial,sans-serif;border:none;border-radius:0.6em;box-shadow:0 0 24px #ffe24b99;font-weight:bold;cursor:pointer;transition:all 0.15s; }
     #play-again-btn:hover { background:linear-gradient(90deg,#ffe24b 0%,#38b6ff 100%);transform:scale(1.05); }
     
-    /* Added for 4K support */
-    @media (min-width: 1800px) or (min-resolution: 192dpi) {
+    /* 4K Support */
+    @media (min-width: 1800px), (min-resolution: 192dpi) {
       #game-canvas {
         max-width: 800px;
         border-width: 4px;
         border-radius: 12px;
         box-shadow: 0 12px 60px #ffe24b55, 0 8px 36px #38b6ff55;
       }
-      #score-bar, #slots-row {
+      #game-container, #score-bar, #slots-row {
         max-width: 800px;
       }
       .laser {
@@ -161,17 +162,11 @@
       .slot-box { width: 14vw; }
     }
     
-    /* 4K specific tweaks */
+    /* Additional 4K tweaks */
     @media (min-width: 3000px) {
-      body {
-        font-size: 24px;
-      }
-      #game-canvas {
-        max-width: 1200px;
-      }
-      #score-bar, #slots-row {
-        max-width: 1200px;
-      }
+      body { font-size: 24px; }
+      #game-canvas { max-width: 1200px; }
+      #game-container, #score-bar, #slots-row { max-width: 1200px; }
     }
   </style>
 </head>
@@ -600,6 +595,7 @@
       alert("BenBlinko Neon Laser 4K Deluxe\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the slots at the bottom for more points.\n\nTILT CONTROLS: Use left/right arrow keys or tilt your device to control the ball's trajectory!");
     };
     
+    // *** FIX: Simplified Game Start Function ***
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
       gameStarted = true; 
@@ -608,14 +604,28 @@
       setTimeout(()=>canvas.focus(), 300);
     }
     
-    const overlay = document.getElementById('overlay');
-    ["pointerdown", "touchstart", "mousedown", "click"].forEach(eventName => {
-      overlay.addEventListener(eventName, function(e) {
-        if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') return;
-        e.preventDefault();
-        if (!gameStarted) startGame();
+    // *** FIX: Simplified overlay click handling ***
+    document.getElementById('tap-to-start').addEventListener('click', function(e) {
+      e.preventDefault();
+      startGame();
+      playIntroAudio();
+    });
+    
+    document.getElementById('logo-entrance').addEventListener('click', function(e) {
+      e.preventDefault();
+      startGame();
+      playIntroAudio();
+    });
+    
+    document.getElementById('overlay').addEventListener('click', function(e) {
+      // Don't start if clicking on buttons
+      if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') {
+        return;
+      }
+      if (!gameStarted) {
+        startGame();
         playIntroAudio();
-      }, { once: true });
+      }
     });
     
     function showGameOver() {
@@ -787,7 +797,10 @@
       }
     }
     
-    document.getElementById('enable-tilt-btn').onclick = requestTiltPermission;
+    document.getElementById('enable-tilt-btn').onclick = function(e) {
+      e.stopPropagation(); // Prevent event from reaching overlay
+      requestTiltPermission();
+    };
     
     window.addEventListener('DOMContentLoaded', () => { 
       maybeShowTiltButton(); 
