@@ -21,20 +21,26 @@
       align-items: center;
       background: linear-gradient(90deg,#202a40cc,#1e3b5a99 80%);
       z-index: 1000;
-      padding: 8px 0 0 0;
+      height: 120px;
+      min-height: 100px;
+      padding: 0;
       box-shadow: 0 4px 24px #0006;
+      box-sizing: border-box;
+      justify-content: center;
     }
     #logo-img {
-      max-width: 170px;
-      height: auto;
-      margin-bottom: 7px;
+      height: 100%;
+      width: auto;
+      max-height: 100%;
       display: block;
+      margin-bottom: 0;
+      padding: 0 18px;
+      box-sizing: border-box;
       filter: drop-shadow(0 2px 28px #7fd7f8cc) drop-shadow(0 0 8px #ffe24b99);
       border-radius: 16px;
       background: rgba(255,255,255,0.09);
-      padding: 2px 16px 2px 16px;
       animation: logoGlow 2.7s infinite alternate;
-      transition: filter 0.2s;
+      object-fit: contain;
     }
     @keyframes logoGlow {
       0% { box-shadow: 0 0 12px #7fd7f8cc, 0 0 2px #ffe24b44; }
@@ -133,20 +139,20 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 98px; /* Height of top bar */
+      padding-top: 170px; /* Move the board further down */
     }
     #game-canvas {
       width: 98vw;
       max-width: 640px;
-      height: 81vh;
-      max-height: 720px;
+      height: 74vh;
+      max-height: 670px;
       display: block;
       background: transparent;
       border: 5px solid #7fd7f8;
       border-radius: 26px;
       box-shadow: 0 0 38px #b7aaf7b9, 0 0 18px #1a2237;
       margin-bottom: 11px;
-      margin-top: 11px;
+      margin-top: 36px; /* Extra space above board */
     }
     /* --- INSTRUCTIONS MODAL --- */
     #instructions {
@@ -165,10 +171,10 @@
     #instructions-content {
       background: rgba(30,38,58,0.97);
       border-radius: 24px;
-      padding: 24px 20px 16px 20px;
+      padding: 34px 24px 18px 24px;
       box-shadow: 0 5px 34px #7fd7f8e0, 0 0 0 2px #b7aaf711;
       border: 3px solid #7fd7f8;
-      max-width: 95vw;
+      max-width: 97vw;
       min-width: 180px;
       min-height: 80px;
       animation: popIn 0.48s cubic-bezier(.32,1.56,.53,.92);
@@ -179,32 +185,36 @@
       justify-content: center;
     }
     #instructions-logo {
-      max-width: 110px;
-      margin-bottom: 14px;
-      border-radius: 12px;
-      box-shadow: 0 0 16px #7fd7f8bb, 0 0 2px #ffe24b;
+      max-width: 240px;
+      width: 35vw;
+      min-width: 100px;
+      margin-bottom: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 24px #7fd7f8bb, 0 0 4px #ffe24b;
       background: rgba(255,255,255,0.07);
-      padding: 4px 14px 4px 14px;
+      padding: 10px 18px;
       animation: logoGlow 2.7s infinite alternate;
+      object-fit: contain;
+      display: block;
     }
     #instructions .modal-header {
       font-family: Orbitron, Manrope, Arial, sans-serif;
-      font-size: 1.3em;
+      font-size: 1.38em;
       color: #ffe24b;
       letter-spacing: 1.2px;
       font-weight: 900;
       text-shadow: 0 0 18px #ffe24b66, 0 0 5px #7fd7f8, 0 0 1px #fff;
-      margin-bottom: 7px;
+      margin-bottom: 12px;
       margin-top: 0px;
       line-height: 1.08;
     }
     #instructions .quick-steps {
       display: flex;
       flex-direction: row;
-      gap: 14px;
+      gap: 18px;
       justify-content: center;
       align-items: flex-start;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       flex-wrap: wrap;
     }
     #instructions .step {
@@ -214,28 +224,28 @@
       min-width: 35px;
       max-width: 75px;
       gap: 5px;
-      font-size: 1.04em;
+      font-size: 1.08em;
       color: #e7fafd;
       font-weight: 600;
     }
     #instructions .step-icon {
-      font-size: 1.43em;
+      font-size: 1.5em;
       text-shadow: 0 0 8px #7fd7f8, 0 0 3px #ffe24b;
       margin-bottom: 1px;
     }
     #instructions .input-hint {
-      margin-top: 5px;
+      margin-top: 7px;
       color: #b7aaf7;
-      font-size: 0.98em;
+      font-size: 1.09em;
       letter-spacing: 0.4px;
       opacity: 0.92;
       text-shadow: 0 0 3px #7fd7f866;
     }
     #instructions .modal-btn {
-      margin-top: 11px;
-      font-size: 1.07em;
-      padding: 9px 36px;
-      border-radius: 12px;
+      margin-top: 17px;
+      font-size: 1.13em;
+      padding: 11px 42px;
+      border-radius: 16px;
       border: none;
       background: linear-gradient(90deg,#7fd7f8 40%, #ffe24b 100%);
       color: #1d2438;
@@ -253,17 +263,17 @@
       transform: scale(1.03);
     }
     #instructions .credit {
-      margin-top: 8px;
-      font-size: 0.89em;
+      margin-top: 12px;
+      font-size: 1em;
       color: #7fd7f8bb;
       opacity: 0.87;
       letter-spacing: 1.1px;
     }
     #instructions .close-x {
       position: absolute;
-      right: 10px;
-      top: 10px;
-      font-size: 1.35em;
+      right: 14px;
+      top: 14px;
+      font-size: 1.5em;
       color: #b7aaf7;
       background: none;
       border: none;
@@ -343,13 +353,13 @@
       100% { transform: scale(1);}
     }
     @media (max-width: 700px) {
-      #logo-img { max-width: 70px;}
-      #top-bar { padding: 3px 0 0 0; }
-      #game-container { padding-top: 54px; }
-      #score-bar { font-size: 0.97em; }
-      #instructions-content, #gameover-content { font-size: 0.89em; }
+      #top-bar { height: 70px; min-height: 55px;}
+      #logo-img { padding: 0 4px; }
+      #instructions-logo { max-width: 100px; min-width: 60px; }
+      #game-container { padding-top: 90px; }
+      #game-canvas { margin-top: 12px; }
+      #instructions-content { padding: 17px 5vw 10px 5vw; }
       #instructions .modal-header { font-size: 0.97em;}
-      #instructions-logo { max-width: 70px; padding: 2px 7px 2px 7px;}
     }
   </style>
 </head>
@@ -369,7 +379,7 @@
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
   </div>
-  <!-- MODERN INSTRUCTIONS MODAL WITH LOGO -->
+  <!-- MODERN INSTRUCTIONS MODAL WITH LARGE LOGO -->
   <div id="instructions">
     <div id="instructions-content">
       <img src="img/logo.png" id="instructions-logo" alt="BenBlinko Logo" />
@@ -424,7 +434,7 @@
     function resizeCanvas() {
       const topBar = document.getElementById('top-bar');
       const barHeight = topBar.offsetHeight;
-      const H = window.innerHeight - barHeight - 12;
+      const H = window.innerHeight - barHeight - 32;
       const W = window.innerWidth;
       let w = W, h = H;
       if (w / h > 9/16) w = h * 9/16;
