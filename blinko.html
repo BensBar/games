@@ -360,7 +360,7 @@
     </div>
   </div>
   <script>
-    // --- AUDIO LOGIC ---
+    // AUDIO LOGIC
     const introAudio = document.getElementById('intro-audio');
     const gameAudio = document.getElementById('game-audio');
 
@@ -381,9 +381,324 @@
       try { gameAudio.pause(); gameAudio.currentTime = 0; } catch(e){}
     }
 
-    // BenBlinko core game logic (identical to previous versions, but included in full for you!)
-    // [Insert the full game JavaScript from previous answers here for brevity.]
-    // If you want the full game JS pasted, just say "expand full game JS" and I will provide every line.
+    // BENBLINKO GAME LOGIC
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    let gameStarted = false, gameOver = false;
+    let ballsThisGame = 5;
+
+    const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
+    const slotColors = [
+      "#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"
+    ];
+
+    let boardPadding = 26;
+    let slotsHeight = 60;
+    let ROWS = 12;
+    const COLS = slotValues.length;
+    let PEG_GAP = 0;
+    let PEG_Y_START = 0;
+    const BALL_RADIUS = 12;
+    const PEG_RADIUS = 8;
+    const BALL_START_Y = 44;
+    const BALL_DROP_DELAY = 900;
+
+    let pegs = [], balls = [], confetti = [];
+    let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
+    let specialPegEvery = 3;
+    let tilt = 0;
+
+    function drawSlots(activeCol = -1) {
+      const slotsRow = document.getElementById('slots-row');
+      slotsRow.innerHTML = '';
+      for (let i = 0; i < slotValues.length; ++i) {
+        const slot = document.createElement('div');
+        slot.className = 'slot-box' + (i === activeCol ? ' active' : '');
+        slot.style.borderColor = slotColors[i];
+        slot.innerHTML = `<span class="slot-value">${slotValues[i]}</span>`;
+        slotsRow.appendChild(slot);
+      }
+    }
+    function makePegs() {
+      let availableHeight = canvas.height - slotsHeight - boardPadding - BALL_RADIUS - 20;
+      PEG_GAP = availableHeight / (ROWS-1);
+      PEG_Y_START = BALL_START_Y + 10;
+      pegs = [];
+      for (let row = 0; row < ROWS; ++row) {
+        for (let col = 0; col < COLS; ++col) {
+          let offset = (row % 2 === 0) ? 0 : (canvas.width/COLS)/2;
+          let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
+          pegs.push({
+            x: (canvas.width/COLS) * col + offset + (canvas.width/COLS)/2,
+            y: PEG_Y_START + row * PEG_GAP,
+            hit: false,
+            anim: 0,
+            special: isSpecial
+          });
+        }
+      }
+    }
+    function resetGame() {
+      score = 0;
+      ballsLeft = ballsThisGame;
+      multiplier = 2;
+      comboActive = false;
+      ballInPlay = false;
+      balls = [];
+      confetti = [];
+      gameOver = false;
+      makePegs();
+      updateUI();
+      drawSlots();
+      setTimeout(dropBall, 900);
+    }
+    function updateUI() {
+      document.getElementById('score-val').textContent = score;
+      document.getElementById('highscore-val').textContent = highscore;
+      document.getElementById('ball-val').textContent = ballsLeft + "/" + ballsThisGame;
+      let mb = document.getElementById('multiplier-box');
+      let mx = document.getElementById('multi-x');
+      let label = mb.querySelector('.bonus-label');
+      if (!comboActive) {
+        mb.classList.add('inactive');
+        mx.textContent = `x${multiplier}`;
+        label.textContent = "COMBO";
+        label.classList.add('inactive');
+      } else {
+        mb.classList.remove('inactive');
+        mx.textContent = `x${multiplier}`;
+        label.textContent = "COMBO!";
+        label.classList.remove('inactive');
+      }
+    }
+    function animateScore(id) {
+      let el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('animated');
+      setTimeout(()=>el.classList.remove('animated'), 500);
+    }
+    function dropBall(x = canvas.width/2) {
+      if (ballsLeft <= 0 || ballInPlay || gameOver) return;
+      ballInPlay = true;
+      ballsLeft--;
+      updateUI();
+      animateScore('ball-val');
+      balls.push({
+        x: x,
+        y: BALL_START_Y,
+        vx: tilt * 1.6,
+        vy: 0,
+        radius: BALL_RADIUS,
+        color: "#ffe24b",
+        landed: false,
+        slot: null
+      });
+    }
+    function update() {
+      if (gameOver) return;
+      let landedThisFrame = false, landedCol = -1;
+      for (let ball of balls) {
+        if (ball.landed) continue;
+        ball.vy += 0.00014 * canvas.height;
+        ball.vx += tilt * 0.13;
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        if (ball.x < ball.radius) {
+          ball.x = ball.radius; ball.vx = -ball.vx * 0.44;
+        }
+        if (ball.x > canvas.width - ball.radius) {
+          ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * 0.44;
+        }
+
+        for (let i=0; i<pegs.length; ++i) {
+          let peg = pegs[i];
+          let dx = ball.x - peg.x, dy = ball.y - peg.y, dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < ball.radius + PEG_RADIUS && !peg.hit) {
+            peg.hit = true;
+            peg.anim = 1.0;
+            ball.vy = -Math.abs(ball.vy) * 0.44;
+            animateScore('score-val');
+            let points = 10 * multiplier;
+            if (peg.special) {
+              points *= 4;
+              showFloatingText("+BONUS!", peg.x, peg.y, "#ffe24b", "#ff89aa");
+            }
+            score += points;
+            comboActive = true;
+            multiplier ++;
+            animateScore('multiplier-box');
+            for (let j=0;j<9;++j) {
+              confetti.push({
+                x: peg.x, y: peg.y,
+                vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
+                color: peg.special ? ['#ff89aa','#ffe24b','#38b6ff','#b7aaf7','#8dd6e8'][j%5] : ['#7fd7f8','#b7aaf7','#8dd6e8','#ffe24b','#ff89aa'][j%5],
+                t: 0,
+                shape: Math.random()<0.5?'circle':'star'
+              });
+            }
+          }
+        }
+        if (ball.y > canvas.height - slotsHeight - ball.radius - 4) {
+          let slotW = canvas.width / slotValues.length;
+          let col = Math.floor(ball.x / slotW);
+          col = Math.max(0, Math.min(slotValues.length-1, col));
+          ball.x = col * slotW + slotW/2;
+          ball.y = canvas.height - slotsHeight - ball.radius;
+          ball.vy = 0; ball.vx = 0;
+          ball.landed = true;
+          ball.slot = col;
+          ballInPlay = false;
+          landedThisFrame = true;
+          landedCol = col;
+
+          let slotScore = slotValues[col];
+          score += slotScore;
+          animateScore('score-val');
+          showFloatingText("+"+slotScore, ball.x, ball.y-18, slotColors[col], "#fff");
+          for (let j=0;j<14;++j) {
+            confetti.push({
+              x: ball.x, y: ball.y,
+              vx: (Math.random()-0.5)*4, vy: (Math.random()-0.8)*3,
+              color: slotColors[col],
+              t: 0,
+              shape: "star"
+            });
+          }
+          setTimeout(()=>{
+            if (!comboActive) {
+              multiplier = 2;
+              animateScore('multiplier-box');
+            }
+            comboActive = false;
+            updateUI();
+            if (ballsLeft > 0) setTimeout(()=>dropBall(), BALL_DROP_DELAY);
+            else setTimeout(showGameOver, 600);
+          }, 700);
+        }
+      }
+      for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.10;
+      for (let c of confetti) {
+        c.x += c.vx;
+        c.y += c.vy;
+        c.vy += 0.12;
+        c.t++;
+      }
+      confetti = confetti.filter(c => c.t < 80);
+      if (score > highscore) { highscore = score; animateScore('highscore-val'); }
+      for (let i=floatingText.length-1; i>=0; --i) {
+        let ft = floatingText[i];
+        ft.y -= 1.2, ft.opacity -= 0.016;
+        if (ft.opacity <= 0) floatingText.splice(i,1);
+      }
+      drawSlots(landedThisFrame ? landedCol : -1);
+    }
+    function showFloatingText(txt, x, y, col1, col2) {
+      floatingText.push({txt, x, y, opacity: 1, col1, col2});
+    }
+    let floatingText = [];
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      let grd = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      grd.addColorStop(0, "#1d2e53");
+      grd.addColorStop(1, "#38b6ff");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      for (let peg of pegs) {
+        ctx.save();
+        ctx.beginPath();
+        let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*7 : 0);
+        ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
+        if (peg.special) {
+          ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b";
+          ctx.shadowColor = "#ff89aa";
+        } else {
+          ctx.fillStyle = peg.hit ? "#ffe24b" : "#38b6ff";
+          ctx.shadowColor = "#38b6ff";
+        }
+        if (peg.anim>0) ctx.shadowBlur = 22*peg.anim;
+        ctx.globalAlpha = peg.hit ? 0.93 : 0.75;
+        ctx.fill();
+        ctx.restore();
+      }
+      for (let ball of balls) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = ball.color;
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = 0.98;
+        ctx.fill();
+        ctx.restore();
+      }
+      for (let c of confetti) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - c.t/80);
+        ctx.fillStyle = c.color;
+        if (c.shape === "star") {
+          drawStar(ctx, c.x, c.y, 5, 4, 2.2 + Math.sin(c.t/3) * 1.1);
+        } else {
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+      for (let ft of floatingText) {
+        ctx.save();
+        ctx.globalAlpha = ft.opacity;
+        ctx.font = "bold 20px Orbitron, sans-serif";
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 4;
+        ctx.strokeText(ft.txt, ft.x-38, ft.y);
+        ctx.fillStyle = ft.col1;
+        ctx.fillText(ft.txt, ft.x-38, ft.y);
+        ctx.restore();
+      }
+    }
+    function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
+      let angle = Math.PI / points;
+      ctx.beginPath();
+      for (let i = 0; i < 2 * points; i++) {
+        let r = (i % 2 === 0) ? outerRadius : innerRadius;
+        ctx.lineTo(
+          x + Math.cos(i * angle) * r,
+          y + Math.sin(i * angle) * r
+        );
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+    function loop() {
+      if (gameStarted && !gameOver) {
+        update();
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    // INPUTS
+    canvas.addEventListener('pointerdown', function(e) {
+      if (!gameStarted || gameOver) return;
+      if (ballInPlay || ballsLeft <= 0) return;
+      let rect = canvas.getBoundingClientRect();
+      let x = (e.clientX - rect.left) * canvas.width / rect.width;
+      dropBall(x);
+    });
+    window.addEventListener('keydown', e => {
+      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){
+        startGame();
+      } else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) {
+        dropBall();
+      }
+      if (gameOver && (e.code=="Space"||e.code=="Enter")) playAgain();
+    });
+    document.getElementById('help-btn').onclick = function(e) {
+      e.stopPropagation();
+      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom for extra points. Tilt your phone to curve the ball. Good luck!");
+    };
 
     // Overlay tap/start logic
     function startGame() {
@@ -399,12 +714,9 @@
 
     // Play intro on overlay shown (on load)
     window.addEventListener('DOMContentLoaded', () => { playIntroAudio(); });
-
-    // For mobile: play intro after first gesture if autoplay fails
     overlay.addEventListener('pointerdown', playIntroAudio);
     overlay.addEventListener('click', playIntroAudio);
 
-    // Play Again/Game Over logic
     function showGameOver() {
       gameOver = true;
       stopGameMusic();
@@ -422,7 +734,31 @@
     }
     document.getElementById('play-again-btn').onclick = playAgain;
 
-    // [Rest of BenBlinko code goes here (game logic, resize, loop, etc.)]
+    // Accelerometer support (tilt to move ball left/right)
+    function handleTilt(event) {
+      if (!gameStarted || gameOver) return;
+      let gamma = event.gamma || 0;
+      if (typeof window.orientation !== "undefined" && window.orientation === 90) gamma = -event.beta;
+      tilt = Math.max(-2.2, Math.min(2.2, gamma/9));
+    }
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", handleTilt, true);
+    }
+    function resize() {
+      let w = Math.min(window.innerWidth, 480);
+      let h = Math.max(Math.min(window.innerHeight-90, 700), 420);
+      canvas.width = w;
+      canvas.height = h;
+      makePegs();
+      drawSlots();
+    }
+    window.addEventListener('resize', resize, false);
+    resize();
+    window.onload = () => { canvas.focus(); };
+    makePegs();
+    updateUI();
+    drawSlots();
+    loop();
   </script>
 </body>
 </html>
