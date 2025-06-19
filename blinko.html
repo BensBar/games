@@ -2,353 +2,173 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BenBlinko 4K Ultra HD</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1">
+  <title>BenBlinko Ultra</title>
+  <meta name="viewport" content="width=600, initial-scale=1, user-scalable=no, minimum-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
   <style>
     html, body {
-      background: linear-gradient(135deg, #172949 0%, #38b6ff 100%);
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
+      background: linear-gradient(135deg, #111a3f 0%, #2bb7ff 100%);
+      margin: 0; padding: 0; min-height: 100vh;
       font-family: 'Manrope', Arial, sans-serif;
       color: #222;
       overflow-x: hidden;
       overflow-y: auto;
+      transition: background 1s;
+    }
+    body.playing {
+      background: radial-gradient(ellipse at 50% 30%, #0e1e36 40%, #ffe24b 130%);
     }
     #overlay, #gameover-overlay {
-      position: fixed;
-      z-index: 100;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 40%, #09203f 60%, #38b6ff 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.7s;
-      opacity: 1;
+      position: fixed; z-index: 100; inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, #031c2e 60%, #ffe24b 120%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: opacity 0.7s; opacity: 1;
+      box-shadow: 0 0 240px #ffe24b44 inset, 0 0 100px #2bb7ff44 inset;
     }
-    #overlay.hide, #gameover-overlay.hide {
-      pointer-events: none;
-      opacity: 0;
-    }
+    #overlay.hide, #gameover-overlay.hide { pointer-events: none; opacity: 0; }
     #logo-entrance {
-      display: block;
-      width: 820px;
-      max-width: 80vw;
-      margin-bottom: 56px;
+      display: block; width: 420px; max-width: 90vw; margin-bottom: 40px;
       animation: pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
-      filter: drop-shadow(0 0 88px #fff9);
+      filter: drop-shadow(0 0 60px #fff9);
       user-select: none;
     }
-    @keyframes pulse {
-      0% { transform: scale(1);}
-      100% { transform: scale(1.06);}
-    }
+    @keyframes pulse { 0% { transform: scale(1);} 100% { transform: scale(1.04);} }
     #tap-to-start {
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 4.2em;
-      letter-spacing: 4px;
-      color: #fff;
-      text-shadow: 0 4px 54px #38b6ff, 0 2px 8px #000a;
-      background: linear-gradient(90deg,#38b6ff,#ffe24b 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: blink 1.7s infinite alternate;
-      margin-bottom: 36px;
-      user-select: none;
-      text-align: center;
-      width: 100%;
-      display: block;
+      font-size: 2.7em; letter-spacing: 4px; color: #fff;
+      text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
+      background: linear-gradient(90deg,#2bb7ff,#ffe24b 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: blink 1.7s infinite alternate; margin-bottom: 32px;
+      user-select: none; text-align: center; width: 100%; display: block;
     }
-    @keyframes blink {
-      0% { opacity: 1;}
-      100% {opacity: 0.65;}
-    }
+    @keyframes blink { 0% { opacity: 1;} 100% {opacity: 0.6;} }
     #enable-tilt-btn {
       display: none;
-      font-size: 2em;
-      margin: 18px auto 0 auto;
-      padding: 24px 50px;
-      background: linear-gradient(90deg,#38b6ff 30%,#ffe24b 100%);
-      color: #232;
-      border: none;
-      border-radius: 28px;
+      font-size: 1.4em; margin: 18px auto 0 auto; padding: 20px 40px;
+      background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
+      color: #222;
+      border: none; border-radius: 24px;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-weight: bold;
-      box-shadow: 0 4px 36px #38b6ff66;
-      cursor: pointer;
-      transition: background 0.2s, color 0.18s, transform 0.13s;
+      font-weight: bold; box-shadow: 0 4px 36px #2bb7ff66;
+      cursor: pointer; transition: background 0.2s, color 0.18s, transform 0.13s;
     }
     #enable-tilt-btn:hover {
-      background: linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
-      color: #0a1a2f;
-      transform: scale(1.04);
+      background: linear-gradient(90deg,#ffe24b 30%,#2bb7ff 100%);
+      color: #0a1a2f; transform: scale(1.05);
     }
     #credit {
-      color: #fff9;
-      font-size: 2em;
-      margin-top: 50px;
-      letter-spacing: 2px;
-      font-family: 'Manrope', Arial, sans-serif;
-      text-shadow: 0 0 16px #38b6ff44;
-      user-select: none;
-      text-align: center;
-      width: 100%;
-      display: block;
+      color: #fff9; font-size: 1.4em; margin-top: 40px; letter-spacing: 2px;
+      font-family: 'Manrope', Arial, sans-serif; text-shadow: 0 0 16px #2bb7ff44;
+      user-select: none; text-align: center; width: 100%; display: block;
     }
     #help-btn {
-      position: absolute;
-      top: 32px;
-      right: 48px;
-      background: linear-gradient(90deg,#38b6ff 30%,#ffe24b 100%);
-      color: #222;
-      border: none;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-weight: bold;
-      padding: 20px 40px;
-      border-radius: 32px;
-      font-size: 2em;
-      cursor: pointer;
-      box-shadow: 0 4px 36px #38b6ff33;
-      transition: background 0.18s, color 0.18s, transform 0.14s;
-      z-index: 101;
+      position: absolute; top: 24px; right: 36px;
+      background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
+      color: #222; border: none;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; font-weight: bold;
+      padding: 12px 32px; border-radius: 24px; font-size: 1.3em;
+      cursor: pointer; box-shadow: 0 4px 36px #2bb7ff33;
+      transition: background 0.18s, color 0.18s, transform 0.14s; z-index: 101;
     }
     #help-btn:hover {
-      background: linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
-      color: #0a1a2f;
-      transform: scale(1.06);
+      background: linear-gradient(90deg,#ffe24b 30%,#2bb7ff 100%);
+      color: #0a1a2f; transform: scale(1.06);
     }
     #game-canvas {
-      display: block;
-      margin: 0 auto;
-      background: radial-gradient(ellipse at 50% 35%,#24396a 60%,#38b6ff 100%);
-      border-radius: 48px;
-      box-shadow: 0 8px 88px #38b6ff77, 0 4px 48px #ffe24b55;
-      border: 8px solid #ffe24b;
-      outline: none;
-      touch-action: none;
-      z-index: 1;
-      max-width: 96vw;
-      width: 100%;
-      aspect-ratio: 16/9;
-      height: auto;
-      transition: box-shadow 0.2s;
-      position: relative;
+      display: block; margin: 0 auto;
+      background: radial-gradient(ellipse at 50% 35%,#21396a 60%,#ffe24b 140%);
+      border-radius: 32px; box-shadow: 0 8px 88px #ffe24b44, 0 4px 48px #2bb7ff55;
+      border: 4px solid #ffe24b; outline: none; touch-action: none; z-index: 1;
+      max-width: 96vw; width: 100%; aspect-ratio: 7/12; height: auto; transition: box-shadow 0.2s; position: relative;
     }
     #bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100vw;
-      background: linear-gradient(90deg, #172949 55%, #38b6ff 100%);
-      border-top-left-radius: 48px;
-      border-top-right-radius: 48px;
-      box-shadow: 0 -8px 56px #38b6ffbb inset, 0 -2px 16px #ffe24b99;
-      padding: 32px 0 28px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-      flex-wrap: wrap;
+      position: fixed; bottom: 0; left: 0; width: 100vw;
+      background: linear-gradient(90deg, #172949 55%, #2bb7ff 100%);
+      border-top-left-radius: 32px; border-top-right-radius: 32px;
+      box-shadow: 0 -8px 56px #ffe24bbb inset, 0 -2px 16px #2bb7ff99;
+      padding: 18px 0 18px 0; display: flex; justify-content: center; align-items: center;
+      z-index: 10; flex-wrap: wrap;
     }
     #score-bar {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      font-size: 2.3em;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: flex; align-items: center; gap: 26px; font-size: 1.4em; flex-wrap: wrap; justify-content: center;
     }
     .score {
       background: linear-gradient(90deg,#fff9 60%,#ffe24b 100%);
-      padding: 20px 36px;
-      border-radius: 32px;
-      border: 6px solid #38b6ffcc;
-      font-weight: bold;
-      color: #24396a;
-      text-shadow: 0 0 16px #38b6ff33, 0 0 4px #fff9;
-      letter-spacing: 2.6px;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 2.2em;
-      min-width: 148px;
-      text-align: center;
-      display: inline-block;
-      box-shadow: 0 8px 44px #38b6ff44;
-      margin: 0 6px;
-      transition: background 0.2s, border 0.2s;
-      user-select: none;
+      padding: 12px 24px; border-radius: 24px; border: 3px solid #2bb7ffcc;
+      font-weight: bold; color: #24396a; text-shadow: 0 0 14px #2bb7ff33, 0 0 2px #fff9;
+      letter-spacing: 2px; font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      font-size: 1.35em; min-width: 88px; text-align: center; display: inline-block;
+      box-shadow: 0 8px 44px #2bb7ff44; margin: 0 4px; transition: background 0.2s, border 0.2s; user-select: none;
     }
     #multiplier-box {
-      min-width: 172px;
-      background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
-      border: 6px solid #ffe24b;
-      font-weight: bold;
-      font-size: 2.3em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      letter-spacing: 2px;
-      gap: 0;
-      transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
+      min-width: 110px; background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
+      border: 3px solid #ffe24b; font-weight: bold; font-size: 1.1em; display: flex; align-items: center; justify-content: center;
+      letter-spacing: 2px; gap: 0; transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
       box-shadow: 0 0 36px #ffe24b66, 0 0 16px #ff89aa44;
-      color: #111;
-      text-shadow:
-        1px 1px 0 #fff,
-        2px 2px 2px #000,
-        0 0 16px #ffe24b80;
+      color: #111; text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 16px #ffe24b80;
     }
     #multiplier-box.inactive {
       background: linear-gradient(90deg,#fff9 80%,#b7aaf7 100%);
-      border: 6px solid #b7aaf7;
-      opacity: 0.83;
-      box-shadow: none;
-      color: #555;
-      text-shadow:
-        1px 1px 0 #fff,
-        2px 2px 2px #000,
-        0 0 16px #b7aaf7;
+      border: 3px solid #b7aaf7; opacity: 0.83; box-shadow: none; color: #555;
+      text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 16px #b7aaf7;
     }
     #multiplier-box .bonus-label {
-      margin-left: 16px;
-      font-size: 2em;
-      opacity: 0.93;
-      font-weight: 900;
-      white-space: nowrap;
-      color: #111;
-      text-shadow:
-        1px 1px 4px #fff,
-        2px 2px 4px #000,
-        0 0 16px #ffe24b;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      letter-spacing: 2px;
+      margin-left: 12px; font-size: 1em; opacity: 0.93; font-weight: 900; white-space: nowrap; color: #111;
+      text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 16px #ffe24b;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; letter-spacing: 2px;
     }
-    #multiplier-box .bonus-label.inactive {
-      color: #555;
-      opacity: 0.6;
-      text-shadow:
-        1px 1px 4px #fff,
-        2px 2px 4px #000,
-        0 0 16px #b7aaf7;
-    }
-    .animated {
-      animation: bounce 0.5s cubic-bezier(.68,-0.55,.27,1.55);
-    }
-    @keyframes bounce {
-      0% { transform: scale(1);}
-      40% { transform: scale(1.3);}
-      60% { transform: scale(0.95);}
-      80% { transform: scale(1.13);}
-      100% { transform: scale(1);}
-    }
+    #multiplier-box .bonus-label.inactive { color: #555; opacity: 0.6; text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 16px #b7aaf7; }
+    .animated { animation: bounce 0.5s cubic-bezier(.68,-0.55,.27,1.55);}
+    @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
     #slots-row {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-evenly;
-      z-index: 3;
-      pointer-events: none;
-      height: 120px;
+      position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-evenly;
+      z-index: 3; pointer-events: none; height: 80px;
     }
     .slot-box {
-      width: 108px;
-      height: 120px;
-      background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
-      border-radius: 0 0 36px 36px;
-      border: 6px solid #38b6ffcc;
-      box-shadow: 0 4px 36px #38b6ff44, 0 0 36px #ffe24b33;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      position: relative;
-      margin: 0 6px;
+      width: 70px; height: 80px; background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
+      border-radius: 0 0 24px 24px; border: 3px solid #2bb7ffcc; box-shadow: 0 4px 36px #2bb7ff44, 0 0 36px #ffe24b33;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; margin: 0 2px;
     }
     .slot-value {
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 2.2em;
-      font-weight: bold;
-      color: #111;
-      text-shadow:
-        4px 4px 8px #fff,
-        2px 2px 4px #000,
-        0 0 12px #ffe24b80;
-      background: none;
-      margin-bottom: 16px;
-      user-select: none;
-      text-align: center;
-      width: 100%;
-      display: block;
-      letter-spacing: 2px;
+      font-size: 1.1em; font-weight: bold; color: #111;
+      text-shadow: 2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
+      background: none; margin-bottom: 10px; user-select: none; text-align: center; width: 100%; display: block; letter-spacing: 2px;
     }
     .slot-box.active {
       background: linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
       box-shadow: 0 0 40px #ffe24b99, 0 0 24px #ff89aa77;
     }
     #gameover-overlay {
-      background: rgba(20,40,80,0.98);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      display: flex;
-      opacity: 1;
-      z-index: 200;
-      transition: opacity 0.7s;
+      background: rgba(20,40,80,0.98); flex-direction: column; align-items: center; justify-content: center; text-align: center; display: flex; opacity: 1; z-index: 200; transition: opacity 0.7s;
     }
     #gameover-title {
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 4.2em;
-      color: #ffe24b;
-      text-shadow: 0 4px 54px #38b6ff, 0 2px 8px #000a;
-      margin-bottom: 28px;
-      letter-spacing: 4px;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 2.7em; color: #ffe24b; text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
+      margin-bottom: 18px; letter-spacing: 4px;
     }
     #final-score {
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 2.7em;
-      color: #fff;
-      margin-bottom: 56px;
-      letter-spacing: 2px;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.7em; color: #fff; margin-bottom: 36px; letter-spacing: 2px;
     }
     #play-again-btn {
-      font-family: 'Orbitron', Arial, sans-serif;
-      font-size: 3em;
-      background: linear-gradient(90deg,#ffe24b 44%,#38b6ff 100%);
-      color: #232;
-      border: none;
-      border-radius: 36px;
-      padding: 32px 76px;
-      box-shadow: 0 4px 36px #38b6ff77;
-      cursor: pointer;
-      margin-top: 34px;
-      font-weight: bold;
-      letter-spacing: 4px;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 2em;
+      background: linear-gradient(90deg,#ffe24b 44%,#2bb7ff 100%);
+      color: #232; border: none; border-radius: 24px; padding: 18px 46px;
+      box-shadow: 0 4px 36px #2bb7ff77; cursor: pointer; margin-top: 24px; font-weight: bold; letter-spacing: 3px;
       transition: background 0.18s, color 0.12s, transform 0.13s;
     }
     #play-again-btn:hover {
-      background: linear-gradient(90deg,#38b6ff 20%,#ffe24b 100%);
-      color: #0a1a2f;
-      transform: scale(1.04);
+      background: linear-gradient(90deg,#2bb7ff 20%,#ffe24b 100%);
+      color: #0a1a2f; transform: scale(1.04);
     }
-    @media (max-width: 2000px) {
-      #logo-entrance { width: 42vw; }
-      #game-canvas { max-width: 99vw; width: 99vw; height: 48vw; min-height: 500px;}
-      #bottom-bar { font-size: 1.6em; padding: 18px 0; }
-      .score, #multiplier-box { font-size: 1.2em; padding: 14px 14px; min-width: 80px;}
-      #help-btn { font-size: 1.2em; padding: 14px 24px;}
-      #slots-row { height: 60px; }
-      .slot-box { width: 7vw; height: 60px;}
-    }
-    @media (max-width: 1000px) {
-      #logo-entrance { width: 84vw;}
-      #bottom-bar { padding: 10px 0; }
-      .score, #multiplier-box { font-size: 1.1em; padding: 10px 8px; min-width: 60px;}
-      #help-btn { margin: 0; font-size: 1em; }
-      #slots-row { height: 40px; }
-      .slot-box { width: 6vw; height: 40px;}
+    @media (max-width: 1400px) {
+      #logo-entrance { width: 70vw;}
+      #game-canvas { max-width: 99vw; width: 99vw; height: 76vw; min-height: 400px;}
+      #bottom-bar { font-size: 1.1em; padding: 10px 0; }
+      .score, #multiplier-box { font-size: 1em; padding: 8px 4px; min-width: 60px;}
+      #help-btn { margin: 0; font-size: 1em;}
+      #slots-row { height: 35px; }
+      .slot-box { width: 6vw; height: 36px;}
     }
   </style>
 </head>
@@ -368,8 +188,8 @@
     <div id="final-score"></div>
     <button id="play-again-btn">Play Again</button>
   </div>
-  <div style="position:relative;max-width:3840px;margin:0 auto;">
-    <canvas id="game-canvas" width="3840" height="2160" tabindex="1"></canvas>
+  <div style="position:relative;max-width:700px;margin:0 auto;">
+    <canvas id="game-canvas" width="700" height="1200" tabindex="1"></canvas>
     <div id="slots-row"></div>
   </div>
   <div id="bottom-bar">
@@ -387,36 +207,16 @@
     const introAudio = document.getElementById('intro-audio');
     const gameAudio = document.getElementById('game-audio');
     const endAudio = document.getElementById('end-audio');
+    function playIntroAudio() { try { introAudio.load(); introAudio.play(); } catch(e){} }
+    function playGameAudio() { try { gameAudio.load(); gameAudio.play(); } catch(e){} }
+    function stopGameAudio() { try { gameAudio.pause(); gameAudio.currentTime = 0; } catch(e){} }
+    function playEndAudio() { try { endAudio.load(); endAudio.play(); } catch(e){} }
 
-    function playIntroAudio() {
-      if (introAudio.paused) {
-        introAudio.currentTime = 0;
-        introAudio.play().catch(()=>{});
-      }
-    }
-    function playGameAudio() {
-      try { introAudio.pause(); introAudio.currentTime = 0; } catch(e){}
-      if (gameAudio.paused) {
-        gameAudio.currentTime = 0;
-        gameAudio.play().catch(()=>{});
-      }
-    }
-    function stopGameAudio() {
-      try { gameAudio.pause(); gameAudio.currentTime = 0; } catch(e){}
-    }
-    function playEndAudio() {
-      try {
-        endAudio.currentTime = 0;
-        endAudio.play().catch(()=>{});
-      } catch(e) {}
-    }
-
-    // --- BenBlinko 4K Game Logic ---
+    // --- BenBlinko Ultra Game Logic ---
     const canvas = document.getElementById('game-canvas');
     function setCanvasResolution() {
       const dpr = window.devicePixelRatio || 1;
-      const logicalWidth = 3840;
-      const logicalHeight = 2160;
+      const logicalWidth = 700, logicalHeight = 1200;
       canvas.width = logicalWidth * dpr;
       canvas.height = logicalHeight * dpr;
       canvas.style.width = logicalWidth + 'px';
@@ -429,29 +229,18 @@
     let gameStarted = false, gameOver = false;
     let ballsThisGame = 7;
 
-    const slotValues = [100, 500, 1000, 2000, 5000, 2000, 1000, 500, 100];
+    const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
     const slotColors = [
       "#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"
     ];
 
-    let boardPadding = 120;
-    let slotsHeight = 180;
-    let ROWS = 16;
+    let boardPadding = 44, slotsHeight = 72, ROWS = 14;
     const COLS = slotValues.length;
-    let PEG_GAP = 0;
-    let PEG_Y_START = 0;
-    const BALL_RADIUS = 52;
-    const PEG_RADIUS = 36;
-    const BALL_START_Y = 108;
-    const BALL_DROP_DELAY = 900;
-
+    let PEG_GAP = 0, PEG_Y_START = 0;
+    const BALL_RADIUS = 20, PEG_RADIUS = 12, BALL_START_Y = 28, BALL_DROP_DELAY = 900;
     let pegs = [], balls = [], confetti = [];
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
-    let specialPegEvery = 3;
-    let tilt = 0;
-    let tiltRaw = 0;
-    let tiltHistory = [];
-    const TILT_HISTORY_SIZE = 8;
+    let specialPegEvery = 3, tilt = 0, tiltRaw = 0, tiltHistory = [], TILT_HISTORY_SIZE = 6;
 
     function drawSlots(activeCol = -1) {
       const slotsRow = document.getElementById('slots-row');
@@ -464,311 +253,150 @@
         slotsRow.appendChild(slot);
       }
     }
-
     function makePegs() {
-      let rows = ROWS;
-      let cols = COLS;
-      let drawWidth = canvas.width / (window.devicePixelRatio || 1);
-      let drawHeight = canvas.height / (window.devicePixelRatio || 1);
-      let availableHeight = drawHeight - slotsHeight - boardPadding - BALL_RADIUS - 40;
-      PEG_GAP = availableHeight / (rows-1);
-      PEG_Y_START = BALL_START_Y + 20;
-      pegs = [];
+      let rows = ROWS, cols = COLS;
+      let drawWidth = canvas.width / (window.devicePixelRatio || 1), drawHeight = canvas.height / (window.devicePixelRatio || 1);
+      let availableHeight = drawHeight - slotsHeight - boardPadding - BALL_RADIUS - 20;
+      PEG_GAP = availableHeight / (rows-1); PEG_Y_START = BALL_START_Y + 10; pegs = [];
       let pegSpacing = drawWidth / cols;
       for (let row = 0; row < rows; ++row) {
-        let y = PEG_Y_START + row * PEG_GAP;
-        let isOdd = row % 2 === 1;
-        let pegsInRow = isOdd ? cols - 1 : cols;
-        let offset = isOdd ? pegSpacing / 2 : 0;
+        let y = PEG_Y_START + row * PEG_GAP, isOdd = row % 2 === 1;
+        let pegsInRow = isOdd ? cols - 1 : cols, offset = isOdd ? pegSpacing / 2 : 0;
         for (let col = 0; col < pegsInRow; ++col) {
-          let x = (col + 0.5) * pegSpacing + offset;
-          let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
-          pegs.push({
-            x: x,
-            y: y,
-            hit: false,
-            anim: 0,
-            special: isSpecial
-          });
+          let x = (col + 0.5) * pegSpacing + offset, isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
+          pegs.push({x, y, hit: false, anim: 0, special: isSpecial});
         }
       }
     }
     function resetGame() {
-      score = 0;
-      ballsLeft = ballsThisGame;
-      multiplier = 2;
-      comboActive = false;
-      ballInPlay = false;
-      balls = [];
-      confetti = [];
-      gameOver = false;
-      makePegs();
-      updateUI();
-      drawSlots();
-      setTimeout(dropBall, 900);
+      score = 0; ballsLeft = ballsThisGame; multiplier = 2; comboActive = false; ballInPlay = false;
+      balls = []; confetti = []; gameOver = false;
+      makePegs(); updateUI(); drawSlots(); setTimeout(dropBall, 900);
     }
     function updateUI() {
       document.getElementById('score-val').textContent = score;
       document.getElementById('highscore-val').textContent = highscore;
       document.getElementById('ball-val').textContent = ballsLeft + "/" + ballsThisGame;
-      let mb = document.getElementById('multiplier-box');
-      let mx = document.getElementById('multi-x');
-      let label = mb.querySelector('.bonus-label');
-      if (!comboActive) {
-        mb.classList.add('inactive');
-        mx.textContent = `x${multiplier}`;
-        label.textContent = "COMBO";
-        label.classList.add('inactive');
-      } else {
-        mb.classList.remove('inactive');
-        mx.textContent = `x${multiplier}`;
-        label.textContent = "COMBO!";
-        label.classList.remove('inactive');
-      }
+      let mb = document.getElementById('multiplier-box'), mx = document.getElementById('multi-x'), label = mb.querySelector('.bonus-label');
+      if (!comboActive) { mb.classList.add('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO"; label.classList.add('inactive');
+      } else { mb.classList.remove('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO!"; label.classList.remove('inactive'); }
     }
     function animateScore(id) {
-      let el = document.getElementById(id);
-      if (!el) return;
-      el.classList.add('animated');
-      setTimeout(()=>el.classList.remove('animated'), 500);
+      let el = document.getElementById(id); if (!el) return;
+      el.classList.add('animated'); setTimeout(()=>el.classList.remove('animated'), 500);
     }
     function dropBall(x = canvas.width/2) {
-      if (ballsLeft <= 0 || ballInPlay || gameOver) return;
-      ballInPlay = true;
-      ballsLeft--;
-      updateUI();
-      animateScore('ball-val');
-      balls.push({
-        x: x,
-        y: BALL_START_Y,
-        vx: tilt * 2.6,
-        vy: 0,
-        radius: BALL_RADIUS,
-        color: "#ffe24b",
-        landed: false,
-        slot: null
-      });
+      if (ballsLeft <= 0 || ballInPlay || gameOver) return; ballInPlay = true; ballsLeft--;
+      updateUI(); animateScore('ball-val');
+      balls.push({ x: x, y: BALL_START_Y, vx: tilt * 1.6, vy: 0, radius: BALL_RADIUS, color: "#ffe24b", landed: false, slot: null });
     }
     function update() {
-      if (gameOver) return;
-      let landedThisFrame = false, landedCol = -1;
+      if (gameOver) return; let landedThisFrame = false, landedCol = -1;
       for (let ball of balls) {
         if (ball.landed) continue;
-        ball.vy += 0.00011 * canvas.height;
-        ball.vx += tilt * 0.19;
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-
-        if (ball.x < ball.radius) {
-          ball.x = ball.radius; ball.vx = -ball.vx * 0.42;
-        }
-        if (ball.x > canvas.width - ball.radius) {
-          ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * 0.42;
-        }
-
+        ball.vy += 0.00014 * canvas.height; ball.vx += tilt * 0.13;
+        ball.x += ball.vx; ball.y += ball.vy;
+        if (ball.x < ball.radius) { ball.x = ball.radius; ball.vx = -ball.vx * 0.44; }
+        if (ball.x > canvas.width - ball.radius) { ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * 0.44; }
         for (let i=0; i<pegs.length; ++i) {
-          let peg = pegs[i];
-          let dx = ball.x - peg.x, dy = ball.y - peg.y, dist = Math.sqrt(dx*dx + dy*dy);
+          let peg = pegs[i], dx = ball.x - peg.x, dy = ball.y - peg.y, dist = Math.sqrt(dx*dx + dy*dy);
           if (dist < ball.radius + PEG_RADIUS && !peg.hit) {
-            peg.hit = true;
-            peg.anim = 1.0;
-            ball.vy = -Math.abs(ball.vy) * 0.44;
-            animateScore('score-val');
-            let points = 100 * multiplier;
-            if (peg.special) {
-              points *= 4;
-              showFloatingText("+BONUS!", peg.x, peg.y, "#ffe24b", "#ff89aa");
-            }
-            score += points;
-            comboActive = true;
-            multiplier ++;
-            animateScore('multiplier-box');
-            for (let j=0;j<18;++j) {
-              confetti.push({
-                x: peg.x, y: peg.y,
-                vx: (Math.random()-0.5)*6, vy: (Math.random()-0.5)*4,
-                color: peg.special ? ['#ff89aa','#ffe24b','#38b6ff','#b7aaf7','#8dd6e8'][j%5] : ['#7fd7f8','#b7aaf7','#8dd6e8','#ffe24b','#ff89aa'][j%5],
-                t: 0,
+            peg.hit = true; peg.anim = 1.0; ball.vy = -Math.abs(ball.vy) * 0.44; animateScore('score-val');
+            let points = 10 * multiplier; if (peg.special) { points *= 4; showFloatingText("+BONUS!", peg.x, peg.y, "#ffe24b", "#ff89aa"); }
+            score += points; comboActive = true; multiplier ++; animateScore('multiplier-box');
+            for (let j=0;j<9;++j) {
+              confetti.push({ x: peg.x, y: peg.y, vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
+                color: peg.special ? ['#ff89aa','#ffe24b','#38b6ff','#b7aaf7','#8dd6e8'][j%5] : ['#7fd7f8','#b7aaf7','#8dd6e8','#ffe24b','#ff89aa'][j%5], t: 0,
                 shape: Math.random()<0.5?'circle':'star'
               });
             }
           }
         }
-        if (ball.y > canvas.height - slotsHeight - ball.radius - 8) {
-          let slotW = canvas.width / slotValues.length;
-          let col = Math.floor(ball.x / slotW);
+        if (ball.y > canvas.height - slotsHeight - ball.radius - 4) {
+          let slotW = canvas.width / slotValues.length, col = Math.floor(ball.x / slotW);
           col = Math.max(0, Math.min(slotValues.length-1, col));
-          ball.x = col * slotW + slotW/2;
-          ball.y = canvas.height - slotsHeight - ball.radius;
-          ball.vy = 0; ball.vx = 0;
-          ball.landed = true;
-          ball.slot = col;
-          ballInPlay = false;
-          landedThisFrame = true;
-          landedCol = col;
-          playEndAudio();
-          let slotScore = slotValues[col];
-          score += slotScore;
-          animateScore('score-val');
-          showFloatingText("+"+slotScore, ball.x, ball.y-36, slotColors[col], "#fff");
-          for (let j=0;j<32;++j) {
-            confetti.push({
-              x: ball.x, y: ball.y,
-              vx: (Math.random()-0.5)*8, vy: (Math.random()-0.8)*6,
-              color: slotColors[col],
-              t: 0,
-              shape: "star"
-            });
+          ball.x = col * slotW + slotW/2; ball.y = canvas.height - slotsHeight - ball.radius;
+          ball.vy = 0; ball.vx = 0; ball.landed = true; ball.slot = col; ballInPlay = false; landedThisFrame = true; landedCol = col;
+          playEndAudio(); let slotScore = slotValues[col]; score += slotScore; animateScore('score-val');
+          showFloatingText("+"+slotScore, ball.x, ball.y-18, slotColors[col], "#fff");
+          for (let j=0;j<14;++j) {
+            confetti.push({ x: ball.x, y: ball.y, vx: (Math.random()-0.5)*4, vy: (Math.random()-0.8)*3,
+              color: slotColors[col], t: 0, shape: "star" });
           }
           setTimeout(()=>{
-            if (!comboActive) {
-              multiplier = 2;
-              animateScore('multiplier-box');
-            }
-            comboActive = false;
-            updateUI();
+            if (!comboActive) { multiplier = 2; animateScore('multiplier-box'); }
+            comboActive = false; updateUI();
             if (ballsLeft > 0) setTimeout(()=>dropBall(), BALL_DROP_DELAY);
-            else setTimeout(showGameOver, 900);
-          }, 1100);
+            else setTimeout(showGameOver, 600);
+          }, 700);
         }
       }
-      for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.07;
-      for (let c of confetti) {
-        c.x += c.vx;
-        c.y += c.vy;
-        c.vy += 0.16;
-        c.t++;
-      }
-      confetti = confetti.filter(c => c.t < 120);
+      for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.10;
+      for (let c of confetti) { c.x += c.vx; c.y += c.vy; c.vy += 0.12; c.t++; }
+      confetti = confetti.filter(c => c.t < 80);
       if (score > highscore) { highscore = score; animateScore('highscore-val'); }
-      for (let i=floatingText.length-1; i>=0; --i) {
-        let ft = floatingText[i];
-        ft.y -= 2.8, ft.opacity -= 0.011;
-        if (ft.opacity <= 0) floatingText.splice(i,1);
-      }
+      for (let i=floatingText.length-1; i>=0; --i) { let ft = floatingText[i]; ft.y -= 1.2, ft.opacity -= 0.016; if (ft.opacity <= 0) floatingText.splice(i,1);}
       drawSlots(landedThisFrame ? landedCol : -1);
     }
-    function showFloatingText(txt, x, y, col1, col2) {
-      floatingText.push({txt, x, y, opacity: 1, col1, col2});
-    }
+    function showFloatingText(txt, x, y, col1, col2) { floatingText.push({txt, x, y, opacity: 1, col1, col2}); }
     let floatingText = [];
     function draw() {
       ctx.clearRect(0,0,canvas.width,canvas.height);
       let grd = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
       grd.addColorStop(0, "#1d2e53");
-      grd.addColorStop(1, "#38b6ff");
-      ctx.fillStyle = grd;
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-
+      grd.addColorStop(1, "#2bb7ff");
+      ctx.fillStyle = grd; ctx.fillRect(0,0,canvas.width,canvas.height);
       for (let peg of pegs) {
-        ctx.save();
-        ctx.beginPath();
-        let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*32 : 0);
+        ctx.save(); ctx.beginPath();
+        let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*7 : 0);
         ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
-        if (peg.special) {
-          ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b";
-          ctx.shadowColor = "#ff89aa";
-        } else {
-          ctx.fillStyle = peg.hit ? "#ffe24b" : "#38b6ff";
-          ctx.shadowColor = "#38b6ff";
-        }
-        if (peg.anim>0) ctx.shadowBlur = 120*peg.anim;
-        ctx.globalAlpha = peg.hit ? 0.93 : 0.75;
-        ctx.fill();
-        ctx.restore();
+        if (peg.special) { ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b"; ctx.shadowColor = "#ff89aa"; }
+        else { ctx.fillStyle = peg.hit ? "#ffe24b" : "#2bb7ff"; ctx.shadowColor = "#2bb7ff"; }
+        if (peg.anim>0) ctx.shadowBlur = 18*peg.anim;
+        ctx.globalAlpha = peg.hit ? 0.93 : 0.75; ctx.fill(); ctx.restore();
       }
       for (let ball of balls) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-        ctx.fillStyle = ball.color;
-        ctx.shadowColor = "#fff";
-        ctx.shadowBlur = 64;
-        ctx.globalAlpha = 0.98;
-        ctx.fill();
-        ctx.restore();
+        ctx.save(); ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = ball.color; ctx.shadowColor = "#fff"; ctx.shadowBlur = 12; ctx.globalAlpha = 0.98; ctx.fill(); ctx.restore();
       }
       for (let c of confetti) {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, 1 - c.t/120);
-        ctx.fillStyle = c.color;
-        if (c.shape === "star") {
-          drawStar(ctx, c.x, c.y, 5, 18, 8.4 + Math.sin(c.t/3) * 4.2);
-        } else {
-          ctx.beginPath();
-          ctx.arc(c.x, c.y, 8.2+Math.sin(c.t/3)*4.1, 0, Math.PI*2);
-          ctx.fill();
-        }
+        ctx.save(); ctx.globalAlpha = Math.max(0, 1 - c.t/80); ctx.fillStyle = c.color;
+        if (c.shape === "star") { drawStar(ctx, c.x, c.y, 5, 4, 2.2 + Math.sin(c.t/3) * 1.1); }
+        else { ctx.beginPath(); ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2); ctx.fill(); }
         ctx.restore();
       }
       for (let ft of floatingText) {
-        ctx.save();
-        ctx.globalAlpha = ft.opacity;
-        ctx.font = "bold 70px Orbitron, sans-serif";
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 14;
-        ctx.strokeText(ft.txt, ft.x-110, ft.y);
-        ctx.fillStyle = ft.col1;
-        ctx.fillText(ft.txt, ft.x-110, ft.y);
-        ctx.restore();
+        ctx.save(); ctx.globalAlpha = ft.opacity; ctx.font = "bold 20px Orbitron, sans-serif";
+        ctx.strokeStyle = "#fff"; ctx.lineWidth = 4;
+        ctx.strokeText(ft.txt, ft.x-38, ft.y);
+        ctx.fillStyle = ft.col1; ctx.fillText(ft.txt, ft.x-38, ft.y); ctx.restore();
       }
       drawTiltBar();
     }
-
     function drawTiltBar() {
-      let barW = Math.max(700, canvas.width * 0.5);
-      let barH = 46;
-      let cx = canvas.width/2, cy = canvas.height - 80;
-      ctx.save();
-      ctx.globalAlpha = 0.22;
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      if (ctx.roundRect) {
-        ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 24);
-      } else {
-        ctx.rect(cx-barW/2, cy-barH/2, barW, barH);
-      }
-      ctx.fill();
-      ctx.globalAlpha = 0.7;
-      ctx.fillStyle = '#38b6ff';
-      let tiltNorm = (tilt/2.2);
-      let markerX = cx + tiltNorm * (barW/2-44);
-      ctx.beginPath();
-      ctx.arc(markerX, cy, 36, 0, Math.PI*2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.font = 'bold 46px Orbitron, sans-serif';
-      ctx.fillStyle = '#172949';
-      ctx.textAlign = 'center';
-      ctx.fillText('TILT', cx, cy+12);
-      ctx.restore();
+      let barW = Math.max(120, canvas.width * 0.5), barH = 16;
+      let cx = canvas.width/2, cy = canvas.height - 18;
+      ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#fff'; ctx.beginPath();
+      if (ctx.roundRect) { ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 8);}
+      else { ctx.rect(cx-barW/2, cy-barH/2, barW, barH);}
+      ctx.fill(); ctx.globalAlpha = 0.7; ctx.fillStyle = '#2bb7ff';
+      let tiltNorm = (tilt/2.2), markerX = cx + tiltNorm * (barW/2-12);
+      ctx.beginPath(); ctx.arc(markerX, cy, 11, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.font = 'bold 13px Orbitron, sans-serif'; ctx.fillStyle = '#172949'; ctx.textAlign = 'center'; ctx.fillText('TILT', cx, cy+4); ctx.restore();
     }
     function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
-      let angle = Math.PI / points;
-      ctx.beginPath();
+      let angle = Math.PI / points; ctx.beginPath();
       for (let i = 0; i < 2 * points; i++) {
         let r = (i % 2 === 0) ? outerRadius : innerRadius;
-        ctx.lineTo(
-          x + Math.cos(i * angle) * r,
-          y + Math.sin(i * angle) * r
-        );
-      }
-      ctx.closePath();
-      ctx.fill();
+        ctx.lineTo(x + Math.cos(i * angle) * r, y + Math.sin(i * angle) * r);
+      } ctx.closePath(); ctx.fill();
     }
     function loop() {
       if (!('ontouchstart' in window) && !window.DeviceOrientationEvent) {
-        if (tiltKey !== 0) {
-          tilt += 0.13 * tiltKey;
-        } else {
-          tilt *= 0.85;
-        }
+        if (tiltKey !== 0) { tilt += 0.13 * tiltKey; } else { tilt *= 0.85; }
         tilt = Math.max(-2.2, Math.min(2.2, tilt));
       }
-      if (gameStarted && !gameOver) {
-        update();
-        draw();
-      }
+      if (gameStarted && !gameOver) { update(); draw(); }
       requestAnimationFrame(loop);
     }
     canvas.addEventListener('pointerdown', function(e) {
@@ -780,69 +408,50 @@
     });
     let tiltKey = 0;
     window.addEventListener('keydown', e => {
-      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){
-        startGame();
-      } else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) {
-        dropBall();
-      }
+      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){ startGame(); }
+      else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) { dropBall(); }
       if (gameStarted && !gameOver) {
-        if (e.code === "ArrowLeft" || e.code === "KeyA") {
-          tiltKey = -1;
-        } else if (e.code === "ArrowRight" || e.code === "KeyD") {
-          tiltKey = 1;
-        }
+        if (e.code === "ArrowLeft" || e.code === "KeyA") { tiltKey = -1; }
+        else if (e.code === "ArrowRight" || e.code === "KeyD") { tiltKey = 1; }
       }
       if (gameOver && (e.code=="Space"||e.code=="Enter")) playAgain();
     });
     window.addEventListener('keyup', e => {
-      if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "ArrowRight" || e.code === "KeyD") {
-        tiltKey = 0;
-      }
+      if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "ArrowRight" || e.code === "KeyD") { tiltKey = 0; }
     });
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
-      alert("BenBlinko 4K Ultra HD\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.\n\nThis is the ultimate high-resolution Blinko game for desktop and mobile!");
+      alert("BenBlinko Ultra\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.\n\nEnjoy the new high-res, ultra-modern look!");
     };
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
-      gameStarted = true;
-      playGameAudio();
-      resetGame();
-      setTimeout(()=>canvas.focus(), 300);
+      document.body.classList.add('playing');
+      gameStarted = true; playGameAudio(); resetGame(); setTimeout(()=>canvas.focus(), 300);
     }
     const overlay = document.getElementById('overlay');
     overlay.addEventListener('pointerdown', (e) => { startGame(); });
     overlay.addEventListener('click', (e) => { startGame(); });
-    window.addEventListener('DOMContentLoaded', () => { playIntroAudio(); });
     overlay.addEventListener('pointerdown', playIntroAudio);
     overlay.addEventListener('click', playIntroAudio);
     function showGameOver() {
-      gameOver = true;
-      stopGameAudio();
+      gameOver = true; stopGameAudio();
       let govl = document.getElementById('gameover-overlay');
-      document.getElementById('final-score').innerHTML =
-        `Score: <b>${score}</b><br>Highscore: <b>${highscore}</b>`;
+      document.getElementById('final-score').innerHTML = `Score: <b>${score}</b><br>Highscore: <b>${highscore}</b>`;
       govl.classList.remove('hide');
     }
     function playAgain() {
-      let govl = document.getElementById('gameover-overlay');
-      govl.classList.add('hide');
-      gameStarted = true;
-      playGameAudio();
-      resetGame();
+      let govl = document.getElementById('gameover-overlay'); govl.classList.add('hide');
+      gameStarted = true; playGameAudio(); resetGame();
     }
     document.getElementById('play-again-btn').onclick = playAgain;
 
-    // --- Improved TILT/ACCELEROMETER LOGIC ---
+    // --- TILT/ACCELEROMETER ---
     let tiltEnabled = false;
     function handleTilt(event) {
       if (!gameStarted || gameOver || !tiltEnabled) return;
-      let gamma = event.gamma || 0;
-      let beta = event.beta || 0;
+      let gamma = event.gamma || 0, beta = event.beta || 0;
       let orientation = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-      if (orientation === 90 || orientation === -90) {
-        gamma = -beta;
-      }
+      if (orientation === 90 || orientation === -90) gamma = -beta;
       tiltRaw = Math.max(-2.2, Math.min(2.2, gamma/9));
       tiltHistory.push(tiltRaw);
       if (tiltHistory.length > TILT_HISTORY_SIZE) tiltHistory.shift();
@@ -850,28 +459,19 @@
     }
     function requestTiltPermission() {
       if (window.location.protocol !== "https:") {
-        showTiltMessage('Tilt control requires HTTPS. Please use a secure connection.');
-        return;
+        showTiltMessage('Tilt control requires HTTPS. Please use a secure connection.'); return;
       }
       if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission().then(function(response) {
           if (response === 'granted') {
-            tiltEnabled = true;
-            window.addEventListener("deviceorientation", handleTilt, true);
-            showTiltMessage('Tilt control enabled!');
-            document.getElementById('enable-tilt-btn').style.display = 'none';
-          } else {
-            showTiltMessage('Tilt permission denied.');
-          }
+            tiltEnabled = true; window.addEventListener("deviceorientation", handleTilt, true);
+            showTiltMessage('Tilt control enabled!'); document.getElementById('enable-tilt-btn').style.display = 'none';
+          } else { showTiltMessage('Tilt permission denied.'); }
         }).catch(()=>showTiltMessage('Tilt permission error.'));
       } else if ('DeviceOrientationEvent' in window) {
-        tiltEnabled = true;
-        window.addEventListener("deviceorientation", handleTilt, true);
-        showTiltMessage('Tilt control enabled!');
-        document.getElementById('enable-tilt-btn').style.display = 'none';
-      } else {
-        showTiltMessage('Tilt not supported on this device.');
-      }
+        tiltEnabled = true; window.addEventListener("deviceorientation", handleTilt, true);
+        showTiltMessage('Tilt control enabled!'); document.getElementById('enable-tilt-btn').style.display = 'none';
+      } else { showTiltMessage('Tilt not supported on this device.'); }
     }
     function showTiltMessage(msg) {
       let el = document.getElementById('tilt-msg');
@@ -879,15 +479,15 @@
         el = document.createElement('div');
         el.id = 'tilt-msg';
         el.style.position = 'fixed';
-        el.style.bottom = '120px';
+        el.style.bottom = '80px';
         el.style.left = '50%';
         el.style.transform = 'translateX(-50%)';
         el.style.background = 'rgba(30,40,80,0.93)';
         el.style.color = '#ffe24b';
-        el.style.padding = '24px 48px';
-        el.style.borderRadius = '32px';
+        el.style.padding = '12px 24px';
+        el.style.borderRadius = '16px';
         el.style.fontFamily = "Orbitron, Manrope, Arial, sans-serif";
-        el.style.fontSize = '2.2em';
+        el.style.fontSize = '1.1em';
         el.style.zIndex = 9999;
         document.body.appendChild(el);
       }
@@ -905,32 +505,15 @@
       }
     }
     document.getElementById('enable-tilt-btn').onclick = requestTiltPermission;
-    window.addEventListener('DOMContentLoaded', () => {
-      maybeShowTiltButton();
-      playIntroAudio();
-    });
+    window.addEventListener('DOMContentLoaded', () => { maybeShowTiltButton(); });
     window.addEventListener('resize', maybeShowTiltButton);
 
     function resize() {
-      const dpr = window.devicePixelRatio || 1;
-      let logicalWidth = Math.min(window.innerWidth, 3840);
-      let logicalHeight = Math.max(Math.min(window.innerHeight-180, 2160), 800);
-      canvas.width = logicalWidth * dpr;
-      canvas.height = logicalHeight * dpr;
-      canvas.style.width = logicalWidth + 'px';
-      canvas.style.height = logicalHeight + 'px';
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.scale(dpr, dpr);
-      makePegs();
-      drawSlots();
+      setCanvasResolution(); makePegs(); drawSlots();
     }
     window.addEventListener('resize', resize, false);
-    resize();
     window.onload = () => { canvas.focus(); };
-    makePegs();
-    updateUI();
-    drawSlots();
-    loop();
+    makePegs(); updateUI(); drawSlots(); loop();
   </script>
 </body>
 </html>
