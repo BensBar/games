@@ -17,69 +17,108 @@
       overflow-x: hidden;
     }
     #top-bar {
-      background: rgba(34, 53, 88, 0.94);
-      border-radius: 20px;
-      box-shadow: 0 2px 18px #7fd7f8aa inset, 0 0 0 2px #ffe24b44;
-      padding: 18px 10px 18px 10px;
-      font-size: 1.2em;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      background: none;
+      box-shadow: none;
       display: flex;
       align-items: center;
-      gap: 18px;
-      justify-content: flex-start;
-      width: 98vw;
-      max-width: 99vw;
-      margin: 10px auto 0 auto;
-      overflow-x: auto;
+      justify-content: center;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      z-index: 2;
     }
     #logo-img {
-      height: 72px;
+      height: 180px;
       width: auto;
-      max-width: 240px;
+      max-width: 72vw;
       background: rgba(255,255,255,0.97);
-      border-radius: 18px;
-      padding: 10px 20px;
-      margin: 0;
-      box-shadow: 0 2px 38px #7fd7f8ee, 0 0 12px #ffe24b99;
-      filter: drop-shadow(0 2px 16px #7fd7f8cc);
-      object-fit: contain;
+      border-radius: 36px;
+      padding: 32px 52px;
+      margin: 36px auto 6px auto;
+      box-shadow: 0 2px 88px #7fd7f8ee, 0 0 32px #ffe24baa;
+      filter: drop-shadow(0 2px 36px #7fd7f8cc);
       display: block;
-      animation: logo-pulse 3s infinite alternate;
+      animation: logo-pulse 2.1s infinite cubic-bezier(.68,-0.55,.27,1.55) alternate;
       user-select: none;
+      transition: height 0.4s, padding 0.4s, box-shadow 0.4s;
     }
     @keyframes logo-pulse {
-      0% { box-shadow: 0 2px 38px #7fd7f8ee, 0 0 12px #ffe24b99; }
-      100% { box-shadow: 0 2px 58px #7fd7f8ff, 0 0 20px #ffe24bee; }
+      0% { box-shadow: 0 2px 88px #7fd7f8ee, 0 0 32px #ffe24baa; transform: scale(1);}
+      100% { box-shadow: 0 2px 128px #7fd7f8ff, 0 0 48px #ffe24bee; transform: scale(1.10);}
+    }
+    /* Hide top-bar on mobile for more space */
+    @media (max-width: 600px) {
+      #logo-img {
+        height: 90px;
+        padding: 8px 8vw;
+        margin-top: 10px;
+        border-radius: 12vw;
+      }
+    }
+    #game-canvas {
+      display: block;
+      margin: 0 auto;
+      max-width: 100vw;
+      background: #232f47;
+      border-radius: 22px;
+      box-shadow: 0 0 44px #7fd7f888;
+      border: 3px solid #7fd7f8;
+      outline: none;
+      touch-action: none;
+      z-index: 1;
+      position: relative;
+    }
+    /* --- Bottom bar --- */
+    #bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      background: linear-gradient(90deg, #232f47 55%, #7fd7f8 100%);
+      border-top-left-radius: 22px;
+      border-top-right-radius: 22px;
+      box-shadow: 0 -4px 24px #7fd7f8bb inset, 0 -1px 6px #ffe24b77;
+      padding: 12px 0 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      transition: background 0.4s;
+      flex-wrap: wrap;
     }
     #score-bar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 1.1em;
+      gap: 16px;
+      font-size: 1.15em;
       flex-wrap: wrap;
+      justify-content: center;
     }
     .score {
-      background: rgba(255,255,255,0.73);
-      padding: 8px 12px;
-      border-radius: 13px;
+      background: rgba(255,255,255,0.86);
+      padding: 9px 16px;
+      border-radius: 16px;
       border: 3px solid #7fd7f8cc;
       font-weight: bold;
-      color: #222;
-      text-shadow: 0 0 10px #b7aaf7, 0 0 2px #000;
+      color: #232f47;
+      text-shadow: 0 0 10px #b7aaf7, 0 0 2px #0003;
       letter-spacing: 1.2px;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 1em;
-      min-width: 68px;
+      font-size: 1.1em;
+      min-width: 72px;
       text-align: center;
       display: inline-block;
+      box-shadow: 0 4px 22px #7fd7f844;
+      margin: 0 2px;
+      transition: background 0.2s, border 0.2s;
     }
     #multiplier-box {
-      min-width: 70px;
+      min-width: 74px;
       background: linear-gradient(90deg,#ffe24bdf 44%,#ff89aa99 100%);
       color: #222;
       border: 3px solid #ffe24b;
       font-weight: bold;
-      font-size: 1em;
+      font-size: 1.1em;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -118,71 +157,50 @@
       80% { transform: scale(1.13);}
       100% { transform: scale(1);}
     }
+    /* Improved buttons */
     .btn, #help-btn {
       transition: background 0.17s, color 0.18s, transform 0.13s, box-shadow 0.13s;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
       background: linear-gradient(90deg,#7fd7f8 40%, #ffe24b 100%);
-      border-radius: 14px;
+      border-radius: 15px;
       border: 3px solid #7fd7f8;
-      padding: 9px 18px;
+      padding: 12px 24px;
       color: #1d2438;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 18px #7fd7f833, 0 2px 8px #b7aaf799;
-      font-size: 1em;
+      font-size: 1.12em;
       outline: none;
-      margin-left: 8px;
+      margin: 0 0 0 12px;
+      letter-spacing: 2px;
     }
     .btn:hover, #help-btn:hover {
       background: linear-gradient(90deg, #ffe24b, #7fd7f8 100%);
       color: #000;
-      transform: scale(1.07);
+      transform: scale(1.09);
       box-shadow: 0 0 18px #ffe24b66;
       border-color: #ffe24b;
     }
-    #game-canvas {
-      display: block;
-      margin: 24px auto 0;
-      max-width: 100vw;
-      background: #232f47;
-      border-radius: 22px;
-      box-shadow: 0 0 44px #7fd7f888;
-      border: 3px solid #7fd7f8;
-      outline: none;
-      touch-action: none;
-    }
-    /* Peg hit animation (for DOM pegs; for canvas, animated in JS) */
-    .peg-hit-anim {
-      animation: peg-hit 0.22s cubic-bezier(.68,-0.55,.27,1.55);
-    }
-    @keyframes peg-hit {
-      0% { transform: scale(1);}
-      60% { transform: scale(1.30);}
-      100% { transform: scale(1);}
-    }
-    /* Responsive */
     @media (max-width: 700px) {
-      #top-bar {
-        padding: 6px 2vw;
-        gap: 4px;
-        flex-wrap: wrap;
-        font-size: 0.95em;
-      }
-      #logo-img { height: 40px; padding: 6px 10px; }
-      .score, #multiplier-box { font-size: 0.97em; padding: 4px 8px; min-width: 54px;}
-      .btn, #help-btn { font-size: 0.95em; padding: 7px 8px;}
+      #logo-img { height: 80px; padding: 8px 8vw; margin: 10px auto 2px auto;}
+      #bottom-bar { font-size: 0.98em; padding: 7px 0; }
+      .score, #multiplier-box { font-size: 0.97em; padding: 6px 8px; min-width: 56px;}
+      .btn, #help-btn { font-size: 0.97em; padding: 8px 9px;}
     }
     @media (max-width: 480px) {
-      #top-bar { padding: 4px 2px; }
-      #logo-img { height: 28px; padding: 2px 4px; }
-      #score-bar { gap: 2px; }
-      .btn, #help-btn { margin-left: 2px; }
+      #bottom-bar { padding: 4px 0; }
+      .score, #multiplier-box { font-size: 0.95em; padding: 4px 5px; min-width: 40px;}
+      .btn, #help-btn { margin: 0; font-size: 0.91em; }
     }
   </style>
 </head>
 <body>
   <div id="top-bar">
     <img src="img/logo.png" id="logo-img" alt="BenBlinko" />
+    <button id="help-btn" class="btn">Help</button>
+  </div>
+  <canvas id="game-canvas" width="480" height="640" tabindex="1"></canvas>
+  <div id="bottom-bar">
     <div id="score-bar">
       <span class="score"><b>🏆</b> <span id="score-val">0</span></span>
       <span class="score"><b>⭐</b> <span id="highscore-val">0</span></span>
@@ -191,10 +209,7 @@
         <span id="multi-x">x2</span><span class="bonus-label inactive">COMBO</span>
       </span>
     </div>
-    <button id="help-btn" class="btn">Help</button>
   </div>
-  <canvas id="game-canvas" width="480" height="640" tabindex="1"></canvas>
-
   <script>
   // --- BEGIN GAME LOGIC (preserve your original code) ---
   // Only visual and speed changes made below.
@@ -204,9 +219,9 @@
   const canvas = document.getElementById('game-canvas');
   const ctx = canvas.getContext('2d');
 
-  // --- GAME CONSTANTS (edit these for 20% slower gameplay) ---
-  const GRAVITY = 0.00025 * 0.8; // original was 0.00025, now 20% slower
-  const BOUNCE_DAMPING = 0.72 * 0.8; // original 0.72, now 20% slower
+  // --- GAME CONSTANTS (edit these for much slower gameplay) ---
+  const GRAVITY = 0.00007 * canvas.height; // SLOW FALL
+  const BOUNCE_DAMPING = 0.46; // SLOW BOUNCE
   const BALL_RADIUS = 11;
   const PEG_RADIUS = 7;
   const ROWS = 9;
@@ -214,8 +229,8 @@
   const PEG_GAP = 48;
   const PEG_Y_START = 100;
   const BALL_START_Y = 48;
-  const BALL_SPEED = 6 * 0.8; // original 6, now 20% slower
-  const BALL_DROP_DELAY = 700 * 1.2; // original 700ms, now 20% slower
+  const BALL_SPEED = 2.0; // SLOW HORIZONTAL SPEED
+  const BALL_DROP_DELAY = 900; // Slightly longer pause
 
   // --- GAME STATE ---
   let pegs = [];
@@ -257,7 +272,7 @@
     confetti = [];
     makePegs();
     updateUI();
-    setTimeout(dropBall, 800);
+    setTimeout(dropBall, 1000);
   }
 
   function updateUI() {
@@ -308,7 +323,7 @@
     // Ball physics
     for (let ball of balls) {
       if (ball.landed) continue;
-      ball.vy += GRAVITY * canvas.height;
+      ball.vy += GRAVITY;
       ball.x += ball.vx;
       ball.y += ball.vy;
 
@@ -334,7 +349,7 @@
           multiplier ++;
           animateScore('multiplier-box');
           // Confetti
-          for (let j=0;j<7;++j) {
+          for (let j=0;j<9;++j) {
             confetti.push({
               x: peg.x, y: peg.y,
               vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
@@ -361,7 +376,7 @@
           comboActive = false;
           updateUI();
           if (ballsLeft > 0) setTimeout(dropBall, BALL_DROP_DELAY);
-        }, 500);
+        }, 700);
       }
     }
     // Peg hit animation decay
