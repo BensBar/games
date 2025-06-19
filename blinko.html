@@ -54,11 +54,10 @@
       border-radius: 12px;
       touch-action: none;
     }
-    #debug, #haptic {
+    #debug {
       margin-top: 8px;
       font-size: 16px;
     }
-    #haptic { color: yellow; display: none; }
   </style>
 </head>
 <body>
@@ -71,7 +70,6 @@
   <div id="game-container">
     <canvas id="game" width="360" height="540"></canvas>
     <div id="debug">γ: 0°</div>
-    <div id="haptic">HAPTIC!</div>
   </div>
 
   <script>
@@ -81,7 +79,6 @@
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     const debugEl = document.getElementById('debug');
-    const hapticEl = document.getElementById('haptic');
 
     let tilt = 0, tiltReady = false;
 
@@ -115,23 +112,17 @@
       };
     }
 
-    function showHaptic() {
-      hapticEl.style.display = 'block';
-      setTimeout(() => hapticEl.style.display = 'none', 200);
-    }
-
     function update() {
       if (!ball || ball.stopped) return;
-      // SLOWER GRAVITY AND TILT:
-      ball.vy += 0.15;
-      ball.vx += tilt * 0.04;
+      // MUCH SLOWER PHYSICS FOR BEST GAMEPLAY
+      ball.vy += 0.07; // much gentler gravity
+      ball.vx += tilt * 0.02; // much gentler tilt
       ball.x += ball.vx;
       ball.y += ball.vy;
-      ball.hue = (ball.hue + 3) % 360;
+      ball.hue = (ball.hue + 2) % 360;
 
       if (ball.x - ball.r < 0 || ball.x + ball.r > canvas.width) {
-        ball.vx *= -0.5;
-        showHaptic();
+        ball.vx *= -0.4;
       }
 
       PEGS.forEach(p => {
@@ -143,10 +134,8 @@
           const overlap = ball.r + PEG_RADIUS - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          // SLOWER BOUNCE
-          ball.vx = Math.cos(angle + Math.PI/2) * 1;
-          ball.vy *= 0.9;
-          showHaptic();
+          ball.vx = Math.cos(angle + Math.PI/2) * 0.7;
+          ball.vy *= 0.88;
         }
       });
 
@@ -156,8 +145,7 @@
         if (landed) {
           ball.x = landed.x + landed.w / 2;
         }
-        showHaptic();
-        setTimeout(spawnBall, 800);
+        setTimeout(spawnBall, 1300); // longer pause for drama
       }
     }
 
