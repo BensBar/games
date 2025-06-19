@@ -7,8 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
     html, body {
-      margin: 0; padding: 0; height: 100%; width: 100%;
-      background: #141a29;
+      margin: 0; padding: 0; height: 100%; width: 100vw;
+      background: #161c2c;
       font-family: 'Manrope', 'Orbitron', Arial, sans-serif;
       overflow: hidden;
       color: #fff;
@@ -37,44 +37,46 @@
       gap: 40px;
       margin: 18px 0 0 0;
       z-index: 4;
-      text-shadow: 0 2px 18px #7fd7f8, 0 0 2px #333;
       font-size: 1.25em;
       pointer-events: none;
       user-select: none;
     }
     #score-box, #highscore-box {
-      background: rgba(0,0,0,0.33);
-      padding: 12px 28px;
-      border-radius: 15px;
-      border: 2px solid #7fd7f8;
+      background: rgba(34, 53, 88, 0.75);
+      padding: 14px 36px;
+      border-radius: 20px;
+      border: 2.5px solid #7fd7f8;
       font-weight: bold;
-      color: #7fd7f8;
-      text-shadow: 0 0 10px #7fd7f8, 0 0 4px #000;
-      letter-spacing: 1.2px;
+      color: #fff;
+      text-shadow: 0 0 10px #b7aaf7, 0 0 4px #000;
+      letter-spacing: 1.3px;
+      box-shadow: 0 0 18px #7fd7f899 inset, 0 2px 10px #0002;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 1.22em;
+      gap: 13px;
+      font-size: 1.23em;
+      backdrop-filter: blur(3px);
     }
     .score-icon {
-      font-size: 1.32em;
-      filter: drop-shadow(0 0 6px #b7aaf7);
+      font-size: 1.45em;
+      filter: drop-shadow(0 0 8px #b7aaf7);
       margin-right: 3px;
     }
     #help-btn {
-      margin-left: 24px;
-      padding: 9px 22px;
-      border-radius: 10px;
-      border: 2px solid #7fd7f8;
-      background: #1d2438;
+      margin-left: 32px;
+      padding: 12px 26px;
+      border-radius: 13px;
+      border: 2.5px solid #7fd7f8;
+      background: rgba(33, 48, 82, 0.94);
       color: #7fd7f8;
-      font-size: 1.15em;
+      font-size: 1.22em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      box-shadow: 0 2px 12px #7fd7f855;
+      box-shadow: 0 2px 18px #7fd7f866;
       pointer-events: auto;
       transition: 0.13s;
+      backdrop-filter: blur(2px);
     }
     #help-btn:hover {
       background: #7fd7f8;
@@ -85,21 +87,21 @@
       display: block;
       margin: 0 auto;
       background: transparent;
-      border: 4px solid #7fd7f8;
-      border-radius: 34px;
-      box-shadow: 0 0 80px #b7aaf7a5, 0 0 24px #1a2237;
+      border: 5px solid #7fd7f8;
+      border-radius: 36px;
+      box-shadow: 0 0 90px #b7aaf7a9, 0 0 32px #1a2237;
       z-index: 2;
-      /* Size is set by JS */
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
     #debug {
-      font-size: 1.12em;
+      font-size: 1.14em;
       margin-top: 2px;
       color: #7fd7f8;
       text-shadow: 0 0 8px #7fd7f8, 0 0 2px #111;
       text-align: center;
       width: 100vw;
-      opacity: 0.66;
+      opacity: 0.6;
     }
     #instructions {
       position: fixed;
@@ -116,16 +118,16 @@
     }
     #instructions.visible { display: flex; }
     #instructions-content {
-      background: rgba(32,38,56,0.98);
-      border-radius: 27px;
-      padding: 40px 28px 30px 28px;
-      box-shadow: 0 8px 44px #7fd7f8bb;
-      border: 3px solid #7fd7f8;
-      max-width: 96vw;
+      background: rgba(32,38,56,0.99);
+      border-radius: 30px;
+      padding: 48px 32px 32px 32px;
+      box-shadow: 0 10px 48px #7fd7f8cc;
+      border: 3.5px solid #7fd7f8;
+      max-width: 95vw;
       animation: popIn 0.45s cubic-bezier(.32,1.56,.53,.92);
     }
     #instructions h2 {
-      font-size: 2.2em;
+      font-size: 2.34em;
       margin-bottom: 0.4em;
       color: #7fd7f8;
       text-shadow: 0 0 34px #7fd7f8;
@@ -134,24 +136,24 @@
     #instructions ul {
       text-align: left;
       margin: 0 auto 18px auto;
-      padding-left: 20px;
-      max-width: 440px;
-      color: #fff;
-      font-size: 1.2em;
+      padding-left: 22px;
+      max-width: 460px;
+      color: #e7fafd;
+      font-size: 1.23em;
       line-height: 1.8;
       text-shadow: 0 0 6px #7fd7f822, 0 0 2px #111;
     }
     #instructions button {
-      margin-top: 22px;
-      font-size: 1.15em;
-      padding: 10px 28px;
-      border-radius: 10px;
+      margin-top: 27px;
+      font-size: 1.18em;
+      padding: 13px 38px;
+      border-radius: 13px;
       border: none;
       background: linear-gradient(90deg,#7fd7f8,#b7aaf7);
       color: #1d2438;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 2px 10px #7fd7f8c9;
+      box-shadow: 0 2px 12px #7fd7f8c9;
       transition: 0.12s;
     }
     #instructions button:hover {
@@ -170,7 +172,7 @@
       animation: fadeIn 0.7s;
     }
     #welcome h1 {
-      font-size: 3.1em;
+      font-size: 3.3em;
       margin: 0.5em;
       text-shadow: 0 0 38px #7fd7f8, 0 0 65px #b7aaf7;
       letter-spacing: 3px;
@@ -178,18 +180,18 @@
       font-family: Orbitron, Manrope, Arial, sans-serif;
     }
     #welcome p {
-      font-size: 1.28em;
+      font-size: 1.38em;
       margin: 0.3em 0 1em;
-      color: #fff;
+      color: #e7fafd;
       text-shadow: 0 0 10px #111a;
-      max-width: 430px;
+      max-width: 480px;
       font-family: 'Manrope', Arial, sans-serif;
     }
     #start-btn {
-      padding: 16px 38px;
-      font-size: 1.45em;
+      padding: 20px 44px;
+      font-size: 1.55em;
       border: none;
-      border-radius: 18px;
+      border-radius: 24px;
       background: linear-gradient(90deg, #7fd7f8 40%, #b7aaf7 100%);
       color: #1d2438;
       cursor: pointer;
@@ -213,7 +215,7 @@
     }
     @media (max-width: 700px) {
       #instructions-content { font-size: 1em; }
-      #welcome h1 { font-size: 2.1em;}
+      #welcome h1 { font-size: 2em;}
     }
   </style>
 </head>
@@ -232,18 +234,20 @@
     <div id="instructions-content">
       <h2>How to Play</h2>
       <ul>
-        <li><b>Tilt your device</b> (or use <b>left/right arrow keys</b>) to steer the ball.</li>
-        <li>The ball bounces off pegs. Land in the <b>center slot</b> for the best prize!</li>
-        <li>Your <b>score</b> and <b>high score</b> are shown at the top.</li>
+        <li>🎮 <b>Tilt</b> your device (or use <b>←/→ arrow keys</b>) to steer the ball.</li>
+        <li>✨ <b>Bounce</b> off pegs and aim for the <b>center slot</b> for the best prize!</li>
+        <li>🏆 <b>Score</b> and <b>High Score</b> are shown above.</li>
       </ul>
-      <button id="close-instructions">Back</button>
+      <button id="close-instructions">Back to Game</button>
     </div>
   </div>
   <div id="welcome">
     <h1>BenBlinko</h1>
-    <p>Tilt your device (or use arrow keys) to steer the ball.<br>
-    Bounce off pegs and land in a slot for points!<br>
-    Try to beat your high score!</p>
+    <p>
+      Tilt your device (or use arrow keys) to steer the ball.<br>
+      Bounce off pegs and land in a slot for points!<br>
+      Try to beat your high score!
+    </p>
     <button id="start-btn">Start Game</button>
     <button id="help-btn-welcome" style="margin-top:20px;">How to Play</button>
   </div>
@@ -259,14 +263,14 @@
       let g = bgctx.createLinearGradient(
         w/2 + Math.sin(gradTime)*w/4,
         h/2 + Math.cos(gradTime/2)*h/4,
-        w/2 + Math.cos(gradTime)*w/3,
-        h/2 + Math.sin(gradTime/3)*h/3
+        w/2 + Math.cos(gradTime*1.6)*w/3,
+        h/2 + Math.sin(gradTime/1.3)*h/3
       );
       g.addColorStop(0, `#223d54`);
-      g.addColorStop(0.25, `#4f6fb2`);
-      g.addColorStop(0.55, `#7fd7f8`);
-      g.addColorStop(0.81, `#b7aaf7`);
-      g.addColorStop(1, `#141a29`);
+      g.addColorStop(0.14, `#4f6fb2`);
+      g.addColorStop(0.33, `#7fd7f8`);
+      g.addColorStop(0.66, `#b7aaf7`);
+      g.addColorStop(1, `#161c2c`);
       bgctx.fillStyle = g;
       bgctx.fillRect(0,0,w,h);
       requestAnimationFrame(drawBg);
@@ -283,7 +287,7 @@
     function resizeCanvas() {
       // 9:16 aspect ratio, fill screen
       const ww = window.innerWidth;
-      const wh = window.innerHeight - 40; // allow for score bar
+      const wh = window.innerHeight - 70; // allow for score bar
       let w = ww, h = wh;
       if (w / h > 9/16) w = h * 9/16;
       else h = w * 16/9;
@@ -305,17 +309,16 @@
     // Board setup (relative to canvas)
     function getBoardSpec() {
       const w = canvas.width, h = canvas.height;
-      // Board area
-      const boardMarginX = w*0.04, boardMarginY = h*0.04;
+      const boardMarginX = w*0.045, boardMarginY = h*0.04;
       const boardW = w - 2*boardMarginX;
-      const boardH = h - 2*boardMarginY - h*0.10;
+      const boardH = h - 2*boardMarginY - h*0.11;
       const slotCount = 7;
       const pegRows = 10;
       const pegCols = 10;
-      // Peg/ball ratio is further reduced to prevent ball sticking
-      const pegRadius = boardW*0.015; // smaller pegs
-      const ballRadius = boardW*0.0275; // smaller ball
-      const slotH = boardH*0.1;
+      // challenge: smaller pegs and balls, center slot narrower
+      const pegRadius = boardW*0.012;
+      const ballRadius = boardW*0.023;
+      const slotH = boardH*0.11;
       return {
         x: boardMarginX,
         y: boardMarginY,
@@ -329,18 +332,25 @@
         slotH
       };
     }
-
-    // Peg/Slot/Reward/Color
     function getSlots(spec) {
-      return Array.from({length: spec.slotCount}, (_, i) => ({
-        x: spec.x + i*(spec.w/spec.slotCount),
-        w: spec.w/spec.slotCount,
-        reward: [10,40,120,350,120,40,10][i],
-        color: [
-          "#7fd7f8", "#b7aaf7", "#8dd6e8", "#7fd7f8",
-          "#8dd6e8", "#b7aaf7", "#7fd7f8"
-        ][i]
-      }));
+      // Center slot is slightly narrower for extra challenge
+      const widths = [1,1,1,0.7,1,1,1];
+      const total = widths.reduce((a,b) => a+b,0);
+      let pos = spec.x;
+      return Array.from({length: spec.slotCount}, (_, i) => {
+        let w = spec.w * widths[i]/total;
+        let slot = {
+          x: pos,
+          w: w,
+          reward: [10,40,120,400,120,40,10][i],
+          color: [
+            "#7fd7f8", "#b7aaf7", "#8dd6e8", "#7fd7f8",
+            "#8dd6e8", "#b7aaf7", "#7fd7f8"
+          ][i]
+        };
+        pos += w;
+        return slot;
+      });
     }
     function getPegs(spec) {
       let pegs = [];
@@ -348,7 +358,7 @@
         for (let col = 0; col < spec.pegCols; col++) {
           let xOffset = (row%2 ? (spec.w/spec.pegCols)/2 : 0);
           let px = spec.x + col*(spec.w/spec.pegCols) + xOffset;
-          let py = spec.y + row*((spec.h-spec.slotH*1.15)/spec.pegRows) + spec.pegRadius*1.6;
+          let py = spec.y + row*((spec.h-spec.slotH*1.15)/spec.pegRows) + spec.pegRadius*1.7;
           pegs.push({x: px, y: py, sparkle: 0});
         }
       }
@@ -384,44 +394,43 @@
 
     function update() {
       if (!ball || ball.stopped) return;
-      // Smooth physics, gentle gravity
-      ball.vy += spec.h*0.00018;
-      ball.vx += tilt * 0.012;
+      // Harder: Faster gravity, less control
+      ball.vy += spec.h*0.00027;
+      ball.vx += tilt * 0.009; // less responsive
       ball.x += ball.vx;
       ball.y += ball.vy;
       ball.hue = (ball.hue + 2) % 360;
 
       // Ball trail
       ballTrail.unshift({x: ball.x, y: ball.y, hue: ball.hue});
-      if (ballTrail.length > 38) ballTrail.pop();
+      if (ballTrail.length > 40) ballTrail.pop();
 
-      // Wall bounce & gentle inward nudge at edge
+      // Wall bounce, bouncier and unpredictable
       if (ball.x - ball.r < spec.x) {
         ball.x = spec.x + ball.r + 0.2;
-        ball.vx = Math.abs(ball.vx)*0.65 + 0.7;
+        ball.vx = Math.abs(ball.vx)*0.8 + 1.4*Math.random()+0.5;
       }
       if (ball.x + ball.r > spec.x + spec.w) {
         ball.x = spec.x + spec.w - ball.r - 0.2;
-        ball.vx = -Math.abs(ball.vx)*0.65 - 0.7;
+        ball.vx = -Math.abs(ball.vx)*0.8 - 1.4*Math.random()-0.5;
       }
 
-      // Peg collisions (with extra nudge to prevent sticking)
+      // Peg collisions with extra nudge, more sparkle
       pegs.forEach(p => {
         const dx = ball.x - p.x;
         const dy = ball.y - p.y;
         const dist = Math.hypot(dx, dy);
         if (dist < ball.r + spec.pegRadius) {
           const angle = Math.atan2(dy, dx);
-          const overlap = ball.r + spec.pegRadius - dist + 0.6;
+          const overlap = ball.r + spec.pegRadius - dist + 0.8;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          // Bounce with randomness
-          const nudge = (Math.random()-0.5)*1.05;
-          ball.vx = Math.cos(angle + Math.PI/2) * 0.73 + nudge;
-          ball.vy *= 0.91 + (Math.random()-0.5)*0.11;
+          const nudge = (Math.random()-0.5)*1.7;
+          ball.vx = Math.cos(angle + Math.PI/2) * 1.05 + nudge;
+          ball.vy *= 0.97 + (Math.random()-0.5)*0.15;
           // If near edge, force a bigger nudge inward
-          if (ball.x < spec.x + spec.w*0.12) ball.vx += 0.5 + Math.random()*0.4;
-          if (ball.x > spec.x + spec.w*0.88) ball.vx -= 0.5 + Math.random()*0.4;
+          if (ball.x < spec.x + spec.w*0.16) ball.vx += 0.8 + Math.random()*0.4;
+          if (ball.x > spec.x + spec.w*0.84) ball.vx -= 0.8 + Math.random()*0.4;
           p.sparkle = 1.0;
         }
         p.sparkle *= 0.93;
@@ -431,9 +440,9 @@
       if (Math.abs(ball.x - lastX) < 0.6) xSameCount++;
       else xSameCount = 0;
       lastX = ball.x;
-      if (xSameCount > 13) {
-        if (ball.x < spec.x + spec.w/2) ball.vx += 0.95+Math.random();
-        else ball.vx -= 0.95+Math.random();
+      if (xSameCount > 10) {
+        if (ball.x < spec.x + spec.w/2) ball.vx += 1.2+Math.random();
+        else ball.vx -= 1.2+Math.random();
         xSameCount = 0;
       }
 
@@ -452,12 +461,12 @@
           }
           ball.slotIdx = idx;
           // Confetti burst
-          for (let i=0; i<18; ++i) {
+          for (let i=0; i<22; ++i) {
             ball.confetti.push({
               x: ball.x,
               y: spec.y + spec.h - spec.slotH,
-              vx: Math.cos(i/18*2*Math.PI)* (1.1+Math.random()*1.3) * (spec.w/320),
-              vy: -2.2 - Math.random()*2.2 * (spec.h/540),
+              vx: Math.cos(i/22*2*Math.PI)* (1.1+Math.random()*1.5) * (spec.w/320),
+              vy: -2.7 - Math.random()*2.7 * (spec.h/540),
               color: slots[idx].color,
               t: 0
             });
@@ -471,10 +480,10 @@
         for (let c of ball.confetti) {
           c.x += c.vx;
           c.y += c.vy;
-          c.vy += spec.h*0.00015;
+          c.vy += spec.h*0.00018;
           c.t += 1;
         }
-        ball.confetti = ball.confetti.filter(c => c.y < canvas.height && c.t < 70);
+        ball.confetti = ball.confetti.filter(c => c.y < canvas.height && c.t < 80);
       }
     }
 
@@ -490,11 +499,11 @@
         ctx.shadowBlur = 28*pulse;
         ctx.fillRect(s.x, spec.y + spec.h - spec.slotH, s.w, spec.slotH);
         ctx.shadowBlur = 0;
-        ctx.globalAlpha = 0.14;
+        ctx.globalAlpha = 0.18;
         ctx.fillStyle = '#000';
         ctx.fillRect(s.x, spec.y + spec.h - spec.slotH - 8, s.w, 8);
         ctx.globalAlpha = 1;
-        ctx.font = `bold ${Math.round(spec.slotH*0.33)}px Orbitron, monospace`;
+        ctx.font = `bold ${Math.round(spec.slotH*0.30)}px Orbitron, monospace`;
         ctx.fillStyle = '#223d54';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -504,46 +513,61 @@
         ctx.restore();
       });
 
-      // Draw pegs
+      // Draw pegs (sparkle animation)
       pegs.forEach(p => {
         ctx.save();
         if (p.sparkle > 0.05) {
           ctx.shadowColor = "#fff";
-          ctx.shadowBlur = 18*p.sparkle;
+          ctx.shadowBlur = 26*p.sparkle;
+          ctx.globalAlpha = 0.5 + 0.5*p.sparkle;
           ctx.fillStyle = `rgba(255,255,255,${p.sparkle})`;
         } else {
           ctx.shadowBlur = 0;
+          ctx.globalAlpha = 0.85;
           ctx.fillStyle = '#fff';
         }
         ctx.beginPath();
         ctx.arc(p.x, p.y, spec.pegRadius, 0, Math.PI*2);
         ctx.fill();
+        ctx.globalAlpha = 1;
+        // sparkle lines
+        if (p.sparkle > 0.2) {
+          ctx.strokeStyle = "#b7aaf7";
+          ctx.lineWidth = 1.2+2.1*p.sparkle;
+          for(let j=0;j<5;j++){
+            ctx.beginPath();
+            let a = Math.PI*2*j/5 + performance.now()/350;
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.x + Math.cos(a)*spec.pegRadius*2.7, p.y + Math.sin(a)*spec.pegRadius*2.7);
+            ctx.stroke();
+          }
+        }
         ctx.restore();
       });
 
-      // Ball trail (soft)
+      // Ball trail (soft, colored)
       for (let i=ballTrail.length-1; i>0; i--) {
         let t = i/ballTrail.length;
         ctx.save();
         ctx.beginPath();
-        ctx.arc(ballTrail[i].x, ballTrail[i].y, ball.r*(0.83+0.23*t), 0, Math.PI*2);
-        ctx.globalAlpha = 0.09 + 0.11*t;
-        ctx.fillStyle = `hsl(${ballTrail[i].hue},63%,${61+10*t}%)`;
+        ctx.arc(ballTrail[i].x, ballTrail[i].y, ball.r*(0.85+0.2*t), 0, Math.PI*2);
+        ctx.globalAlpha = 0.10 + 0.13*t;
+        ctx.fillStyle = `hsl(${ballTrail[i].hue},65%,${61+10*t}%)`;
         ctx.shadowColor = "#b7aaf7";
-        ctx.shadowBlur = 15*t;
+        ctx.shadowBlur = 17*t;
         ctx.fill();
         ctx.restore();
       }
 
-      // Draw ball
+      // Draw ball (soft highlight, animated glow)
       if (ball) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-        ctx.fillStyle = `hsl(${ball.hue},66%,72%)`;
-        ctx.shadowColor = '#b7aaf7';
-        ctx.shadowBlur = 27;
-        ctx.globalAlpha = 0.98;
+        ctx.fillStyle = `hsl(${ball.hue},66%,74%)`;
+        ctx.shadowColor = '#7fd7f8';
+        ctx.shadowBlur = 37 + 9*Math.sin(performance.now()/130);
+        ctx.globalAlpha = 0.97;
         ctx.fill();
         ctx.restore();
       }
@@ -552,10 +576,10 @@
       if (ball && ball.confetti) {
         for (let c of ball.confetti) {
           ctx.save();
-          ctx.globalAlpha = Math.max(0, 1 - c.t/70);
+          ctx.globalAlpha = Math.max(0, 1 - c.t/80);
           ctx.fillStyle = c.color;
           ctx.beginPath();
-          ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.2, 0, Math.PI*2);
+          ctx.arc(c.x, c.y, 2.2+Math.sin(c.t/3)*1.25, 0, Math.PI*2);
           ctx.fill();
           ctx.restore();
         }
@@ -588,7 +612,7 @@
     document.getElementById('start-btn').onclick = () => {
       document.getElementById('welcome').style.display = 'none';
       document.getElementById('game-container').style.display = 'flex';
-      resizeCanvas(); // ensure full screen
+      resizeCanvas();
       spawnBall();
       score = 0;
       document.getElementById('score-val').textContent = score;
@@ -605,8 +629,8 @@
 
     // Keyboard for desktop
     window.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') tilt -= 2;
-      if (e.key === 'ArrowRight') tilt += 2;
+      if (e.key === 'ArrowLeft') tilt -= 1.1;
+      if (e.key === 'ArrowRight') tilt += 1.1;
       if (e.key === 'Escape') hideInstructions();
     });
 
