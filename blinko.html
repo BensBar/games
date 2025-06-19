@@ -77,10 +77,9 @@
       width: 100%;
       display: block;
     }
-    #help-btn {
+    #help-btn, #tilt-btn {
       position: absolute;
       top: 16px;
-      right: 20px;
       background: linear-gradient(90deg,#38b6ff 30%,#ffe24b 100%);
       color: #222;
       border: none;
@@ -94,10 +93,24 @@
       transition: background 0.18s, color 0.18s, transform 0.14s;
       z-index: 101;
     }
-    #help-btn:hover {
+    #help-btn {
+      right: 20px;
+    }
+    #tilt-btn {
+      right: 120px;
+      display: none;
+    }
+    #help-btn:hover, #tilt-btn:hover {
       background: linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
       color: #0a1a2f;
       transform: scale(1.07);
+    }
+    #tilt-btn.enabled {
+      background: linear-gradient(90deg,#31ed8a 30%,#38b6ff 100%);
+    }
+    #tilt-btn.disabled {
+      background: linear-gradient(90deg,#ff6b6b 30%,#ffa500 100%);
+      opacity: 0.8;
     }
     #game-canvas {
       display: block;
@@ -318,7 +331,8 @@
       #game-canvas { max-width: 99vw; width: 99vw; height: 88vw; min-height: 400px;}
       #bottom-bar { font-size: 1em; padding: 7px 0; }
       .score, #multiplier-box { font-size: 1em; padding: 8px 8px; min-width: 56px;}
-      #help-btn { font-size: 1em; padding: 7px 12px;}
+      #help-btn, #tilt-btn { font-size: 1em; padding: 7px 12px;}
+      #tilt-btn { right: 90px; }
       #slots-row { height: 40px; }
       .slot-box { width: 12vw; height: 40px;}
     }
@@ -326,7 +340,8 @@
       #logo-entrance { width: 84vw;}
       #bottom-bar { padding: 4px 0; }
       .score, #multiplier-box { font-size: 0.96em; padding: 5px 4px; min-width: 38px;}
-      #help-btn { margin: 0; font-size: 0.93em; }
+      #help-btn, #tilt-btn { margin: 0; font-size: 0.93em; }
+      #tilt-btn { right: 75px; }
       #slots-row { height: 32px; }
       .slot-box { width: 10vw; height: 32px;}
     }
@@ -341,6 +356,7 @@
     <div id="tap-to-start">Tap or Press Space to Start</div>
     <div id="credit">by BensBar</div>
     <button id="help-btn" type="button">Help</button>
+    <button id="tilt-btn" type="button">Enable Tilt</button>
   </div>
   <div id="gameover-overlay" class="hide">
     <div id="gameover-title">Game Over</div>
@@ -747,8 +763,8 @@ function makePegs() {
       ctx.fill();
     }
     function loop() {
-      // Desktop: smoothly adjust tilt if using keys
-      if (!('ontouchstart' in window) && !window.DeviceOrientationEvent) {
+      // Desktop: smoothly adjust tilt if using keys (when mobile tilt isn't active)
+      if (!tiltEnabled || (!('ontouchstart' in window) && navigator.maxTouchPoints === 0)) {
         if (tiltKey !== 0) {
           tilt += 0.13 * tiltKey;
         } else {
@@ -795,7 +811,12 @@ function makePegs() {
     });
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
-      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom for extra points. Tilt your phone to curve the ball. Good luck!");
+      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom for extra points. \n\nOn mobile: Use 'Enable Tilt' button to tilt your device to control balls.\nOn desktop: Use arrow keys (← →) or A/D keys to tilt.\nClick/tap to drop balls.\n\nGood luck!");
+    };
+    
+    document.getElementById('tilt-btn').onclick = function(e) {
+      e.stopPropagation();
+      enableTiltControl();
     };
     // Overlay tap/start logic
     function startGame() {
@@ -808,7 +829,10 @@ function makePegs() {
     const overlay = document.getElementById('overlay');
     overlay.addEventListener('pointerdown', (e) => { startGame(); });
     overlay.addEventListener('click', (e) => { startGame(); });
-    window.addEventListener('DOMContentLoaded', () => { playIntroAudio(); });
+    window.addEventListener('DOMContentLoaded', () => { 
+      playIntroAudio(); 
+      initializeTiltButton();
+    });
     overlay.addEventListener('pointerdown', playIntroAudio);
     overlay.addEventListener('click', playIntroAudio);
     function showGameOver() {
@@ -828,8 +852,60 @@ function makePegs() {
     }
     document.getElementById('play-again-btn').onclick = playAgain;
     // --- TILT/ACCELEROMETER ---
+    let tiltEnabled = false;
+    let tiltAvailable = false;
+    let httpsRequired = false;
+    
+    function isHttps() {
+      return location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    }
+    
+    function checkTiltAvailability() {
+      // Check HTTPS requirement
+      if (!isHttps()) {
+        httpsRequired = true;
+        showTiltMessage('Tilt control requires HTTPS. Please access this page over a secure connection.');
+        return false;
+      }
+      
+      // Check device orientation support
+      if (!window.DeviceOrientationEvent) {
+        showTiltMessage('Tilt control not supported on this device.');
+        return false;
+      }
+      
+      return true;
+    }
+    
+    function initializeTiltButton() {
+      const tiltBtn = document.getElementById('tilt-btn');
+      
+      if (!checkTiltAvailability()) {
+        tiltBtn.style.display = 'none';
+        return;
+      }
+      
+      // Show tilt button on mobile devices
+      if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        tiltBtn.style.display = 'block';
+        tiltAvailable = true;
+        
+        // Check if permission is required (iOS)
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          tiltBtn.textContent = 'Enable Tilt';
+          tiltBtn.title = 'Request permission to use device orientation for tilt control';
+        } else {
+          tiltBtn.textContent = 'Enable Tilt';
+          tiltBtn.title = 'Enable tilt control using device orientation';
+        }
+      } else {
+        // Hide on desktop since keyboard controls are available
+        tiltBtn.style.display = 'none';
+      }
+    }
+    
     function handleTilt(event) {
-      if (!gameStarted || gameOver) return;
+      if (!gameStarted || gameOver || !tiltEnabled) return;
       let gamma = event.gamma || 0;
       let beta = event.beta || 0;
       // Try to handle both portrait and landscape
@@ -843,17 +919,73 @@ function makePegs() {
       // Smooth tilt
       tilt = tiltHistory.reduce((a,b)=>a+b,0) / tiltHistory.length;
     }
-    function requestTiltPermission() {
-      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission().then(function(response) {
-          if (response === 'granted') {
-            window.addEventListener("deviceorientation", handleTilt, true);
-          } else {
-            showTiltMessage('Tilt permission denied.');
-          }
-        }).catch(()=>showTiltMessage('Tilt permission error.'));
+    
+    function enableTiltControl() {
+      const tiltBtn = document.getElementById('tilt-btn');
+      
+      if (!tiltAvailable) {
+        showTiltMessage('Tilt control not available on this device.');
+        return;
+      }
+      
+      if (httpsRequired) {
+        showTiltMessage('Tilt control requires HTTPS. Please access this page over a secure connection.');
+        return;
+      }
+      
+      // Disable button temporarily to prevent multiple clicks
+      tiltBtn.disabled = true;
+      tiltBtn.textContent = 'Requesting...';
+      
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+ requires permission
+        DeviceOrientationEvent.requestPermission()
+          .then(function(response) {
+            if (response === 'granted') {
+              window.addEventListener("deviceorientation", handleTilt, true);
+              tiltEnabled = true;
+              tiltBtn.textContent = 'Tilt: ON';
+              tiltBtn.classList.add('enabled');
+              tiltBtn.classList.remove('disabled');
+              tiltBtn.title = 'Tilt control is active';
+              showTiltMessage('Tilt control enabled! Tilt your device to control the ball.');
+            } else {
+              tiltBtn.textContent = 'Permission Denied';
+              tiltBtn.classList.add('disabled');
+              tiltBtn.classList.remove('enabled');
+              tiltBtn.title = 'Permission was denied for tilt control';
+              showTiltMessage('Tilt permission denied. You can still use arrow keys on desktop or tap to drop balls.');
+            }
+            tiltBtn.disabled = false;
+          })
+          .catch(function(error) {
+            console.error('Device orientation permission error:', error);
+            tiltBtn.textContent = 'Permission Error';
+            tiltBtn.classList.add('disabled');
+            tiltBtn.classList.remove('enabled');
+            tiltBtn.title = 'Error requesting permission for tilt control';
+            showTiltMessage('Error requesting tilt permission. You can still use arrow keys on desktop or tap to drop balls.');
+            tiltBtn.disabled = false;
+          });
       } else {
-        window.addEventListener("deviceorientation", handleTilt, true);
+        // Android or other platforms - no permission required
+        try {
+          window.addEventListener("deviceorientation", handleTilt, true);
+          tiltEnabled = true;
+          tiltBtn.textContent = 'Tilt: ON';
+          tiltBtn.classList.add('enabled');
+          tiltBtn.classList.remove('disabled');
+          tiltBtn.title = 'Tilt control is active';
+          showTiltMessage('Tilt control enabled! Tilt your device to control the ball.');
+        } catch (error) {
+          console.error('Device orientation setup error:', error);
+          tiltBtn.textContent = 'Setup Error';
+          tiltBtn.classList.add('disabled');
+          tiltBtn.classList.remove('enabled');
+          tiltBtn.title = 'Error setting up tilt control';
+          showTiltMessage('Error setting up tilt control. You can still use arrow keys on desktop or tap to drop balls.');
+        }
+        tiltBtn.disabled = false;
       }
     }
     function showTiltMessage(msg) {
@@ -878,19 +1010,6 @@ function makePegs() {
       el.style.display = 'block';
       setTimeout(()=>{ el.style.display = 'none'; }, 3500);
     }
-    // Request permission on iOS, or attach listener directly
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.DeviceOrientationEvent) {
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          showTiltMessage('Tap to enable tilt control.');
-          document.body.addEventListener('click', requestTiltPermission, { once: true });
-        } else {
-          window.addEventListener("deviceorientation", handleTilt, true);
-        }
-      } else {
-        showTiltMessage('Tilt not supported on this device.');
-      }
-    });
     function resize() {
       // Responsive 4K/Retina canvas
       const dpr = window.devicePixelRatio || 1;
