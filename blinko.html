@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +8,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
     html,body {
-      margin:0;padding:0;min-height:100vh;
+      margin:0;padding:0;min-height:100vh;height:100vh;
       background: #111a3f;
       font-family:'Manrope',Arial,sans-serif;
       color:#fff;overflow:hidden;
+      box-sizing:border-box;
     }
     body {
-      /* Dynamic background: animated laser gradient */
       background: repeating-linear-gradient(
         120deg, #22284b 0 12px, #162044 16px 36px, #1f3877 40px 70px, #181a2d 74px 90px
       ),
@@ -24,41 +25,37 @@
       0%{ background-position:0 0,50% 40%;}
       100%{ background-position:120px 200px,50% 55%;}
     }
-
-    /* Overlay Styles */
     #overlay, #gameover-overlay {
       position:fixed;z-index:1000;inset:0;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      background:rgba(10,20,40,0.95);
+      background:rgba(10,20,40,0.97);
       pointer-events:auto;transition:opacity 0.4s cubic-bezier(.46,.03,.52,.96);
       opacity:1;
       overflow:hidden;
+      min-height:100vh;
+      min-width:100vw;
     }
     #overlay.hide, #gameover-overlay.hide { opacity:0;pointer-events:none;}
     .laser-bg {
       position:absolute; z-index:0; inset:0;
-      pointer-events:none;
-      width:100vw;height:100vh;
-      overflow:hidden;
+      pointer-events:none;width:100vw;height:100vh;overflow:hidden;
     }
-    /* Animated Laser Streaks */
     .laser {
-      position:absolute; width:150vw; height:2vw; left:-25vw;
+      position:absolute; width:180vw; height:2vw; left:-40vw;
       background:linear-gradient(90deg,#38b6ff00 0%,#ffe24b 40%,#ff58fa 70%,#38b6ff00 100%);
-      filter:blur(2px) brightness(1.7);
-      opacity:0.42;
+      filter:blur(4px) brightness(1.9);
+      opacity:0.39;
       animation: laserani 6s linear infinite;
     }
-    .laser.l1 { top:20vh; transform:rotate(-6deg);}
-    .laser.l2 { top:40vh; transform:rotate(3deg); animation-delay:1.5s;}
-    .laser.l3 { top:60vh; transform:rotate(-3deg); animation-delay:3s;}
-    .laser.l4 { top:80vh; transform:rotate(5deg); animation-delay:2.2s;}
-    @keyframes laserani { from{left:-25vw;} to{left:0vw;} }
-
+    .laser.l1 { top:16vh; transform:rotate(-8deg);}
+    .laser.l2 { top:32vh; transform:rotate(3deg); animation-delay:1.5s;}
+    .laser.l3 { top:60vh; transform:rotate(-5deg); animation-delay:3s;}
+    .laser.l4 { top:81vh; transform:rotate(7deg); animation-delay:2.2s;}
+    @keyframes laserani { from{left:-40vw;} to{left:0vw;} }
     #logo-entrance {
-      width: clamp(160px, 28vw, 340px);
-      max-height: 20vh;
-      margin-bottom: clamp(1.5vh, 4vw, 5vh);
+      width: clamp(140px, 28vw, 320px);
+      max-height: 19vh;
+      margin-bottom: clamp(1.5vh, 4vw, 3vh);
       animation:pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
       filter: drop-shadow(0 0 32px #38b6ffcc) drop-shadow(0 0 8px #ffe24b);
       z-index:1;
@@ -66,11 +63,10 @@
       background:linear-gradient(90deg,#ffe24b33 60%,#2bb7ff33 100%);
       border-radius:2vw;
     }
-    @keyframes pulse { 0%{transform:scale(1);} 100%{transform:scale(1.05);} }
-
+    @keyframes pulse { 0%{transform:scale(1);} 100%{transform:scale(1.04);} }
     #tap-to-start {
       font-family:'Orbitron','Manrope',Arial,sans-serif;
-      font-size: clamp(1.5em, 5vw, 2.7em);
+      font-size: clamp(1.4em, 5vw, 2.4em);
       text-align:center;
       background:linear-gradient(90deg,#38b6ff 0,#ffe24b 80%,#ff89aa 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -83,10 +79,9 @@
       user-select:none;
     }
     @keyframes blinker { 0%{opacity:1;} 100%{opacity:0.55;} }
-
     #enable-tilt-btn {
       display:none;
-      font-size:clamp(1em,4vw,1.5em);padding:1vw 6vw;margin:2vh auto 0 auto;
+      font-size:clamp(1em,4vw,1.3em);padding:1vw 6vw;margin:2vh auto 0 auto;
       background:linear-gradient(90deg,#38b6ff 0,#ffe24b 100%);
       color:#080c1c;font-family:'Orbitron','Manrope',Arial,sans-serif;
       border:none;border-radius:2em;box-shadow:0 0 24px #ffe24b99,0 2px 8px #38b6ff33;
@@ -118,16 +113,15 @@
       background:linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
       color:#0a1a2f;transform:scale(1.06);
     }
-    /* Canvas Responsive */
     #game-canvas {
       display:block;margin:0 auto;
       background:radial-gradient(ellipse at 50% 35%,#24396a 60%,#ffe24b 140%);
       border-radius:2vw;box-shadow:0 8px 44px #ffe24b44,0 4px 24px #38b6ff44;
-      border:3px solid #ffe24b;outline:none;touch-action:none;z-index:1;
-      max-width:99vw;max-height:93vh;width:100%;aspect-ratio:7/12;height:auto;position:relative;
+      border:3px solid #ffe24b;
+      outline:none;touch-action:none;z-index:1;
+      max-width:99vw;max-height:82vh;width:100%;aspect-ratio:7/10;height:auto;position:relative;
       transition:box-shadow 0.2s;
     }
-    /* Score Bar */
     #bottom-bar {
       position:fixed;bottom:0;left:0;width:100vw;
       background:rgba(15,28,61,0.93);
@@ -189,25 +183,33 @@
     @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
     #slots-row {
       position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-evenly;
-      z-index: 3; pointer-events: none; height: 7vh; min-height: 24px; max-height:50px;
+      z-index: 3; pointer-events: none; height: 12vh; min-height: 46px; max-height:120px;
     }
     .slot-box {
-      width: clamp(26px,5vw,40px); height:100%;background:linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
-      border-radius:0 0 12px 12px;border:2px solid #2bb7ffcc;box-shadow:0 4px 16px #2bb7ff44,0 0 12px #ffe24b33;
-      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;margin:0 2px;
+      height:100%;
+      width: clamp(48px,11vw,98px); /* much wider buckets */
+      font-size:1.3em;
+      background:linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
+      border-radius:0 0 22px 22px;
+      border:2px solid #2bb7ffcc;
+      box-shadow:0 4px 24px #2bb7ff44,0 0 24px #ffe24b33;
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;margin:0 3px;
+      filter:drop-shadow(0 0 8px #ffe24baa);
+      overflow:hidden;
     }
     .slot-value {
-      font-family:'Orbitron','Manrope',Arial,sans-serif;font-size:1em;font-weight:bold;color:#111;
+      font-family:'Orbitron','Manrope',Arial,sans-serif;
+      font-size:1.2em;font-weight:bold;color:#111;
       text-shadow:2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
-      background:none;margin-bottom:6px;user-select:none;text-align:center;width:100%;display:block;letter-spacing:1px;
+      background:none;margin-bottom:10px;user-select:none;text-align:center;width:100%;display:block;letter-spacing:1px;
+      filter:drop-shadow(0 0 3px #ffef40);
     }
     .slot-box.active {
       background:linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
-      box-shadow:0 0 20px #ffe24b99,0 0 12px #ff89aa77;
-      filter:brightness(1.2) drop-shadow(0 0 10px #ffe24b66);
+      box-shadow:0 0 40px #ffe24b99,0 0 24px #ff89aa77;
+      filter:brightness(1.2) drop-shadow(0 0 20px #ffe24b99);
       border-color:#ff89aa;
     }
-    /* Game Over Overlay */
     #gameover-overlay {
       background:rgba(20,40,80,0.98);flex-direction:column;align-items:center;justify-content:center;
       text-align:center;display:flex;opacity:1;z-index:200;transition:opacity 0.7s;
@@ -235,8 +237,8 @@
     @media (max-width: 800px) {
       #logo-entrance { width: 60vw;}
       #game-canvas { max-width: 99vw; width: 99vw; height: 76vw;}
-      #slots-row { height: 3vh; }
-      .slot-box { width: 5vw; }
+      #slots-row { height: 7vh; }
+      .slot-box { width: 10vw; }
     }
   </style>
 </head>
@@ -269,7 +271,7 @@
     <button id="play-again-btn">Play Again</button>
   </div>
   <div style="position:relative;max-width:700px;margin:0 auto;">
-    <canvas id="game-canvas" width="700" height="1200" tabindex="1"></canvas>
+    <canvas id="game-canvas" width="700" height="1000" tabindex="1"></canvas>
     <div id="slots-row"></div>
   </div>
   <div id="bottom-bar">
@@ -288,10 +290,11 @@
     const ctx = canvas.getContext('2d');
     function setCanvasResolution() {
       let maxW = Math.min(window.innerWidth * 0.98, 700);
-      let maxH = Math.min(window.innerHeight * 0.93, maxW * 12/7);
-      if (maxH > window.innerHeight * 0.93) {
-        maxH = window.innerHeight * 0.93;
-        maxW = maxH * 7/12;
+      let aspect = 10/7;
+      let maxH = Math.min(window.innerHeight * 0.82, maxW * aspect);
+      if (maxH > window.innerHeight * 0.82) {
+        maxH = window.innerHeight * 0.82;
+        maxW = maxH / aspect;
       }
       const dpr = window.devicePixelRatio || 1;
       canvas.width = maxW * dpr;
@@ -317,10 +320,10 @@
     let gameStarted = false, gameOver = false, ballsThisGame = 7;
     const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
     const slotColors = ["#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"];
-    let boardPadding = 44, slotsHeight = 72, ROWS = 14;
+    let boardPadding = 44, slotsHeight = 120, ROWS = 14;
     const COLS = slotValues.length;
     let PEG_GAP = 0, PEG_Y_START = 0;
-    const BALL_RADIUS = 20, PEG_RADIUS = 12, BALL_START_Y = 28, BALL_DROP_DELAY = 900;
+    const BALL_RADIUS = 20, PEG_RADIUS = 12, BALL_START_Y = 50, BALL_DROP_DELAY = 900;
     let pegs = [], balls = [], confetti = [];
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
     let specialPegEvery = 3, tilt = 0, tiltRaw = 0, tiltHistory = [], TILT_HISTORY_SIZE = 6;
@@ -353,7 +356,7 @@
     function resetGame() {
       score = 0; ballsLeft = ballsThisGame; multiplier = 2; comboActive = false; ballInPlay = false;
       balls = []; confetti = []; gameOver = false;
-      makePegs(); updateUI(); drawSlots(); setTimeout(dropBall, 900);
+      makePegs(); updateUI(); drawSlots(); setTimeout(()=>dropBall(), 600);
     }
     function updateUI() {
       document.getElementById('score-val').textContent = score;
