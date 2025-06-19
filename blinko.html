@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>BenBlinko: Play & Tilt!</title>
+  <title>BenBlinko: Combo Edition</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -34,46 +34,63 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 40px;
-      margin: 18px 0 0 0;
+      gap: 38px;
+      margin: 20px 0 0 0;
       z-index: 4;
-      font-size: 1.25em;
+      font-size: 1.21em;
       pointer-events: none;
       user-select: none;
     }
-    #score-box, #highscore-box {
-      background: rgba(34, 53, 88, 0.75);
-      padding: 14px 36px;
-      border-radius: 20px;
-      border: 2.5px solid #7fd7f8;
+    #score-box, #highscore-box, #ball-box, #multiplier-box {
+      background: rgba(34, 53, 88, 0.78);
+      padding: 14px 30px;
+      border-radius: 19px;
+      border: 2px solid #7fd7f8;
       font-weight: bold;
       color: #fff;
       text-shadow: 0 0 10px #b7aaf7, 0 0 4px #000;
-      letter-spacing: 1.3px;
-      box-shadow: 0 0 18px #7fd7f899 inset, 0 2px 10px #0002;
+      letter-spacing: 1.1px;
+      box-shadow: 0 0 12px #7fd7f899 inset, 0 2px 10px #0002;
       display: flex;
       align-items: center;
-      gap: 13px;
-      font-size: 1.23em;
+      gap: 10px;
+      font-size: 1.17em;
       backdrop-filter: blur(3px);
+      min-width: 65px;
+      justify-content: center;
     }
     .score-icon {
-      font-size: 1.45em;
+      font-size: 1.18em;
       filter: drop-shadow(0 0 8px #b7aaf7);
       margin-right: 3px;
     }
+    #multiplier-box {
+      background: linear-gradient(90deg,#ffe24b88 40%,#ff89aa88 100%);
+      color: #222;
+      border: 2.5px solid #ffe24b;
+      box-shadow: 0 0 16px #ffe24b66, 0 0 2px #fa43a7;
+      font-weight: bold;
+      font-size: 1.18em;
+      display: none;
+      animation: pulse 0.7s infinite alternate;
+    }
+    #multiplier-box.active { display: flex; }
+    @keyframes pulse {
+      from { box-shadow: 0 0 8px #ffe24b77;}
+      to { box-shadow: 0 0 28px #ffe24bcc;}
+    }
     #help-btn {
-      margin-left: 32px;
-      padding: 12px 26px;
-      border-radius: 13px;
+      margin-left: 22px;
+      padding: 11px 20px;
+      border-radius: 10px;
       border: 2.5px solid #7fd7f8;
       background: rgba(33, 48, 82, 0.94);
       color: #7fd7f8;
-      font-size: 1.22em;
+      font-size: 1.18em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      box-shadow: 0 2px 18px #7fd7f866;
+      box-shadow: 0 2px 12px #7fd7f855;
       pointer-events: auto;
       transition: 0.13s;
       backdrop-filter: blur(2px);
@@ -95,8 +112,8 @@
       margin-top: 10px;
     }
     #debug {
-      font-size: 1.14em;
-      margin-top: 2px;
+      font-size: 1.08em;
+      margin-top: 3px;
       color: #7fd7f8;
       text-shadow: 0 0 8px #7fd7f8, 0 0 2px #111;
       text-align: center;
@@ -127,7 +144,7 @@
       animation: popIn 0.45s cubic-bezier(.32,1.56,.53,.92);
     }
     #instructions h2 {
-      font-size: 2.34em;
+      font-size: 2.2em;
       margin-bottom: 0.4em;
       color: #7fd7f8;
       text-shadow: 0 0 34px #7fd7f8;
@@ -139,9 +156,18 @@
       padding-left: 22px;
       max-width: 460px;
       color: #e7fafd;
-      font-size: 1.23em;
+      font-size: 1.21em;
       line-height: 1.8;
       text-shadow: 0 0 6px #7fd7f822, 0 0 2px #111;
+    }
+    #instructions .peg-demo {
+      display: inline-block;
+      width: 24px; height:24px;
+      border-radius: 50%;
+      background: #ffe24b;
+      box-shadow: 0 0 18px #ffe24bcc, 0 0 8px #ff89aa;
+      vertical-align: middle;
+      margin:0 2px 0 0;
     }
     #instructions button {
       margin-top: 27px;
@@ -172,7 +198,7 @@
       animation: fadeIn 0.7s;
     }
     #welcome h1 {
-      font-size: 3.3em;
+      font-size: 3.2em;
       margin: 0.5em;
       text-shadow: 0 0 38px #7fd7f8, 0 0 65px #b7aaf7;
       letter-spacing: 3px;
@@ -180,7 +206,7 @@
       font-family: Orbitron, Manrope, Arial, sans-serif;
     }
     #welcome p {
-      font-size: 1.38em;
+      font-size: 1.3em;
       margin: 0.3em 0 1em;
       color: #e7fafd;
       text-shadow: 0 0 10px #111a;
@@ -189,9 +215,9 @@
     }
     #start-btn {
       padding: 20px 44px;
-      font-size: 1.55em;
+      font-size: 1.43em;
       border: none;
-      border-radius: 24px;
+      border-radius: 22px;
       background: linear-gradient(90deg, #7fd7f8 40%, #b7aaf7 100%);
       color: #1d2438;
       cursor: pointer;
@@ -205,16 +231,73 @@
       color: #000;
       transform: scale(1.07);
     }
+    #gameover-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(23,29,55,0.97);
+      z-index: 20;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      animation: fadeIn 0.6s;
+    }
+    #gameover-modal.visible { display: flex; }
+    #gameover-content {
+      background: rgba(32,38,56,0.99);
+      border-radius: 34px;
+      padding: 52px 36px 36px 36px;
+      box-shadow: 0 10px 48px #7fd7f8cc;
+      border: 3.5px solid #7fd7f8;
+      max-width: 95vw;
+      animation: popIn 0.5s cubic-bezier(.32,1.56,.53,.92);
+      text-align: center;
+    }
+    #gameover-content h2 {
+      color: #ffe24b;
+      font-size: 2.3em;
+      margin-bottom:0.2em;
+      text-shadow: 0 0 22px #ffe24b, 0 0 10px #fff3;
+    }
+    #gameover-content .final-score {
+      font-size: 2.1em;
+      color: #fff;
+      margin: 0.6em 0 0.2em 0;
+      text-shadow: 0 0 24px #7fd7f8b0;
+    }
+    #gameover-content .highscore {
+      font-size: 1.19em;
+      margin-bottom: 1em;
+      color: #7fd7f8;
+      text-shadow: 0 0 12px #b7aaf7;
+    }
+    #gameover-content button {
+      margin-top: 18px;
+      font-size: 1.22em;
+      padding: 13px 42px;
+      border-radius: 14px;
+      border: none;
+      background: linear-gradient(90deg,#7fd7f8,#ffe24b);
+      color: #1d2438;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 12px #7fd7f8c9;
+      transition: 0.12s;
+    }
+    #gameover-content button:hover {
+      background: #ffe24b;
+      color: #222;
+    }
     @keyframes fadeIn {
       from { opacity:0 }
       to { opacity:1 }
     }
     @keyframes popIn {
-      0%   { transform: scale(0.9);}
+      0%   { transform: scale(0.92);}
       100% { transform: scale(1);}
     }
     @media (max-width: 700px) {
-      #instructions-content { font-size: 1em; }
+      #instructions-content, #gameover-content { font-size: 1em; }
       #welcome h1 { font-size: 2em;}
     }
   </style>
@@ -225,6 +308,8 @@
     <div id="ui-bar">
       <span id="score-box"><span class="score-icon">🏆</span><span id="score-val">0</span></span>
       <span id="highscore-box"><span class="score-icon">⭐</span><span id="highscore-val">0</span></span>
+      <span id="ball-box"><span class="score-icon">🔴</span><span id="ball-val">1/5</span></span>
+      <span id="multiplier-box"><span id="multi-x">x2</span> COMBO!</span>
       <button id="help-btn" style="pointer-events:auto;">❔</button>
     </div>
     <canvas id="game-canvas"></canvas>
@@ -236,7 +321,8 @@
       <ul>
         <li>🎮 <b>Tilt</b> your device (or use <b>←/→ arrow keys</b>) to steer the ball.</li>
         <li>✨ <b>Bounce</b> off pegs and aim for the <b>center slot</b> for the best prize!</li>
-        <li>🏆 <b>Score</b> and <b>High Score</b> are shown above.</li>
+        <li>🌟 <span class="peg-demo"></span> <b>Combo Pegs:</b> Hit a colored peg for a score multiplier on that ball!</li>
+        <li>🔴 <b>5 balls per game</b>. Try to beat your high score!</li>
       </ul>
       <button id="close-instructions">Back to Game</button>
     </div>
@@ -246,10 +332,19 @@
     <p>
       Tilt your device (or use arrow keys) to steer the ball.<br>
       Bounce off pegs and land in a slot for points!<br>
+      Hit the colored pegs for a combo!<br>
       Try to beat your high score!
     </p>
     <button id="start-btn">Start Game</button>
     <button id="help-btn-welcome" style="margin-top:20px;">How to Play</button>
+  </div>
+  <div id="gameover-modal">
+    <div id="gameover-content">
+      <h2>Game Over!</h2>
+      <div class="final-score">Score: <span id="final-score-val">0</span></div>
+      <div class="highscore">High Score: <span id="highscore-final">0</span></div>
+      <button id="play-again-btn">Play Again</button>
+    </div>
   </div>
   <script>
     // Animated gradient BG
@@ -301,10 +396,11 @@
 
     // Game elements scale
     let tilt = 0, tiltReady = false;
-    let score = 0;
-    let highscore = parseInt(localStorage.getItem('blinkoHighScore')||'0')||0;
+    let score = 0, highscore = 0, ballsLeft = 5, ballNum = 1;
+    let comboActive = false, comboMultiplier = 1, comboPegIdxs = [];
     document.getElementById('score-val').textContent = score;
     document.getElementById('highscore-val').textContent = highscore;
+    document.getElementById('ball-val').textContent = `${ballNum}/5`;
 
     // Board setup (relative to canvas)
     function getBoardSpec() {
@@ -315,7 +411,6 @@
       const slotCount = 7;
       const pegRows = 10;
       const pegCols = 10;
-      // challenge: smaller pegs and balls, center slot narrower
       const pegRadius = boardW*0.012;
       const ballRadius = boardW*0.023;
       const slotH = boardH*0.11;
@@ -333,7 +428,7 @@
       };
     }
     function getSlots(spec) {
-      // Center slot is slightly narrower for extra challenge
+      // Center slot is slightly narrower for challenge
       const widths = [1,1,1,0.7,1,1,1];
       const total = widths.reduce((a,b) => a+b,0);
       let pos = spec.x;
@@ -359,7 +454,7 @@
           let xOffset = (row%2 ? (spec.w/spec.pegCols)/2 : 0);
           let px = spec.x + col*(spec.w/spec.pegCols) + xOffset;
           let py = spec.y + row*((spec.h-spec.slotH*1.15)/spec.pegRows) + spec.pegRadius*1.7;
-          pegs.push({x: px, y: py, sparkle: 0});
+          pegs.push({x: px, y: py, sparkle: 0, color: "#fff", combo: false});
         }
       }
       return pegs;
@@ -371,6 +466,35 @@
 
     // For stuck detection / nudge
     let lastX = 0, xSameCount = 0;
+
+    function randomComboPegs() {
+      // Pick 2–4 random pegs as combo pegs
+      let count = 2 + Math.floor(Math.random()*3);
+      let idxs = [];
+      while (idxs.length < count) {
+        let idx = Math.floor(Math.random()*pegs.length);
+        if (!idxs.includes(idx) && !isPegEdge(idx)) idxs.push(idx);
+      }
+      comboPegIdxs = idxs;
+      comboMultiplier = [2,2,3,4][count-2];
+      comboActive = false;
+      pegs.forEach((p,i) => p.combo = idxs.includes(i));
+      updateMultiplierUI();
+    }
+    function isPegEdge(idx) {
+      // Prevent edge pegs from being combo (hard to hit)
+      let p = pegs[idx];
+      return p.x < spec.x + spec.w*0.13 || p.x > spec.x + spec.w*0.87;
+    }
+    function updateMultiplierUI() {
+      let mb = document.getElementById('multiplier-box');
+      if (comboActive) {
+        mb.classList.add('active');
+        document.getElementById('multi-x').textContent = `x${comboMultiplier}`;
+      } else {
+        mb.classList.remove('active');
+      }
+    }
 
     function spawnBall() {
       spec = getBoardSpec();
@@ -390,13 +514,15 @@
       ballTrail = [];
       lastX = ball.x;
       xSameCount = 0;
+      randomComboPegs();
+      document.getElementById('ball-val').textContent = `${ballNum}/5`;
     }
 
     function update() {
       if (!ball || ball.stopped) return;
       // Harder: Faster gravity, less control
       ball.vy += spec.h*0.00027;
-      ball.vx += tilt * 0.009; // less responsive
+      ball.vx += tilt * 0.009;
       ball.x += ball.vx;
       ball.y += ball.vy;
       ball.hue = (ball.hue + 2) % 360;
@@ -415,8 +541,8 @@
         ball.vx = -Math.abs(ball.vx)*0.8 - 1.4*Math.random()-0.5;
       }
 
-      // Peg collisions with extra nudge, more sparkle
-      pegs.forEach(p => {
+      // Peg collisions with extra nudge
+      pegs.forEach((p, i) => {
         const dx = ball.x - p.x;
         const dy = ball.y - p.y;
         const dist = Math.hypot(dx, dy);
@@ -432,6 +558,11 @@
           if (ball.x < spec.x + spec.w*0.16) ball.vx += 0.8 + Math.random()*0.4;
           if (ball.x > spec.x + spec.w*0.84) ball.vx -= 0.8 + Math.random()*0.4;
           p.sparkle = 1.0;
+          // Combo peg hit
+          if (p.combo && !comboActive) {
+            comboActive = true;
+            updateMultiplierUI();
+          }
         }
         p.sparkle *= 0.93;
       });
@@ -452,7 +583,8 @@
         const idx = slots.findIndex(s => ball.x > s.x && ball.x < s.x + s.w);
         if (idx !== -1) {
           ball.x = slots[idx].x + slots[idx].w / 2;
-          score += slots[idx].reward;
+          let addScore = slots[idx].reward * (comboActive ? comboMultiplier : 1);
+          score += addScore;
           document.getElementById('score-val').textContent = score;
           if (score > highscore) {
             highscore = score;
@@ -472,7 +604,16 @@
             });
           }
         }
-        setTimeout(spawnBall, 1100);
+        setTimeout(() => {
+          if (ballNum < 5) {
+            ballNum++;
+            comboActive = false;
+            updateMultiplierUI();
+            spawnBall();
+          } else {
+            showGameOver();
+          }
+        }, 1100);
       }
 
       // Confetti physics
@@ -513,36 +654,26 @@
         ctx.restore();
       });
 
-      // Draw pegs (sparkle animation)
-      pegs.forEach(p => {
+      // Draw pegs (combo pegs colored & pulsing, others white)
+      pegs.forEach((p, i) => {
         ctx.save();
-        if (p.sparkle > 0.05) {
-          ctx.shadowColor = "#fff";
-          ctx.shadowBlur = 26*p.sparkle;
-          ctx.globalAlpha = 0.5 + 0.5*p.sparkle;
-          ctx.fillStyle = `rgba(255,255,255,${p.sparkle})`;
-        } else {
-          ctx.shadowBlur = 0;
-          ctx.globalAlpha = 0.85;
-          ctx.fillStyle = '#fff';
+        let color = "#fff";
+        let radius = spec.pegRadius;
+        let alpha = 0.95;
+        if (p.combo) {
+          color = "#ffe24b";
+          radius = spec.pegRadius * (1.19 + 0.05*Math.sin(performance.now()/120 + i));
+          alpha = 0.95 + 0.05 * Math.abs(Math.sin(performance.now()/160 + i));
         }
         ctx.beginPath();
-        ctx.arc(p.x, p.y, spec.pegRadius, 0, Math.PI*2);
+        ctx.arc(p.x, p.y, radius, 0, Math.PI*2);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = p.combo ? 23 : 11;
+        ctx.globalAlpha = alpha * (0.5 + 0.5*p.sparkle);
+        ctx.fillStyle = color;
         ctx.fill();
-        ctx.globalAlpha = 1;
-        // sparkle lines
-        if (p.sparkle > 0.2) {
-          ctx.strokeStyle = "#b7aaf7";
-          ctx.lineWidth = 1.2+2.1*p.sparkle;
-          for(let j=0;j<5;j++){
-            ctx.beginPath();
-            let a = Math.PI*2*j/5 + performance.now()/350;
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p.x + Math.cos(a)*spec.pegRadius*2.7, p.y + Math.sin(a)*spec.pegRadius*2.7);
-            ctx.stroke();
-          }
-        }
         ctx.restore();
+        p.sparkle *= 0.93;
       });
 
       // Ball trail (soft, colored)
@@ -609,16 +740,22 @@
     function onTilt(e) { tilt = e.gamma || 0; }
 
     // Start
-    document.getElementById('start-btn').onclick = () => {
+    function gameStart() {
       document.getElementById('welcome').style.display = 'none';
+      document.getElementById('gameover-modal').classList.remove('visible');
       document.getElementById('game-container').style.display = 'flex';
       resizeCanvas();
-      spawnBall();
-      score = 0;
+      score = 0; ballNum = 1; ballsLeft = 5;
+      comboActive = false;
+      updateMultiplierUI();
       document.getElementById('score-val').textContent = score;
+      document.getElementById('ball-val').textContent = `${ballNum}/5`;
+      document.getElementById('highscore-val').textContent = localStorage.getItem('blinkoHighScore')||0;
+      spawnBall();
       initTilt();
       requestAnimationFrame(loop);
-    };
+    }
+    document.getElementById('start-btn').onclick = gameStart;
 
     // Help/instructions modal
     function showInstructions() { document.getElementById('instructions').classList.add('visible'); }
@@ -627,11 +764,22 @@
     document.getElementById('help-btn-welcome').onclick = showInstructions;
     document.getElementById('close-instructions').onclick = hideInstructions;
 
+    // Game Over modal
+    function showGameOver() {
+      document.getElementById('final-score-val').textContent = score;
+      document.getElementById('highscore-final').textContent = localStorage.getItem('blinkoHighScore')||0;
+      document.getElementById('gameover-modal').classList.add('visible');
+    }
+    document.getElementById('play-again-btn').onclick = gameStart;
+
     // Keyboard for desktop
     window.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft') tilt -= 1.1;
       if (e.key === 'ArrowRight') tilt += 1.1;
-      if (e.key === 'Escape') hideInstructions();
+      if (e.key === 'Escape') {
+        hideInstructions();
+        document.getElementById('gameover-modal').classList.remove('visible');
+      }
     });
 
     // Highscore on reload
