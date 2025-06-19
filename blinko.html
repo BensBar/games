@@ -11,7 +11,7 @@
       padding: 0;
       height: 100%;
       width: 100%;
-      background: #0a0a17;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
       overflow: hidden;
       color: #fff;
@@ -34,7 +34,7 @@
       gap: 32px;
       margin: 16px 0 4px 0;
       z-index: 4;
-      text-shadow: 0 2px 18px #0ff8, 0 0 2px #333;
+      text-shadow: 0 2px 18px #87ceeb88, 0 0 2px #333;
       font-size: 1.2em;
       pointer-events: none;
       user-select: none;
@@ -43,38 +43,38 @@
       background: rgba(0,0,0,0.35);
       padding: 7px 18px;
       border-radius: 10px;
-      border: 1.5px solid #17f7d1;
+      border: 1.5px solid #87ceeb;
       font-weight: bold;
-      color: #17f7d1;
-      text-shadow: 0 0 10px #17f7d1, 0 0 4px #000;
+      color: #b8d4f0;
+      text-shadow: 0 0 10px #87ceeb, 0 0 4px #000;
       letter-spacing: 0.5px;
     }
     #help-btn {
       margin-left: 16px;
       padding: 6px 16px;
       border-radius: 8px;
-      border: 1px solid #00fff0;
+      border: 1px solid #87ceeb;
       background: #15151e;
-      color: #00fff0;
+      color: #87ceeb;
       font-size: 1em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
-      box-shadow: 0 2px 8px #00fff04d;
+      box-shadow: 0 2px 8px #87ceeb4d;
       pointer-events: auto;
       transition: 0.13s;
     }
     #help-btn:hover {
-      background: #00fff0;
+      background: #87ceeb;
       color: #15151e;
-      border-color: #17f7d1;
+      border-color: #b8d4f0;
     }
     #game-canvas {
       display: block;
-      background: #151528;
-      border: 3px solid #17f7d1;
+      background: linear-gradient(135deg, #2a3a5a 0%, #1e2a44 50%, #1a2238 100%);
+      border: 3px solid #87ceeb;
       border-radius: 30px;
-      box-shadow: 0 0 80px #00fff088, 0 0 24px #110b22;
+      box-shadow: 0 0 40px #87ceeb44, 0 0 15px #203040;
       margin: auto;
       z-index: 2;
       /* Size will be set by JS */
@@ -82,8 +82,8 @@
     #debug {
       font-size: 1.07em;
       margin-top: 2px;
-      color: #0ff8;
-      text-shadow: 0 0 8px #0ff5, 0 0 2px #111;
+      color: #b8d4f0;
+      text-shadow: 0 0 8px #87ceeb55, 0 0 2px #111;
       text-align: center;
       width: 100vw;
     }
@@ -104,15 +104,15 @@
       background: rgba(25,32,56,0.96);
       border-radius: 24px;
       padding: 32px 28px 20px 28px;
-      box-shadow: 0 8px 40px #17f7d199;
-      border: 2.5px solid #17f7d1;
+      box-shadow: 0 8px 40px #87ceeb99;
+      border: 2.5px solid #87ceeb;
       max-width: 95vw;
     }
     #instructions h2 {
       font-size: 2em;
       margin-bottom: 0.3em;
-      color: #17f7d1;
-      text-shadow: 0 0 22px #0ff;
+      color: #87ceeb;
+      text-shadow: 0 0 22px #87ceeb;
       letter-spacing: 1px;
     }
     #instructions ul {
@@ -123,7 +123,7 @@
       color: #fff;
       font-size: 1.12em;
       line-height: 1.7;
-      text-shadow: 0 0 6px #0ff2, 0 0 2px #111;
+      text-shadow: 0 0 6px #87ceeb22, 0 0 2px #111;
     }
     #instructions button {
       margin-top: 12px;
@@ -131,15 +131,15 @@
       padding: 8px 24px;
       border-radius: 8px;
       border: none;
-      background: linear-gradient(90deg,#17f7d1,#00fff0);
+      background: linear-gradient(90deg,#87ceeb,#b8d4f0);
       color: #15151e;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 2px 7px #17f7d1c9;
+      box-shadow: 0 2px 7px #87ceeb99;
       transition: 0.12s;
     }
     #instructions button:hover {
-      background: #00fff0;
+      background: #b8d4f0;
       color: #222;
     }
     #welcome {
@@ -155,9 +155,9 @@
     #welcome h1 {
       font-size: 3em;
       margin: 0.5em;
-      text-shadow: 0 0 34px #17f7d1, 0 0 60px #0ffb;
+      text-shadow: 0 0 34px #87ceeb, 0 0 60px #b8d4f0bb;
       letter-spacing: 3px;
-      color: #00fff0;
+      color: #b8d4f0;
     }
     #welcome p {
       font-size: 1.25em;
@@ -171,16 +171,16 @@
       font-size: 1.4em;
       border: none;
       border-radius: 16px;
-      background: linear-gradient(90deg, #17f7d1 40%, #00fff0 100%);
+      background: linear-gradient(90deg, #87ceeb 40%, #b8d4f0 100%);
       color: #15151e;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 8px 32px #00fff0bb, 0 2px 8px #0ff6;
+      box-shadow: 0 8px 32px #b8d4f0bb, 0 2px 8px #87ceeb66;
       transition: 0.15s;
       margin-top: 1em;
     }
     #start-btn:hover {
-      background: linear-gradient(90deg, #00fff0, #17f7d1);
+      background: linear-gradient(90deg, #b8d4f0, #87ceeb);
       color: #000;
       transform: scale(1.07);
     }
@@ -223,12 +223,22 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     function resizeCanvas() {
-      // 9:16 aspect ratio, fill screen
+      // Better aspect ratio and scaling for more responsive experience
       const ww = window.innerWidth;
       const wh = window.innerHeight - 20; // allow for score bar
       let w = ww, h = wh;
-      if (w / h > 9/16) w = h * 9/16;
-      else h = w * 16/9;
+      
+      // Optimize aspect ratio for better screen usage
+      if (w / h > 0.7) w = h * 0.7;
+      else h = w / 0.7;
+      
+      // Ensure minimum playable size
+      const minSize = Math.min(ww, wh);
+      if (w < minSize * 0.9) {
+        w = minSize * 0.9;
+        h = w / 0.7;
+      }
+      
       canvas.width = w;
       canvas.height = h;
       canvas.style.width = w + 'px';
@@ -247,16 +257,16 @@
     // Board setup (relative to canvas)
     function getBoardSpec() {
       const w = canvas.width, h = canvas.height;
-      // Board area
-      const boardMarginX = w*0.04, boardMarginY = h*0.04;
+      // Board area - use more of the screen
+      const boardMarginX = w*0.025, boardMarginY = h*0.035;
       const boardW = w - 2*boardMarginX;
-      const boardH = h - 2*boardMarginY - h*0.10;
+      const boardH = h - 2*boardMarginY - h*0.08;
       const slotCount = 7;
       const pegRows = 10;
       const pegCols = 10;
-      const pegRadius = boardW*0.021;
-      const ballRadius = boardW*0.038;
-      const slotH = boardH*0.09;
+      const pegRadius = boardW*0.019;
+      const ballRadius = boardW*0.034;
+      const slotH = boardH*0.08;
       return {
         x: boardMarginX,
         y: boardMarginY,
@@ -277,7 +287,7 @@
         x: spec.x + i*(spec.w/spec.slotCount),
         w: spec.w/spec.slotCount,
         reward: [10,30,100,250,100,30,10][i],
-        color: `hsl(${180+(i-3)*28}, 99%, 60%)`
+        color: `hsl(${210+(i-3)*15}, 65%, 55%)`
       }));
     }
     function getPegs(spec) {
@@ -347,8 +357,12 @@
           const overlap = ball.r + spec.pegRadius - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          ball.vx = Math.cos(angle + Math.PI/2) * 0.62 + (Math.random()-0.5)*0.16;
-          ball.vy *= 0.88 + (Math.random()-0.5)*0.09;
+          // Enhanced physics with more randomness and bounce
+          ball.vx = Math.cos(angle + Math.PI/2) * 0.75 + (Math.random()-0.5)*0.25;
+          ball.vy *= 0.85 + (Math.random()-0.5)*0.12;
+          // Add small random nudge to prevent settling
+          ball.vx += (Math.random()-0.5)*0.08;
+          ball.vy += (Math.random()-0.5)*0.06;
           p.sparkle = 1.0;
         }
         p.sparkle *= 0.93;
@@ -375,7 +389,7 @@
               y: spec.y + spec.h - spec.slotH,
               vx: Math.cos(i/21*2*Math.PI)* (1.2+Math.random()*1.7) * (spec.w/320),
               vy: -2.2 - Math.random()*3 * (spec.h/540),
-              color: `hsl(${180+(idx-3)*28+Math.random()*60},99%,70%)`,
+              color: `hsl(${210+(idx-3)*15+Math.random()*40},70%,65%)`,
               t: 0
             });
           }
@@ -402,9 +416,9 @@
       slots.forEach((s, i) => {
         ctx.save();
         let pulse = (ball && ball.stopped && ball.slotIdx === i) ? (1+Math.sin(performance.now()/80))/2 : 0;
-        ctx.fillStyle = `hsl(${180+(i-3)*28},99%,${62+18*pulse}%)`;
+        ctx.fillStyle = `hsl(${210+(i-3)*15},65%,${55+12*pulse}%)`;
         ctx.shadowColor = s.color;
-        ctx.shadowBlur = 38*pulse;
+        ctx.shadowBlur = 20*pulse;
         ctx.fillRect(s.x, spec.y + spec.h - spec.slotH, s.w, spec.slotH);
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 0.22;
@@ -412,11 +426,11 @@
         ctx.fillRect(s.x, spec.y + spec.h - spec.slotH - 8, s.w, 8);
         ctx.globalAlpha = 1;
         ctx.font = `bold ${Math.round(spec.slotH*0.36)}px Orbitron, monospace`;
-        ctx.fillStyle = '#1affff';
+        ctx.fillStyle = '#cce6ff';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.shadowColor = s.color;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 8;
         ctx.fillText(s.reward, s.x + s.w / 2, spec.y + spec.h - spec.slotH/2);
         ctx.restore();
       });
@@ -425,12 +439,13 @@
       pegs.forEach(p => {
         ctx.save();
         if (p.sparkle > 0.05) {
-          ctx.shadowColor = "#0ff";
-          ctx.shadowBlur = 22*p.sparkle;
-          ctx.fillStyle = `rgba(36,255,255,${p.sparkle})`;
+          ctx.shadowColor = "#87ceeb";
+          ctx.shadowBlur = 15*p.sparkle;
+          ctx.fillStyle = `rgba(200,230,255,${0.8+0.2*p.sparkle})`;
         } else {
-          ctx.shadowBlur = 0;
-          ctx.fillStyle = '#18ffe6';
+          ctx.shadowColor = "#b8d4f0";
+          ctx.shadowBlur = 4;
+          ctx.fillStyle = '#e6f2ff';
         }
         ctx.beginPath();
         ctx.arc(p.x, p.y, spec.pegRadius, 0, Math.PI*2);
@@ -438,29 +453,29 @@
         ctx.restore();
       });
 
-      // Ball trail (neon)
+      // Ball trail (soft)
       for (let i=ballTrail.length-1; i>0; i--) {
         let t = i/ballTrail.length;
         ctx.save();
         ctx.beginPath();
         ctx.arc(ballTrail[i].x, ballTrail[i].y, ball.r*(0.83+0.26*t), 0, Math.PI*2);
         ctx.globalAlpha = 0.10 + 0.13*t;
-        ctx.fillStyle = `hsl(${ballTrail[i].hue},100%,${60+10*t}%)`;
-        ctx.shadowColor = "#14fff9";
-        ctx.shadowBlur = 22*t;
+        ctx.fillStyle = `hsl(${ballTrail[i].hue},75%,${55+15*t}%)`;
+        ctx.shadowColor = "#87ceeb";
+        ctx.shadowBlur = 12*t;
         ctx.fill();
         ctx.restore();
       }
 
-      // Draw ball (neon)
+      // Draw ball (colorful but softer)
       if (ball) {
         ctx.save();
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-        ctx.fillStyle = `hsl(${ball.hue},100%,70%)`;
-        ctx.shadowColor = '#00fff0';
-        ctx.shadowBlur = 40;
-        ctx.globalAlpha = 0.97;
+        ctx.fillStyle = `hsl(${ball.hue},80%,65%)`;
+        ctx.shadowColor = '#87ceeb';
+        ctx.shadowBlur = 20;
+        ctx.globalAlpha = 0.95;
         ctx.fill();
         ctx.restore();
       }
