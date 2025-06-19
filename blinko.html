@@ -43,6 +43,7 @@
       filter: drop-shadow(0 2px 16px #7fd7f8cc);
       object-fit: contain;
       display: block;
+      animation: logoPulse 3s ease-in-out infinite;
     }
     #score-bar {
       display: flex;
@@ -92,10 +93,10 @@
       box-shadow: 0 0 18px #ffe24b66, 0 0 8px #ff89aa44;
     }
     #multiplier-box.inactive {
-      background: rgba(255,255,255,0.73);
-      color: #bbb;
-      border: 3px solid #7fd7f8;
-      opacity: 0.8;
+      background: rgba(200,200,200,0.9);
+      color: #333;
+      border: 3px solid #5a6c85;
+      opacity: 0.75;
       box-shadow: none;
     }
     #multiplier-box .bonus-label {
@@ -109,8 +110,16 @@
       color: #a97f00;
     }
     #multiplier-box .bonus-label.inactive {
-      color: #bbb;
-      opacity: 0.65;
+      color: #444;
+      opacity: 0.8;
+    }
+    /* Shared modern button hover effect */
+    .btn-hover, #help-btn, #instructions .modal-btn, #instructions .close-x, #gameover-content button {
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .btn-hover:hover, #help-btn:hover, #instructions .modal-btn:hover, #gameover-content button:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(127, 215, 248, 0.4), 0 4px 12px rgba(255, 226, 75, 0.3);
     }
     #help-btn {
       margin-left: 12px;
@@ -121,10 +130,9 @@
       color: #7fd7f8;
       font-size: 1.25em;
       cursor: pointer;
-      font-family: inherit;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
       font-weight: bold;
       box-shadow: 0 2px 14px #7fd7f855;
-      transition: 0.13s;
       backdrop-filter: blur(1px);
       animation: pulseBtn 1.2s infinite alternate;
     }
@@ -132,11 +140,26 @@
       background: #7fd7f8;
       color: #1d2438;
       border-color: #b7aaf7;
-      transform: scale(1.08);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(127, 215, 248, 0.4), 0 4px 12px rgba(255, 226, 75, 0.3);
     }
     @keyframes pulseBtn {
       from { box-shadow: 0 0 9px #7fd7f888;}
       to { box-shadow: 0 0 18px #ffe24b66;}
+    }
+    /* Enhanced animated class for score/multiplier bounce effect */
+    .animated {
+      animation: bounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    @keyframes bounce {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    /* Gentle pulse animation for logo */
+    @keyframes logoPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
     #game-container {
       box-sizing: border-box;
@@ -267,7 +290,8 @@
     #instructions .modal-btn:hover {
       background: linear-gradient(90deg, #ffe24b, #7fd7f8);
       color: #000;
-      transform: scale(1.05);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(127, 215, 248, 0.4), 0 4px 12px rgba(255, 226, 75, 0.3);
     }
     #instructions .credit {
       margin-top: 18px;
@@ -320,19 +344,21 @@
       font-size: 1.32em;
       margin-bottom:0.2em;
       text-shadow: 0 0 16px #ffe24b, 0 0 6px #fff3;
-      font-family: Orbitron, Manrope, Arial, sans-serif;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
     }
     #gameover-content .final-score {
       font-size: 1.23em;
       color: #fff;
       margin: 0.4em 0 0.1em 0;
       text-shadow: 0 0 14px #7fd7f8b0;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
     }
     #gameover-content .highscore {
       font-size: 1.09em;
       margin-bottom: 1em;
       color: #7fd7f8;
       text-shadow: 0 0 12px #b7aaf7;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
     }
     #gameover-content button {
       margin-top: 11px;
@@ -350,6 +376,8 @@
     #gameover-content button:hover {
       background: #ffe24b;
       color: #222;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(127, 215, 248, 0.4), 0 4px 12px rgba(255, 226, 75, 0.3);
     }
     @keyframes fadeIn {
       from { opacity:0 }
@@ -360,13 +388,27 @@
       100% { transform: scale(1);}
     }
     @media (max-width: 800px) {
-      #top-bar { min-height: 80px; height: 80px; gap: 10px;}
+      #top-bar { min-height: 80px; height: 80px; gap: 10px; padding: 0 10px;}
       #logo-img { height: 48px; padding: 5px 8px;}
-      #score-bar { font-size: 1em; padding: 6px 10px;}
+      #score-bar { font-size: 0.9em; padding: 6px 10px; gap: 12px; flex-wrap: wrap;}
+      .score { font-size: 0.9em; padding: 8px 12px; min-width: 50px;}
+      #multiplier-box { min-width: 70px; font-size: 0.9em;}
+      #help-btn { padding: 8px 12px; font-size: 1em; margin-left: 8px;}
       #instructions-logo { max-width: 120px; padding: 5px 10px;}
       #game-container { padding-top: 90px; }
-      #game-canvas { margin-top: 10px; }
+      #game-canvas { margin-top: 10px; width: 96vw; max-width: none;}
       #instructions-content { padding: 10px 3vw 8px 3vw;}
+      #instructions .modal-btn { padding: 12px 40px; font-size: 1em;}
+      #instructions .quick-steps { gap: 20px; }
+      #instructions .step { font-size: 1em; }
+    }
+    @media (max-width: 480px) {
+      #score-bar { font-size: 0.8em; padding: 4px 8px; gap: 8px;}
+      .score { font-size: 0.8em; padding: 6px 8px; gap: 4px;}
+      #top-bar { gap: 8px; }
+      #logo-img { height: 40px; padding: 4px 6px;}
+      #help-btn { padding: 6px 10px; font-size: 0.9em;}
+      #game-canvas { width: 98vw; border-width: 3px;}
     }
   </style>
 </head>
@@ -682,7 +724,8 @@
               vx: Math.cos(i/28*2*Math.PI)* (1.4+Math.random()*1.8) * (spec.w/350),
               vy: -2.2 - Math.random()*2.2 * (spec.h/540),
               color: slots[idx].color,
-              t: 0
+              t: 0,
+              isStar: Math.random() < 0.3 // 30% chance for star shape
             });
           }
         }
@@ -742,16 +785,24 @@
         let color = "#fff";
         let radius = spec.pegRadius;
         let alpha = 0.93;
+        
+        // Enhanced hit animation with scale and glow
+        let hitScale = 1 + p.pulse * 0.8; // More dramatic scale effect
+        let hitGlow = p.pulse * 50; // Glow intensity based on pulse
+        
         if (p.combo) {
           color = "#ffe24b";
-          radius = spec.pegRadius * (1.21 + 0.09*Math.sin(performance.now()/120 + i)) * (1+p.pulse*0.6);
+          radius = spec.pegRadius * (1.21 + 0.09*Math.sin(performance.now()/120 + i)) * hitScale;
           alpha = 0.93 + 0.14 * Math.abs(Math.sin(performance.now()/160 + i));
+        } else {
+          radius = spec.pegRadius * hitScale;
         }
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, radius, 0, Math.PI*2);
         ctx.shadowColor = color;
-        ctx.shadowBlur = p.combo ? 28 : 10;
-        ctx.globalAlpha = alpha * (0.5 + 0.5*p.sparkle + p.pulse*0.5);
+        ctx.shadowBlur = (p.combo ? 28 : 10) + hitGlow;
+        ctx.globalAlpha = alpha * (0.5 + 0.5*p.sparkle + p.pulse*0.7);
         ctx.fillStyle = color;
         ctx.fill();
         ctx.restore();
@@ -786,9 +837,33 @@
           ctx.save();
           ctx.globalAlpha = Math.max(0, 1 - c.t/80);
           ctx.fillStyle = c.color;
-          ctx.beginPath();
-          ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2);
-          ctx.fill();
+          if (c.isStar) {
+            // Draw a 5-pointed star
+            let radius = 2.1 + Math.sin(c.t/3) * 1.05;
+            ctx.translate(c.x, c.y);
+            ctx.rotate(c.t * 0.1); // Rotate stars for effect
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+              let angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+              let x = Math.cos(angle) * radius;
+              let y = Math.sin(angle) * radius;
+              if (i === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+              
+              // Inner point
+              angle += Math.PI / 5;
+              x = Math.cos(angle) * radius * 0.4;
+              y = Math.sin(angle) * radius * 0.4;
+              ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            // Draw circle
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2);
+            ctx.fill();
+          }
           ctx.restore();
         }
       }
