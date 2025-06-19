@@ -3,70 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <title>BenBlinko</title>
-  <meta name="viewport" content="width=480, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
   <style>
     html, body {
-      background: linear-gradient(120deg, #232f47 0%, #7fd7f8 100%);
-      margin: 0;
-      padding: 0;
-      color: #222;
-      font-family: 'Manrope', Arial, sans-serif;
+      background: linear-gradient(135deg,#172949 0%,#38b6ff 100%);
       min-height: 100vh;
       width: 100vw;
-      overflow-x: hidden;
-    }
-    #top-bar {
-      background: none;
-      box-shadow: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100vw;
       margin: 0;
       padding: 0;
-      z-index: 2;
+      font-family: 'Manrope', Arial, sans-serif;
+      color: #222;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
-    #logo-img {
-      height: 180px;
-      width: auto;
-      max-width: 72vw;
-      background: rgba(255,255,255,0.97);
-      border-radius: 36px;
-      padding: 32px 52px;
-      margin: 36px auto 6px auto;
-      box-shadow: 0 2px 88px #7fd7f8ee, 0 0 32px #ffe24baa;
-      filter: drop-shadow(0 2px 36px #7fd7f8cc);
+    #overlay {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, #09203f 60%, #38b6ff 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.7s;
+      opacity: 1;
+    }
+    #overlay.hide {
+      pointer-events: none;
+      opacity: 0;
+    }
+    #logo-entrance {
       display: block;
-      animation: logo-pulse 2.1s infinite cubic-bezier(.68,-0.55,.27,1.55) alternate;
+      width: 340px;
+      max-width: 80vw;
+      margin-bottom: 18px;
+      animation: pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
+      filter: drop-shadow(0 0 44px #fff7);
       user-select: none;
-      transition: height 0.4s, padding 0.4s, box-shadow 0.4s;
     }
-    @keyframes logo-pulse {
-      0% { box-shadow: 0 2px 88px #7fd7f8ee, 0 0 32px #ffe24baa; transform: scale(1);}
-      100% { box-shadow: 0 2px 128px #7fd7f8ff, 0 0 48px #ffe24bee; transform: scale(1.10);}
+    @keyframes pulse {
+      0% { transform: scale(1);}
+      100% { transform: scale(1.11);}
     }
-    /* Hide top-bar on mobile for more space */
-    @media (max-width: 600px) {
-      #logo-img {
-        height: 90px;
-        padding: 8px 8vw;
-        margin-top: 10px;
-        border-radius: 12vw;
-      }
+    #tap-to-start {
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      font-size: 2.2em;
+      letter-spacing: 3px;
+      color: #fff;
+      text-shadow: 0 2px 24px #38b6ff, 0 1px 4px #000a;
+      background: linear-gradient(90deg,#38b6ff,#ffe24b 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: blink 1.7s infinite alternate;
+      margin-bottom: 18px;
+      user-select: none;
+    }
+    @keyframes blink {
+      0% { opacity: 1;}
+      100% {opacity: 0.65;}
+    }
+    #credit {
+      color: #fff9;
+      font-size: 1em;
+      margin-top: 20px;
+      letter-spacing: 1px;
+      font-family: 'Manrope', Arial, sans-serif;
+      text-shadow: 0 0 8px #38b6ff44;
+      user-select: none;
+    }
+    #help-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: linear-gradient(90deg,#38b6ff 30%,#ffe24b 100%);
+      color: #222;
+      border: none;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 16px;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 18px #38b6ff33;
+      transition: background 0.18s, color 0.18s, transform 0.14s;
+      z-index: 101;
+    }
+    #help-btn:hover {
+      background: linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
+      color: #0a1a2f;
+      transform: scale(1.07);
     }
     #game-canvas {
       display: block;
-      margin: 0 auto;
-      max-width: 100vw;
-      background: #232f47;
-      border-radius: 22px;
-      box-shadow: 0 0 44px #7fd7f888;
-      border: 3px solid #7fd7f8;
+      margin: 16px auto 0 auto;
+      background: radial-gradient(ellipse at 50% 35%,#24396a 60%,#38b6ff 100%);
+      border-radius: 24px;
+      box-shadow: 0 4px 44px #38b6ff77, 0 2px 24px #ffe24b55;
+      border: 3px solid #ffe24b;
       outline: none;
       touch-action: none;
       z-index: 1;
-      position: relative;
+      max-width: 96vw;
+      max-height: 72vh;
+      width: 480px;
+      height: 640px;
+      transition: box-shadow 0.2s;
     }
     /* --- Bottom bar --- */
     #bottom-bar {
@@ -74,51 +116,51 @@
       bottom: 0;
       left: 0;
       width: 100vw;
-      background: linear-gradient(90deg, #232f47 55%, #7fd7f8 100%);
-      border-top-left-radius: 22px;
-      border-top-right-radius: 22px;
-      box-shadow: 0 -4px 24px #7fd7f8bb inset, 0 -1px 6px #ffe24b77;
-      padding: 12px 0 10px 0;
+      background: linear-gradient(90deg, #172949 55%, #38b6ff 100%);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      box-shadow: 0 -4px 28px #38b6ffbb inset, 0 -1px 8px #ffe24b99;
+      padding: 14px 0 12px 0;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 10;
-      transition: background 0.4s;
       flex-wrap: wrap;
     }
     #score-bar {
       display: flex;
       align-items: center;
-      gap: 16px;
-      font-size: 1.15em;
+      gap: 18px;
+      font-size: 1.16em;
       flex-wrap: wrap;
       justify-content: center;
     }
     .score {
-      background: rgba(255,255,255,0.86);
-      padding: 9px 16px;
+      background: linear-gradient(90deg,#fff9 60%,#ffe24b 100%);
+      padding: 10px 18px;
       border-radius: 16px;
-      border: 3px solid #7fd7f8cc;
+      border: 3px solid #38b6ffcc;
       font-weight: bold;
-      color: #232f47;
-      text-shadow: 0 0 10px #b7aaf7, 0 0 2px #0003;
-      letter-spacing: 1.2px;
+      color: #24396a;
+      text-shadow: 0 0 8px #38b6ff33, 0 0 2px #fff9;
+      letter-spacing: 1.3px;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
       font-size: 1.1em;
-      min-width: 72px;
+      min-width: 74px;
       text-align: center;
       display: inline-block;
-      box-shadow: 0 4px 22px #7fd7f844;
-      margin: 0 2px;
+      box-shadow: 0 4px 22px #38b6ff44;
+      margin: 0 3px;
       transition: background 0.2s, border 0.2s;
+      user-select: none;
     }
     #multiplier-box {
-      min-width: 74px;
-      background: linear-gradient(90deg,#ffe24bdf 44%,#ff89aa99 100%);
+      min-width: 86px;
+      background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
       color: #222;
       border: 3px solid #ffe24b;
       font-weight: bold;
-      font-size: 1.1em;
+      font-size: 1.18em;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -128,16 +170,16 @@
       box-shadow: 0 0 18px #ffe24b66, 0 0 8px #ff89aa44;
     }
     #multiplier-box.inactive {
-      background: rgba(255,255,255,0.88);
+      background: linear-gradient(90deg,#fff9 80%,#b7aaf7 100%);
       color: #555;
       border: 3px solid #b7aaf7;
-      opacity: 0.85;
+      opacity: 0.83;
       box-shadow: none;
     }
     #multiplier-box .bonus-label {
       margin-left: 8px;
       font-size: 1em;
-      opacity: 0.91;
+      opacity: 0.93;
       font-weight: 900;
       white-space: nowrap;
       color: #a97f00;
@@ -157,47 +199,27 @@
       80% { transform: scale(1.13);}
       100% { transform: scale(1);}
     }
-    /* Improved buttons */
-    .btn, #help-btn {
-      transition: background 0.17s, color 0.18s, transform 0.13s, box-shadow 0.13s;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      background: linear-gradient(90deg,#7fd7f8 40%, #ffe24b 100%);
-      border-radius: 15px;
-      border: 3px solid #7fd7f8;
-      padding: 12px 24px;
-      color: #1d2438;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 18px #7fd7f833, 0 2px 8px #b7aaf799;
-      font-size: 1.12em;
-      outline: none;
-      margin: 0 0 0 12px;
-      letter-spacing: 2px;
-    }
-    .btn:hover, #help-btn:hover {
-      background: linear-gradient(90deg, #ffe24b, #7fd7f8 100%);
-      color: #000;
-      transform: scale(1.09);
-      box-shadow: 0 0 18px #ffe24b66;
-      border-color: #ffe24b;
-    }
     @media (max-width: 700px) {
-      #logo-img { height: 80px; padding: 8px 8vw; margin: 10px auto 2px auto;}
-      #bottom-bar { font-size: 0.98em; padding: 7px 0; }
-      .score, #multiplier-box { font-size: 0.97em; padding: 6px 8px; min-width: 56px;}
-      .btn, #help-btn { font-size: 0.97em; padding: 8px 9px;}
+      #logo-entrance { width: 60vw; }
+      #game-canvas { max-width: 99vw; max-height: 54vh; width: 99vw; height: 54vh;}
+      #bottom-bar { font-size: 1em; padding: 7px 0; }
+      .score, #multiplier-box { font-size: 1em; padding: 8px 8px; min-width: 56px;}
+      #help-btn { font-size: 1em; padding: 7px 12px;}
     }
     @media (max-width: 480px) {
+      #logo-entrance { width: 84vw;}
       #bottom-bar { padding: 4px 0; }
-      .score, #multiplier-box { font-size: 0.95em; padding: 4px 5px; min-width: 40px;}
-      .btn, #help-btn { margin: 0; font-size: 0.91em; }
+      .score, #multiplier-box { font-size: 0.96em; padding: 5px 4px; min-width: 38px;}
+      #help-btn { margin: 0; font-size: 0.93em; }
     }
   </style>
 </head>
 <body>
-  <div id="top-bar">
-    <img src="img/logo.png" id="logo-img" alt="BenBlinko" />
-    <button id="help-btn" class="btn">Help</button>
+  <div id="overlay">
+    <img src="https://raw.githubusercontent.com/BensBar/games/main/img/logo.png" id="logo-entrance" alt="BenBlinko Logo">
+    <div id="tap-to-start">Tap or Press Space to Start</div>
+    <div id="credit">by BensBar</div>
+    <button id="help-btn" type="button">Help</button>
   </div>
   <canvas id="game-canvas" width="480" height="640" tabindex="1"></canvas>
   <div id="bottom-bar">
@@ -211,294 +233,349 @@
     </div>
   </div>
   <script>
-  // --- BEGIN GAME LOGIC (preserve your original code) ---
-  // Only visual and speed changes made below.
-  // If you have a separate JS file, merge the following into it as needed.
+    // --- BenBlinko Spectacular Edition ---
 
-  // Example minimal game state (replace with your real logic if more complex)
-  const canvas = document.getElementById('game-canvas');
-  const ctx = canvas.getContext('2d');
+    /*** STATE ***/
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    let gameStarted = false;
 
-  // --- GAME CONSTANTS (edit these for much slower gameplay) ---
-  const GRAVITY = 0.00007 * canvas.height; // SLOW FALL
-  const BOUNCE_DAMPING = 0.46; // SLOW BOUNCE
-  const BALL_RADIUS = 11;
-  const PEG_RADIUS = 7;
-  const ROWS = 9;
-  const COLS = 9;
-  const PEG_GAP = 48;
-  const PEG_Y_START = 100;
-  const BALL_START_Y = 48;
-  const BALL_SPEED = 2.0; // SLOW HORIZONTAL SPEED
-  const BALL_DROP_DELAY = 900; // Slightly longer pause
+    // Game constants
+    const GRAVITY = 0.00014 * canvas.height;
+    const BOUNCE_DAMPING = 0.44;
+    const BALL_RADIUS = 12;
+    const PEG_RADIUS = 8;
+    const ROWS = 9;
+    const COLS = 9;
+    const PEG_GAP = 48;
+    const PEG_Y_START = 100;
+    const BALL_START_Y = 44;
+    const BALL_SPEED = 2.1;
+    const BALL_DROP_DELAY = 900;
 
-  // --- GAME STATE ---
-  let pegs = [];
-  let balls = [];
-  let confetti = [];
-  let lastPegHit = -1;
-  let score = 0;
-  let highscore = 0;
-  let ballsLeft = 5;
-  let multiplier = 2;
-  let comboActive = false;
-  let ballInPlay = false;
+    let pegs = [], balls = [], confetti = [];
+    let score = 0, highscore = 0, ballsLeft = 5, multiplier = 2, comboActive = false, ballInPlay = false;
+    let specialPegEvery = 3; // every 3rd row
+    let tilt = 0;
 
-  // --- INITIALIZATION ---
-  function makePegs() {
-    pegs = [];
-    for (let row = 0; row < ROWS; ++row) {
-      for (let col = 0; col < COLS; ++col) {
-        let offset = (row % 2 === 0) ? 0 : PEG_GAP / 2;
-        pegs.push({
-          x: 40 + col * PEG_GAP + offset,
-          y: PEG_Y_START + row * PEG_GAP,
-          hit: false,
-          anim: 0
-        });
-      }
-    }
-  }
-  makePegs();
-
-  function resetGame() {
-    score = 0;
-    ballsLeft = 5;
-    multiplier = 2;
-    comboActive = false;
-    ballInPlay = false;
-    lastPegHit = -1;
-    balls = [];
-    confetti = [];
-    makePegs();
-    updateUI();
-    setTimeout(dropBall, 1000);
-  }
-
-  function updateUI() {
-    document.getElementById('score-val').textContent = score;
-    document.getElementById('highscore-val').textContent = highscore;
-    document.getElementById('ball-val').textContent = ballsLeft + "/5";
-    let mb = document.getElementById('multiplier-box');
-    let mx = document.getElementById('multi-x');
-    let label = mb.querySelector('.bonus-label');
-    if (!comboActive) {
-      mb.classList.add('inactive');
-      mx.textContent = `x${multiplier}`;
-      label.textContent = "COMBO";
-      label.classList.add('inactive');
-    } else {
-      mb.classList.remove('inactive');
-      mx.textContent = `x${multiplier}`;
-      label.textContent = "COMBO!";
-      label.classList.remove('inactive');
-    }
-  }
-  function animateScore(id) {
-    let el = document.getElementById(id);
-    if (!el) return;
-    el.classList.add('animated');
-    setTimeout(()=>el.classList.remove('animated'), 500);
-  }
-
-  // --- GAMEPLAY ---
-  function dropBall() {
-    if (ballsLeft <= 0 || ballInPlay) return;
-    ballInPlay = true;
-    ballsLeft--;
-    updateUI();
-    animateScore('ball-val');
-    balls.push({
-      x: canvas.width / 2,
-      y: BALL_START_Y,
-      vx: (Math.random()-0.5) * BALL_SPEED,
-      vy: 0,
-      radius: BALL_RADIUS,
-      color: "#ffe24b",
-      landed: false
-    });
-  }
-
-  function update() {
-    // Ball physics
-    for (let ball of balls) {
-      if (ball.landed) continue;
-      ball.vy += GRAVITY;
-      ball.x += ball.vx;
-      ball.y += ball.vy;
-
-      // Wall bounce
-      if (ball.x < ball.radius) {
-        ball.x = ball.radius; ball.vx = -ball.vx * BOUNCE_DAMPING;
-      }
-      if (ball.x > canvas.width - ball.radius) {
-        ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * BOUNCE_DAMPING;
-      }
-
-      // Peg collision
-      for (let i=0; i<pegs.length; ++i) {
-        let peg = pegs[i];
-        let dx = ball.x - peg.x, dy = ball.y - peg.y, dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < ball.radius + PEG_RADIUS && !peg.hit) {
-          peg.hit = true;
-          peg.anim = 1.0;
-          ball.vy = -Math.abs(ball.vy) * BOUNCE_DAMPING;
-          animateScore('score-val');
-          score += 10 * multiplier;
-          comboActive = true;
-          multiplier ++;
-          animateScore('multiplier-box');
-          // Confetti
-          for (let j=0;j<9;++j) {
-            confetti.push({
-              x: peg.x, y: peg.y,
-              vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
-              color: ['#7fd7f8','#b7aaf7','#8dd6e8','#ffe24b','#ff89aa'][j%5],
-              t: 0,
-              shape: Math.random()<0.5?'circle':'star'
-            });
-          }
+    /********* PEGS ********/
+    function makePegs() {
+      pegs = [];
+      for (let row = 0; row < ROWS; ++row) {
+        for (let col = 0; col < COLS; ++col) {
+          let offset = (row % 2 === 0) ? 0 : PEG_GAP / 2;
+          let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
+          pegs.push({
+            x: 40 + col * PEG_GAP + offset,
+            y: PEG_Y_START + row * PEG_GAP,
+            hit: false,
+            anim: 0,
+            special: isSpecial
+          });
         }
       }
-
-      // Landed
-      if (ball.y > canvas.height - ball.radius) {
-        ball.y = canvas.height - ball.radius;
-        ball.vy = 0; ball.vx = 0;
-        ball.landed = true;
-        ballInPlay = false;
-        setTimeout(()=>{
-          // Reset combo if no peg hit on drop
-          if (!comboActive) {
-            multiplier = 2;
-            animateScore('multiplier-box');
-          }
-          comboActive = false;
-          updateUI();
-          if (ballsLeft > 0) setTimeout(dropBall, BALL_DROP_DELAY);
-        }, 700);
-      }
-    }
-    // Peg hit animation decay
-    for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.10;
-    // Confetti motion
-    for (let c of confetti) {
-      c.x += c.vx;
-      c.y += c.vy;
-      c.vy += 0.12;
-      c.t++;
-    }
-    confetti = confetti.filter(c => c.t < 80);
-    // Highscore
-    if (score > highscore) { highscore = score; animateScore('highscore-val'); }
-  }
-
-  function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    // Board bg
-    let grd = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-    grd.addColorStop(0, "#313c5d");
-    grd.addColorStop(1, "#7fd7f8");
-    ctx.fillStyle = grd;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // Draw pegs
-    for (let peg of pegs) {
-      ctx.save();
-      ctx.beginPath();
-      let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*6 : 0);
-      ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
-      ctx.fillStyle = peg.hit ? "#ffe24b" : "#b7aaf7";
-      if (peg.anim>0) {
-        ctx.shadowColor = "#ffe24b";
-        ctx.shadowBlur = 18*peg.anim;
-      }
-      ctx.globalAlpha = peg.hit ? 0.9 : 0.7;
-      ctx.fill();
-      ctx.restore();
     }
 
-    // Draw balls
-    for (let ball of balls) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-      ctx.fillStyle = ball.color;
-      ctx.shadowColor = "#fff";
-      ctx.shadowBlur = 12;
-      ctx.fill();
-      ctx.restore();
+    function resetGame() {
+      score = 0;
+      ballsLeft = 5;
+      multiplier = 2;
+      comboActive = false;
+      ballInPlay = false;
+      balls = [];
+      confetti = [];
+      makePegs();
+      updateUI();
+      setTimeout(dropBall, 900);
     }
 
-    // Draw confetti
-    for (let c of confetti) {
-      ctx.save();
-      ctx.globalAlpha = Math.max(0, 1 - c.t/80);
-      ctx.fillStyle = c.color;
-      if (c.shape === "star") {
-        drawStar(ctx, c.x, c.y, 5, 4, 2.2 + Math.sin(c.t/3) * 1.1);
+    function updateUI() {
+      document.getElementById('score-val').textContent = score;
+      document.getElementById('highscore-val').textContent = highscore;
+      document.getElementById('ball-val').textContent = ballsLeft + "/5";
+      let mb = document.getElementById('multiplier-box');
+      let mx = document.getElementById('multi-x');
+      let label = mb.querySelector('.bonus-label');
+      if (!comboActive) {
+        mb.classList.add('inactive');
+        mx.textContent = `x${multiplier}`;
+        label.textContent = "COMBO";
+        label.classList.add('inactive');
       } else {
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2);
-        ctx.fill();
+        mb.classList.remove('inactive');
+        mx.textContent = `x${multiplier}`;
+        label.textContent = "COMBO!";
+        label.classList.remove('inactive');
       }
-      ctx.restore();
     }
-  }
-
-  function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
-    let angle = Math.PI / points;
-    ctx.beginPath();
-    for (let i = 0; i < 2 * points; i++) {
-      let r = (i % 2 === 0) ? outerRadius : innerRadius;
-      ctx.lineTo(
-        x + Math.cos(i * angle) * r,
-        y + Math.sin(i * angle) * r
-      );
+    function animateScore(id) {
+      let el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('animated');
+      setTimeout(()=>el.classList.remove('animated'), 500);
     }
-    ctx.closePath();
-    ctx.fill();
-  }
 
-  function loop() {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-  }
-  resetGame();
-  loop();
+    /********* GAME ********/
+    function dropBall(x = canvas.width/2) {
+      if (ballsLeft <= 0 || ballInPlay) return;
+      ballInPlay = true;
+      ballsLeft--;
+      updateUI();
+      animateScore('ball-val');
+      balls.push({
+        x: x,
+        y: BALL_START_Y,
+        vx: tilt * 1.6,
+        vy: 0,
+        radius: BALL_RADIUS,
+        color: "#ffe24b",
+        landed: false
+      });
+    }
 
-  // --- EVENTS ---
-  canvas.addEventListener('pointerdown', function(e) {
-    if (ballInPlay || ballsLeft <= 0) return;
-    let rect = canvas.getBoundingClientRect();
-    let x = (e.clientX - rect.left) * canvas.width / rect.width;
-    balls.push({
-      x: x,
-      y: BALL_START_Y,
-      vx: (Math.random()-0.5) * BALL_SPEED,
-      vy: 0,
-      radius: BALL_RADIUS,
-      color: "#ffe24b",
-      landed: false
+    function update() {
+      for (let ball of balls) {
+        if (ball.landed) continue;
+        ball.vy += GRAVITY;
+        ball.vx += tilt * 0.13; // accelerometer influence
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        // Wall bounce
+        if (ball.x < ball.radius) {
+          ball.x = ball.radius; ball.vx = -ball.vx * BOUNCE_DAMPING;
+        }
+        if (ball.x > canvas.width - ball.radius) {
+          ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * BOUNCE_DAMPING;
+        }
+
+        // Peg collision
+        for (let i=0; i<pegs.length; ++i) {
+          let peg = pegs[i];
+          let dx = ball.x - peg.x, dy = ball.y - peg.y, dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < ball.radius + PEG_RADIUS && !peg.hit) {
+            peg.hit = true;
+            peg.anim = 1.0;
+            ball.vy = -Math.abs(ball.vy) * BOUNCE_DAMPING;
+            animateScore('score-val');
+            let points = 10 * multiplier;
+            if (peg.special) {
+              points *= 4;
+              showFloatingText("+BONUS!", peg.x, peg.y, "#ffe24b", "#ff89aa");
+            }
+            score += points;
+            comboActive = true;
+            multiplier ++;
+            animateScore('multiplier-box');
+            // Confetti
+            for (let j=0;j<9;++j) {
+              confetti.push({
+                x: peg.x, y: peg.y,
+                vx: (Math.random()-0.5)*3, vy: (Math.random()-0.5)*2,
+                color: peg.special ? ['#ff89aa','#ffe24b','#38b6ff','#b7aaf7','#8dd6e8'][j%5] : ['#7fd7f8','#b7aaf7','#8dd6e8','#ffe24b','#ff89aa'][j%5],
+                t: 0,
+                shape: Math.random()<0.5?'circle':'star'
+              });
+            }
+          }
+        }
+
+        // Landed
+        if (ball.y > canvas.height - ball.radius) {
+          ball.y = canvas.height - ball.radius;
+          ball.vy = 0; ball.vx = 0;
+          ball.landed = true;
+          ballInPlay = false;
+          setTimeout(()=>{
+            // Reset combo if no peg hit on drop
+            if (!comboActive) {
+              multiplier = 2;
+              animateScore('multiplier-box');
+            }
+            comboActive = false;
+            updateUI();
+            if (ballsLeft > 0) setTimeout(()=>dropBall(), BALL_DROP_DELAY);
+          }, 700);
+        }
+      }
+      // Peg hit animation decay
+      for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.10;
+      // Confetti motion
+      for (let c of confetti) {
+        c.x += c.vx;
+        c.y += c.vy;
+        c.vy += 0.12;
+        c.t++;
+      }
+      confetti = confetti.filter(c => c.t < 80);
+      // Highscore
+      if (score > highscore) { highscore = score; animateScore('highscore-val'); }
+      // Floating text
+      for (let i=floatingText.length-1; i>=0; --i) {
+        let ft = floatingText[i];
+        ft.y -= 1.2, ft.opacity -= 0.016;
+        if (ft.opacity <= 0) floatingText.splice(i,1);
+      }
+    }
+
+    function showFloatingText(txt, x, y, col1, col2) {
+      floatingText.push({txt, x, y, opacity: 1, col1, col2});
+    }
+    let floatingText = [];
+
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // Board bg
+      let grd = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      grd.addColorStop(0, "#1d2e53");
+      grd.addColorStop(1, "#38b6ff");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      // Draw pegs
+      for (let peg of pegs) {
+        ctx.save();
+        ctx.beginPath();
+        let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*7 : 0);
+        ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
+        if (peg.special) {
+          ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b";
+          ctx.shadowColor = "#ff89aa";
+        } else {
+          ctx.fillStyle = peg.hit ? "#ffe24b" : "#38b6ff";
+          ctx.shadowColor = "#38b6ff";
+        }
+        if (peg.anim>0) {
+          ctx.shadowBlur = 22*peg.anim;
+        }
+        ctx.globalAlpha = peg.hit ? 0.93 : 0.75;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Draw balls
+      for (let ball of balls) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = ball.color;
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = 0.98;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Draw confetti
+      for (let c of confetti) {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - c.t/80);
+        ctx.fillStyle = c.color;
+        if (c.shape === "star") {
+          drawStar(ctx, c.x, c.y, 5, 4, 2.2 + Math.sin(c.t/3) * 1.1);
+        } else {
+          ctx.beginPath();
+          ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+      // Floating text
+      for (let ft of floatingText) {
+        ctx.save();
+        ctx.globalAlpha = ft.opacity;
+        let grad = ctx.createLinearGradient(ft.x-30,ft.y,ft.x+30,ft.y);
+        grad.addColorStop(0,ft.col1); grad.addColorStop(1,ft.col2);
+        ctx.font = "bold 20px Orbitron, sans-serif";
+        ctx.fillStyle = grad;
+        ctx.fillText(ft.txt, ft.x-38, ft.y);
+        ctx.restore();
+      }
+    }
+
+    function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
+      let angle = Math.PI / points;
+      ctx.beginPath();
+      for (let i = 0; i < 2 * points; i++) {
+        let r = (i % 2 === 0) ? outerRadius : innerRadius;
+        ctx.lineTo(
+          x + Math.cos(i * angle) * r,
+          y + Math.sin(i * angle) * r
+        );
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function loop() {
+      if (gameStarted) {
+        update();
+        draw();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    /********* INPUTS ********/
+    // Pointer/tap to drop ball at point
+    canvas.addEventListener('pointerdown', function(e) {
+      if (!gameStarted) return;
+      if (ballInPlay || ballsLeft <= 0) return;
+      let rect = canvas.getBoundingClientRect();
+      let x = (e.clientX - rect.left) * canvas.width / rect.width;
+      dropBall(x);
     });
-    ballsLeft--;
+
+    // Space/Enter to start or drop ball
+    window.addEventListener('keydown', e => { 
+      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){
+        startGame();
+      } else if (gameStarted && (e.code=="Space"||e.code=="ArrowDown")) {
+        dropBall();
+      }
+    });
+
+    // Help
+    document.getElementById('help-btn').onclick = function() {
+      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nTilt your phone to curve the ball. Good luck!");
+    };
+
+    // Start screen overlay
+    function startGame() {
+      document.getElementById('overlay').classList.add('hide');
+      gameStarted = true;
+      resetGame();
+      setTimeout(()=>canvas.focus(), 300);
+    }
+    document.getElementById('overlay').addEventListener('pointerdown', startGame);
+
+    // Accelerometer support (tilt to move ball left/right)
+    function handleTilt(event) {
+      if (!gameStarted) return;
+      let gamma = event.gamma || 0;
+      if (typeof window.orientation !== "undefined" && window.orientation === 90) gamma = -event.beta;
+      tilt = Math.max(-2.2, Math.min(2.2, gamma/9));
+    }
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener("deviceorientation", handleTilt, true);
+    }
+
+    // Responsive: resize canvas on mobile
+    function resize() {
+      let w = Math.min(window.innerWidth, 480);
+      let h = Math.min(window.innerHeight-90, 640);
+      canvas.width = w;
+      canvas.height = h;
+    }
+    window.addEventListener('resize', resize, false);
+    resize();
+
+    // Keep canvas focus for keyboard on load
+    window.onload = () => { canvas.focus(); };
+
+    /********* LAUNCH ********/
+    makePegs();
     updateUI();
-    animateScore('ball-val');
-    ballInPlay = true;
-  });
-
-  document.getElementById('help-btn').onclick = function() {
-    alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Good luck!");
-  };
-
-  // Keyboard: space to drop
-  window.addEventListener('keydown', e => { if (e.code=="Space") dropBall(); });
-
-  // Keep canvas focus for keyboard on load
-  window.onload = () => { canvas.focus(); };
-
-  // --- END GAME LOGIC ---
+    loop();
 
   </script>
 </body>
