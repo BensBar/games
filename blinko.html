@@ -2,73 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BenBlinko Ultra</title>
-  <meta name="viewport" content="width=600, initial-scale=1, user-scalable=no, minimum-scale=1">
+  <title>BenBlinko</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
   <style>
     html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
       background: linear-gradient(135deg, #111a3f 0%, #2bb7ff 100%);
-      margin: 0; padding: 0; min-height: 100vh;
       font-family: 'Manrope', Arial, sans-serif;
       color: #222;
       overflow-x: hidden;
-      overflow-y: auto;
-      transition: background 1s;
-    }
-    body.playing {
-      background: radial-gradient(ellipse at 50% 30%, #0e1e36 40%, #ffe24b 130%);
     }
     #overlay, #gameover-overlay {
-      position: fixed; z-index: 100; inset: 0;
+      position: fixed;
+      z-index: 99;
+      inset: 0;
       background: radial-gradient(ellipse at 50% 30%, #031c2e 60%, #ffe24b 120%);
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      transition: opacity 0.7s; opacity: 1;
-      box-shadow: 0 0 240px #ffe24b44 inset, 0 0 100px #2bb7ff44 inset;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      transition: opacity 0.7s;
     }
     #overlay.hide, #gameover-overlay.hide { pointer-events: none; opacity: 0; }
     #logo-entrance {
-      display: block; width: 420px; max-width: 90vw; margin-bottom: 40px;
+      display: block;
+      width: min(340px, 60vw);
+      max-width: 80vw;
+      margin-bottom: 4vh;
       animation: pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
-      filter: drop-shadow(0 0 60px #fff9);
+      filter: drop-shadow(0 0 40px #fff9);
       user-select: none;
     }
     @keyframes pulse { 0% { transform: scale(1);} 100% { transform: scale(1.04);} }
     #tap-to-start {
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 2.7em; letter-spacing: 4px; color: #fff;
+      font-size: clamp(1.3em, 5vw, 2.5em);
+      letter-spacing: 4px; color: #fff;
       text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
       background: linear-gradient(90deg,#2bb7ff,#ffe24b 80%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: blink 1.7s infinite alternate; margin-bottom: 32px;
+      animation: blink 1.7s infinite alternate; margin-bottom: 2vh;
       user-select: none; text-align: center; width: 100%; display: block;
     }
     @keyframes blink { 0% { opacity: 1;} 100% {opacity: 0.6;} }
     #enable-tilt-btn {
       display: none;
-      font-size: 1.4em; margin: 18px auto 0 auto; padding: 20px 40px;
+      font-size: 1.2em; margin: 14px auto 0 auto; padding: 14px 28px;
       background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
-      color: #222;
-      border: none; border-radius: 24px;
+      color: #222; border: none; border-radius: 20px;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-weight: bold; box-shadow: 0 4px 36px #2bb7ff66;
+      font-weight: bold; box-shadow: 0 4px 24px #2bb7ff44;
       cursor: pointer; transition: background 0.2s, color 0.18s, transform 0.13s;
     }
     #enable-tilt-btn:hover {
       background: linear-gradient(90deg,#ffe24b 30%,#2bb7ff 100%);
-      color: #0a1a2f; transform: scale(1.05);
+      color: #0a1a2f; transform: scale(1.03);
     }
     #credit {
-      color: #fff9; font-size: 1.4em; margin-top: 40px; letter-spacing: 2px;
-      font-family: 'Manrope', Arial, sans-serif; text-shadow: 0 0 16px #2bb7ff44;
+      color: #fff9; font-size: 1.1em; margin-top: 2vh; letter-spacing: 2px;
+      font-family: 'Manrope', Arial, sans-serif; text-shadow: 0 0 8px #2bb7ff44;
       user-select: none; text-align: center; width: 100%; display: block;
     }
     #help-btn {
-      position: absolute; top: 24px; right: 36px;
+      position: absolute; top: 2vw; right: 4vw;
       background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
       color: #222; border: none;
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif; font-weight: bold;
-      padding: 12px 32px; border-radius: 24px; font-size: 1.3em;
-      cursor: pointer; box-shadow: 0 4px 36px #2bb7ff33;
+      padding: 8px 22px; border-radius: 14px; font-size: 1em;
+      cursor: pointer; box-shadow: 0 4px 18px #2bb7ff33;
       transition: background 0.18s, color 0.18s, transform 0.14s; z-index: 101;
     }
     #help-btn:hover {
@@ -76,99 +81,102 @@
       color: #0a1a2f; transform: scale(1.06);
     }
     #game-canvas {
-      display: block; margin: 0 auto;
+      display: block;
+      margin: 0 auto;
       background: radial-gradient(ellipse at 50% 35%,#21396a 60%,#ffe24b 140%);
-      border-radius: 32px; box-shadow: 0 8px 88px #ffe24b44, 0 4px 48px #2bb7ff55;
-      border: 4px solid #ffe24b; outline: none; touch-action: none; z-index: 1;
-      max-width: 96vw; width: 100%; aspect-ratio: 7/12; height: auto; transition: box-shadow 0.2s; position: relative;
+      border-radius: 24px;
+      box-shadow: 0 8px 88px #ffe24b44, 0 4px 48px #2bb7ff55;
+      border: 3px solid #ffe24b; outline: none; touch-action: none; z-index: 1;
+      max-width: 98vw;
+      width: 100%;
+      aspect-ratio: 7/12;
+      height: auto;
+      position: relative;
     }
     #bottom-bar {
       position: fixed; bottom: 0; left: 0; width: 100vw;
       background: linear-gradient(90deg, #172949 55%, #2bb7ff 100%);
-      border-top-left-radius: 32px; border-top-right-radius: 32px;
-      box-shadow: 0 -8px 56px #ffe24bbb inset, 0 -2px 16px #2bb7ff99;
-      padding: 18px 0 18px 0; display: flex; justify-content: center; align-items: center;
+      border-top-left-radius: 24px; border-top-right-radius: 24px;
+      box-shadow: 0 -8px 36px #ffe24bbb inset, 0 -2px 12px #2bb7ff99;
+      padding: 10px 0 10px 0; display: flex; justify-content: center; align-items: center;
       z-index: 10; flex-wrap: wrap;
     }
     #score-bar {
-      display: flex; align-items: center; gap: 26px; font-size: 1.4em; flex-wrap: wrap; justify-content: center;
+      display: flex; align-items: center; gap: 18px; font-size: 1.1em; flex-wrap: wrap; justify-content: center;
     }
     .score {
       background: linear-gradient(90deg,#fff9 60%,#ffe24b 100%);
-      padding: 12px 24px; border-radius: 24px; border: 3px solid #2bb7ffcc;
-      font-weight: bold; color: #24396a; text-shadow: 0 0 14px #2bb7ff33, 0 0 2px #fff9;
-      letter-spacing: 2px; font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 1.35em; min-width: 88px; text-align: center; display: inline-block;
-      box-shadow: 0 8px 44px #2bb7ff44; margin: 0 4px; transition: background 0.2s, border 0.2s; user-select: none;
+      padding: 8px 14px; border-radius: 14px; border: 2px solid #2bb7ffcc;
+      font-weight: bold; color: #24396a; text-shadow: 0 0 8px #2bb7ff33, 0 0 1px #fff9;
+      letter-spacing: 1.5px; font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      font-size: 1em; min-width: 52px; text-align: center; display: inline-block;
+      box-shadow: 0 8px 18px #2bb7ff44; margin: 0 2px; transition: background 0.2s, border 0.2s; user-select: none;
     }
     #multiplier-box {
-      min-width: 110px; background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
-      border: 3px solid #ffe24b; font-weight: bold; font-size: 1.1em; display: flex; align-items: center; justify-content: center;
-      letter-spacing: 2px; gap: 0; transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
-      box-shadow: 0 0 36px #ffe24b66, 0 0 16px #ff89aa44;
-      color: #111; text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 16px #ffe24b80;
+      min-width: 72px; background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
+      border: 2px solid #ffe24b; font-weight: bold; font-size: 1em; display: flex; align-items: center; justify-content: center;
+      letter-spacing: 1px; gap: 0; transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
+      box-shadow: 0 0 16px #ffe24b66, 0 0 8px #ff89aa44;
+      color: #111; text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #ffe24b80;
     }
     #multiplier-box.inactive {
       background: linear-gradient(90deg,#fff9 80%,#b7aaf7 100%);
-      border: 3px solid #b7aaf7; opacity: 0.83; box-shadow: none; color: #555;
-      text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 16px #b7aaf7;
+      border: 2px solid #b7aaf7; opacity: 0.83; box-shadow: none; color: #555;
+      text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #b7aaf7;
     }
     #multiplier-box .bonus-label {
-      margin-left: 12px; font-size: 1em; opacity: 0.93; font-weight: 900; white-space: nowrap; color: #111;
-      text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 16px #ffe24b;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; letter-spacing: 2px;
+      margin-left: 8px; font-size: 1em; opacity: 0.93; font-weight: 900; white-space: nowrap; color: #111;
+      text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 4px #ffe24b;
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; letter-spacing: 1px;
     }
-    #multiplier-box .bonus-label.inactive { color: #555; opacity: 0.6; text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 16px #b7aaf7; }
+    #multiplier-box .bonus-label.inactive { color: #555; opacity: 0.6; text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 4px #b7aaf7; }
     .animated { animation: bounce 0.5s cubic-bezier(.68,-0.55,.27,1.55);}
     @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
     #slots-row {
       position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-evenly;
-      z-index: 3; pointer-events: none; height: 80px;
+      z-index: 3; pointer-events: none; height: 48px;
     }
     .slot-box {
-      width: 70px; height: 80px; background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
-      border-radius: 0 0 24px 24px; border: 3px solid #2bb7ffcc; box-shadow: 0 4px 36px #2bb7ff44, 0 0 36px #ffe24b33;
+      width: 38px; height: 48px; background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
+      border-radius: 0 0 12px 12px; border: 2px solid #2bb7ffcc; box-shadow: 0 4px 16px #2bb7ff44, 0 0 12px #ffe24b33;
       display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; margin: 0 2px;
     }
     .slot-value {
       font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 1.1em; font-weight: bold; color: #111;
+      font-size: 1em; font-weight: bold; color: #111;
       text-shadow: 2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
-      background: none; margin-bottom: 10px; user-select: none; text-align: center; width: 100%; display: block; letter-spacing: 2px;
+      background: none; margin-bottom: 6px; user-select: none; text-align: center; width: 100%; display: block; letter-spacing: 1px;
     }
     .slot-box.active {
       background: linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
-      box-shadow: 0 0 40px #ffe24b99, 0 0 24px #ff89aa77;
+      box-shadow: 0 0 20px #ffe24b99, 0 0 12px #ff89aa77;
     }
     #gameover-overlay {
       background: rgba(20,40,80,0.98); flex-direction: column; align-items: center; justify-content: center; text-align: center; display: flex; opacity: 1; z-index: 200; transition: opacity 0.7s;
     }
     #gameover-title {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 2.7em; color: #ffe24b; text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
-      margin-bottom: 18px; letter-spacing: 4px;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 2em; color: #ffe24b; text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
+      margin-bottom: 14px; letter-spacing: 2px;
     }
     #final-score {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.7em; color: #fff; margin-bottom: 36px; letter-spacing: 2px;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.3em; color: #fff; margin-bottom: 24px; letter-spacing: 1px;
     }
     #play-again-btn {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 2em;
+      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.3em;
       background: linear-gradient(90deg,#ffe24b 44%,#2bb7ff 100%);
-      color: #232; border: none; border-radius: 24px; padding: 18px 46px;
-      box-shadow: 0 4px 36px #2bb7ff77; cursor: pointer; margin-top: 24px; font-weight: bold; letter-spacing: 3px;
+      color: #232; border: none; border-radius: 16px; padding: 12px 28px;
+      box-shadow: 0 4px 24px #2bb7ff77; cursor: pointer; margin-top: 12px; font-weight: bold; letter-spacing: 2px;
       transition: background 0.18s, color 0.12s, transform 0.13s;
     }
     #play-again-btn:hover {
       background: linear-gradient(90deg,#2bb7ff 20%,#ffe24b 100%);
       color: #0a1a2f; transform: scale(1.04);
     }
-    @media (max-width: 1400px) {
-      #logo-entrance { width: 70vw;}
-      #game-canvas { max-width: 99vw; width: 99vw; height: 76vw; min-height: 400px;}
-      #bottom-bar { font-size: 1.1em; padding: 10px 0; }
-      .score, #multiplier-box { font-size: 1em; padding: 8px 4px; min-width: 60px;}
-      #help-btn { margin: 0; font-size: 1em;}
-      #slots-row { height: 35px; }
-      .slot-box { width: 6vw; height: 36px;}
+    @media (max-width: 800px) {
+      #logo-entrance { width: 80vw;}
+      #game-canvas { max-width: 99vw; width: 99vw; height: 76vw;}
+      #slots-row { height: 30px; }
+      .slot-box { width: 4vw; height: 30px;}
     }
   </style>
 </head>
@@ -203,7 +211,30 @@
     </div>
   </div>
   <script>
-    // --- AUDIO LOGIC ---
+    // Responsive canvas setup
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    function setCanvasResolution() {
+      // Responsive portrait (7:12)
+      let maxW = Math.min(window.innerWidth * 0.98, 700);
+      let maxH = Math.min(window.innerHeight * 0.9, maxW * 12/7);
+      // If too tall, shrink width to fit height
+      if (maxH > window.innerHeight * 0.9) {
+        maxH = window.innerHeight * 0.9;
+        maxW = maxH * 7/12;
+      }
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = maxW * dpr;
+      canvas.height = maxH * dpr;
+      canvas.style.width = maxW + 'px';
+      canvas.style.height = maxH + 'px';
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(dpr, dpr);
+    }
+    setCanvasResolution();
+    window.addEventListener('resize', setCanvasResolution);
+
+    // AUDIO
     const introAudio = document.getElementById('intro-audio');
     const gameAudio = document.getElementById('game-audio');
     const endAudio = document.getElementById('end-audio');
@@ -212,28 +243,10 @@
     function stopGameAudio() { try { gameAudio.pause(); gameAudio.currentTime = 0; } catch(e){} }
     function playEndAudio() { try { endAudio.load(); endAudio.play(); } catch(e){} }
 
-    // --- BenBlinko Ultra Game Logic ---
-    const canvas = document.getElementById('game-canvas');
-    function setCanvasResolution() {
-      const dpr = window.devicePixelRatio || 1;
-      const logicalWidth = 700, logicalHeight = 1200;
-      canvas.width = logicalWidth * dpr;
-      canvas.height = logicalHeight * dpr;
-      canvas.style.width = logicalWidth + 'px';
-      canvas.style.height = logicalHeight + 'px';
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.scale(dpr, dpr);
-    }
-    const ctx = canvas.getContext('2d');
-    setCanvasResolution();
-    let gameStarted = false, gameOver = false;
-    let ballsThisGame = 7;
-
+    // GAME LOGIC
+    let gameStarted = false, gameOver = false, ballsThisGame = 7;
     const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
-    const slotColors = [
-      "#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"
-    ];
-
+    const slotColors = ["#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"];
     let boardPadding = 44, slotsHeight = 72, ROWS = 14;
     const COLS = slotValues.length;
     let PEG_GAP = 0, PEG_Y_START = 0;
@@ -241,7 +254,6 @@
     let pegs = [], balls = [], confetti = [];
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
     let specialPegEvery = 3, tilt = 0, tiltRaw = 0, tiltHistory = [], TILT_HISTORY_SIZE = 6;
-
     function drawSlots(activeCol = -1) {
       const slotsRow = document.getElementById('slots-row');
       slotsRow.innerHTML = '';
@@ -374,15 +386,15 @@
       drawTiltBar();
     }
     function drawTiltBar() {
-      let barW = Math.max(120, canvas.width * 0.5), barH = 16;
-      let cx = canvas.width/2, cy = canvas.height - 18;
+      let barW = Math.max(80, canvas.width * 0.5), barH = 10;
+      let cx = canvas.width/2, cy = canvas.height - 12;
       ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#fff'; ctx.beginPath();
-      if (ctx.roundRect) { ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 8);}
+      if (ctx.roundRect) { ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 5);}
       else { ctx.rect(cx-barW/2, cy-barH/2, barW, barH);}
       ctx.fill(); ctx.globalAlpha = 0.7; ctx.fillStyle = '#2bb7ff';
-      let tiltNorm = (tilt/2.2), markerX = cx + tiltNorm * (barW/2-12);
-      ctx.beginPath(); ctx.arc(markerX, cy, 11, 0, Math.PI*2); ctx.fill();
-      ctx.globalAlpha = 1; ctx.font = 'bold 13px Orbitron, sans-serif'; ctx.fillStyle = '#172949'; ctx.textAlign = 'center'; ctx.fillText('TILT', cx, cy+4); ctx.restore();
+      let tiltNorm = (tilt/2.2), markerX = cx + tiltNorm * (barW/2-7);
+      ctx.beginPath(); ctx.arc(markerX, cy, 7, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.font = 'bold 10px Orbitron, sans-serif'; ctx.fillStyle = '#172949'; ctx.textAlign = 'center'; ctx.fillText('TILT', cx, cy+3); ctx.restore();
     }
     function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
       let angle = Math.PI / points; ctx.beginPath();
@@ -421,11 +433,10 @@
     });
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
-      alert("BenBlinko Ultra\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.\n\nEnjoy the new high-res, ultra-modern look!");
+      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.");
     };
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
-      document.body.classList.add('playing');
       gameStarted = true; playGameAudio(); resetGame(); setTimeout(()=>canvas.focus(), 300);
     }
     const overlay = document.getElementById('overlay');
@@ -445,7 +456,7 @@
     }
     document.getElementById('play-again-btn').onclick = playAgain;
 
-    // --- TILT/ACCELEROMETER ---
+    // TILT/ACCELEROMETER
     let tiltEnabled = false;
     function handleTilt(event) {
       if (!gameStarted || gameOver || !tiltEnabled) return;
@@ -508,10 +519,6 @@
     window.addEventListener('DOMContentLoaded', () => { maybeShowTiltButton(); });
     window.addEventListener('resize', maybeShowTiltButton);
 
-    function resize() {
-      setCanvasResolution(); makePegs(); drawSlots();
-    }
-    window.addEventListener('resize', resize, false);
     window.onload = () => { canvas.focus(); };
     makePegs(); updateUI(); drawSlots(); loop();
   </script>
