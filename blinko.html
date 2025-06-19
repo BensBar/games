@@ -25,7 +25,7 @@
       box-shadow: 0 4px 24px #0006;
     }
     #logo-img {
-      max-width: 180px;
+      max-width: 170px;
       height: auto;
       margin-bottom: 7px;
       display: block;
@@ -42,26 +42,27 @@
     }
     #score-bar {
       display: flex;
-      gap: 13px;
+      gap: 18px;
       align-items: center;
-      font-size: 1.07em;
+      font-size: 1.13em;
       margin-bottom: 4px;
     }
     .score {
-      background: rgba(34, 53, 88, 0.92);
-      padding: 4px 10px;
-      border-radius: 9px;
+      background: rgba(34, 53, 88, 0.93);
+      padding: 5px 14px;
+      border-radius: 11px;
       border: 2px solid #7fd7f8;
       font-weight: bold;
       color: #fff;
-      text-shadow: 0 0 7px #b7aaf7, 0 0 2px #000;
-      letter-spacing: 0.8px;
-      box-shadow: 0 0 7px #7fd7f889 inset;
+      text-shadow: 0 0 8px #b7aaf7, 0 0 2px #000;
+      letter-spacing: 1px;
+      box-shadow: 0 0 9px #7fd7f8aa inset;
       display: flex;
       align-items: center;
-      min-width: 48px;
+      min-width: 54px;
       justify-content: center;
-      gap: 5px;
+      gap: 8px;
+      font-size: 1.06em;
     }
     #multiplier-box {
       min-width: 88px;
@@ -69,25 +70,24 @@
       color: #222;
       border: 2px solid #ffe24b;
       font-weight: bold;
-      font-size: 1.02em;
+      font-size: 1.04em;
       display: flex;
-      flex-direction: row;
       align-items: center;
       justify-content: center;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.7px;
       white-space: nowrap;
       gap: 0;
-      transition: background 0.15s, color 0.13s, border 0.13s, min-width 0.15s;
+      transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
     }
     #multiplier-box.inactive {
       background: rgba(34,53,88,0.92);
       color: #bbb;
       border: 2px solid #7fd7f8;
-      opacity: 0.72;
+      opacity: 0.7;
     }
     #multiplier-box .bonus-label {
       margin-left: 4px;
-      font-size: 1.01em;
+      font-size: 1em;
       opacity: 0.89;
       font-weight: 900;
       white-space: nowrap;
@@ -101,11 +101,11 @@
     #help-btn {
       margin-left: 7px;
       padding: 7px 13px;
-      border-radius: 7px;
+      border-radius: 9px;
       border: 2px solid #7fd7f8;
-      background: rgba(33, 48, 82, 0.94);
+      background: rgba(33, 48, 82, 0.96);
       color: #7fd7f8;
-      font-size: 1.01em;
+      font-size: 1.1em;
       cursor: pointer;
       font-family: inherit;
       font-weight: bold;
@@ -133,22 +133,22 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding-top: 92px; /* Height of top bar */
+      padding-top: 98px; /* Height of top bar */
     }
     #game-canvas {
-      width: 96vw;
-      max-width: 600px;
-      height: 80vh;
-      max-height: 700px;
+      width: 98vw;
+      max-width: 640px;
+      height: 81vh;
+      max-height: 720px;
       display: block;
       background: transparent;
       border: 5px solid #7fd7f8;
-      border-radius: 20px;
-      box-shadow: 0 0 28px #b7aaf7b9, 0 0 10px #1a2237;
-      margin-bottom: 10px;
-      margin-top: 10px;
+      border-radius: 26px;
+      box-shadow: 0 0 38px #b7aaf7b9, 0 0 18px #1a2237;
+      margin-bottom: 11px;
+      margin-top: 11px;
     }
-    /* --- SHORT, CENTERED, AMAZING INSTRUCTIONS MODAL --- */
+    /* --- INSTRUCTIONS MODAL --- */
     #instructions {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -163,39 +163,48 @@
     }
     #instructions.visible { display: flex; }
     #instructions-content {
-      background: rgba(30,38,58,0.94);
-      border-radius: 16px;
-      padding: 18px 15px 14px 15px;
+      background: rgba(30,38,58,0.97);
+      border-radius: 24px;
+      padding: 24px 20px 16px 20px;
       box-shadow: 0 5px 34px #7fd7f8e0, 0 0 0 2px #b7aaf711;
-      border: 2px solid #7fd7f8;
-      max-width: 90vw;
-      min-width: 160px;
+      border: 3px solid #7fd7f8;
+      max-width: 95vw;
+      min-width: 180px;
       min-height: 80px;
-      animation: popIn 0.4s cubic-bezier(.32,1.56,.53,.92);
+      animation: popIn 0.48s cubic-bezier(.32,1.56,.53,.92);
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
       justify-content: center;
     }
+    #instructions-logo {
+      max-width: 110px;
+      margin-bottom: 14px;
+      border-radius: 12px;
+      box-shadow: 0 0 16px #7fd7f8bb, 0 0 2px #ffe24b;
+      background: rgba(255,255,255,0.07);
+      padding: 4px 14px 4px 14px;
+      animation: logoGlow 2.7s infinite alternate;
+    }
     #instructions .modal-header {
       font-family: Orbitron, Manrope, Arial, sans-serif;
-      font-size: 1.23em;
+      font-size: 1.3em;
       color: #ffe24b;
-      letter-spacing: 1.3px;
+      letter-spacing: 1.2px;
       font-weight: 900;
       text-shadow: 0 0 18px #ffe24b66, 0 0 5px #7fd7f8, 0 0 1px #fff;
-      margin-bottom: 5px;
-      margin-top: 1px;
+      margin-bottom: 7px;
+      margin-top: 0px;
       line-height: 1.08;
     }
     #instructions .quick-steps {
       display: flex;
       flex-direction: row;
-      gap: 10px;
+      gap: 14px;
       justify-content: center;
       align-items: flex-start;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       flex-wrap: wrap;
     }
     #instructions .step {
@@ -205,35 +214,28 @@
       min-width: 35px;
       max-width: 75px;
       gap: 5px;
-      font-size: 0.91em;
+      font-size: 1.04em;
       color: #e7fafd;
       font-weight: 600;
     }
     #instructions .step-icon {
-      font-size: 1.35em;
-      text-shadow: 0 0 7px #7fd7f8, 0 0 2px #ffe24b;
+      font-size: 1.43em;
+      text-shadow: 0 0 8px #7fd7f8, 0 0 3px #ffe24b;
       margin-bottom: 1px;
     }
-    #instructions .step-title {
-      color: #ffe24b;
-      font-size: 0.93em;
-      font-weight: bold;
-      margin-bottom: 2px;
-      letter-spacing: 0.3px;
-    }
     #instructions .input-hint {
-      margin-top: 4px;
+      margin-top: 5px;
       color: #b7aaf7;
-      font-size: 0.91em;
+      font-size: 0.98em;
       letter-spacing: 0.4px;
-      opacity: 0.85;
+      opacity: 0.92;
       text-shadow: 0 0 3px #7fd7f866;
     }
     #instructions .modal-btn {
-      margin-top: 6px;
-      font-size: 1em;
-      padding: 6px 20px;
-      border-radius: 8px;
+      margin-top: 11px;
+      font-size: 1.07em;
+      padding: 9px 36px;
+      border-radius: 12px;
       border: none;
       background: linear-gradient(90deg,#7fd7f8 40%, #ffe24b 100%);
       color: #1d2438;
@@ -248,20 +250,20 @@
     #instructions .modal-btn:hover {
       background: linear-gradient(90deg, #ffe24b, #7fd7f8);
       color: #000;
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
     #instructions .credit {
-      margin-top: 7px;
-      font-size: 0.82em;
+      margin-top: 8px;
+      font-size: 0.89em;
       color: #7fd7f8bb;
-      opacity: 0.78;
+      opacity: 0.87;
       letter-spacing: 1.1px;
     }
     #instructions .close-x {
       position: absolute;
-      right: 7px;
-      top: 7px;
-      font-size: 1.2em;
+      right: 10px;
+      top: 10px;
+      font-size: 1.35em;
       color: #b7aaf7;
       background: none;
       border: none;
@@ -269,7 +271,7 @@
       opacity: 0.7;
       padding: 0 7px;
       transition: color 0.13s, opacity 0.13s;
-      z-index: 2;
+      z-index: 3;
       font-family: inherit;
     }
     #instructions .close-x:hover { color: #ffe24b; opacity: 1; }
@@ -345,8 +347,9 @@
       #top-bar { padding: 3px 0 0 0; }
       #game-container { padding-top: 54px; }
       #score-bar { font-size: 0.97em; }
-      #instructions-content, #gameover-content { font-size: 0.88em; }
-      #instructions .modal-header { font-size: 0.9em;}
+      #instructions-content, #gameover-content { font-size: 0.89em; }
+      #instructions .modal-header { font-size: 0.97em;}
+      #instructions-logo { max-width: 70px; padding: 2px 7px 2px 7px;}
     }
   </style>
 </head>
@@ -366,9 +369,10 @@
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
   </div>
-  <!-- SHORT, CENTERED, AMAZING INSTRUCTIONS MODAL -->
+  <!-- MODERN INSTRUCTIONS MODAL WITH LOGO -->
   <div id="instructions">
     <div id="instructions-content">
+      <img src="img/logo.png" id="instructions-logo" alt="BenBlinko Logo" />
       <button class="close-x" id="close-instructions-x" title="Close">&times;</button>
       <div class="modal-header">Welcome to BenBlinko!</div>
       <div class="quick-steps">
