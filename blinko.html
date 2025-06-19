@@ -110,8 +110,9 @@
       touch-action: none;
       z-index: 1;
       max-width: 96vw;
-      width: 480px;
-      height: 700px;
+      width: 100%;
+      aspect-ratio: 24/35;
+      height: auto;
       transition: box-shadow 0.2s;
       position: relative;
     }
@@ -347,7 +348,7 @@
     <button id="play-again-btn">Play Again</button>
   </div>
   <div style="position:relative;max-width:480px;margin:0 auto;">
-    <canvas id="game-canvas" width="480" height="700" tabindex="1"></canvas>
+    <canvas id="game-canvas" width="1920" height="2800" tabindex="1"></canvas>
     <div id="slots-row"></div>
   </div>
   <div id="bottom-bar">
@@ -391,7 +392,21 @@
 
     // --- BenBlinko Game Logic ---
     const canvas = document.getElementById('game-canvas');
+    // 4K/Retina support
+    function setCanvasResolution() {
+      const dpr = window.devicePixelRatio || 1;
+      // Logical size
+      const logicalWidth = 480;
+      const logicalHeight = 700;
+      canvas.width = logicalWidth * dpr;
+      canvas.height = logicalHeight * dpr;
+      canvas.style.width = logicalWidth + 'px';
+      canvas.style.height = logicalHeight + 'px';
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(dpr, dpr);
+    }
     const ctx = canvas.getContext('2d');
+    setCanvasResolution();
     let gameStarted = false, gameOver = false;
     let ballsThisGame = 5;
 
@@ -415,6 +430,9 @@
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
     let specialPegEvery = 3;
     let tilt = 0;
+    let tiltRaw = 0;
+    let tiltHistory = [];
+    const TILT_HISTORY_SIZE = 6;
 
     function drawSlots(activeCol = -1) {
       const slotsRow = document.getElementById('slots-row');
@@ -428,25 +446,36 @@
       }
     }
 
-    function makePegs() {
-      let availableHeight = canvas.height - slotsHeight - boardPadding - BALL_RADIUS - 20;
-      PEG_GAP = availableHeight / (ROWS-1);
-      PEG_Y_START = BALL_START_Y + 10;
-      pegs = [];
-      for (let row = 0; row < ROWS; ++row) {
-        for (let col = 0; col < COLS; ++col) {
-          let offset = (row % 2 === 0) ? 0 : (canvas.width/COLS)/2;
-          let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
-          pegs.push({
-            x: (canvas.width/COLS) * col + offset + (canvas.width/COLS)/2,
-            y: PEG_Y_START + row * PEG_GAP,
-            hit: false,
-            anim: 0,
-            special: isSpecial
-          });
-        }
-      }
+function makePegs() {
+  // Robust classic Plinko grid: even rows have COLS pegs, odd rows have COLS-1 pegs, all centered
+  let rows = ROWS;
+  let cols = COLS;
+  // Use the actual drawing area for peg placement
+  let drawWidth = canvas.width / (window.devicePixelRatio || 1);
+  let drawHeight = canvas.height / (window.devicePixelRatio || 1);
+  let availableHeight = drawHeight - slotsHeight - boardPadding - BALL_RADIUS - 20;
+  PEG_GAP = availableHeight / (rows-1);
+  PEG_Y_START = BALL_START_Y + 10;
+  pegs = [];
+  let pegSpacing = drawWidth / cols;
+  for (let row = 0; row < rows; ++row) {
+    let y = PEG_Y_START + row * PEG_GAP;
+    let isOdd = row % 2 === 1;
+    let pegsInRow = isOdd ? cols - 1 : cols;
+    let offset = isOdd ? pegSpacing / 2 : 0;
+    for (let col = 0; col < pegsInRow; ++col) {
+      let x = (col + 0.5) * pegSpacing + offset;
+      let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
+      pegs.push({
+        x: x,
+        y: y,
+        hit: false,
+        anim: 0,
+        special: isSpecial
+      });
     }
+  }
+}
     function resetGame() {
       score = 0;
       ballsLeft = ballsThisGame;
@@ -671,6 +700,38 @@
         ctx.fillText(ft.txt, ft.x-38, ft.y);
         ctx.restore();
       }
+      // Draw tilt bar
+      drawTiltBar();
+    }
+
+    function drawTiltBar() {
+      // Draw a subtle tilt bar at the bottom of the canvas
+      let barW = Math.max(120, canvas.width * 0.5);
+      let barH = 16;
+      let cx = canvas.width/2, cy = canvas.height - 18;
+      ctx.save();
+      ctx.globalAlpha = 0.22;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 8);
+      } else {
+        ctx.rect(cx-barW/2, cy-barH/2, barW, barH);
+      }
+      ctx.fill();
+      ctx.globalAlpha = 0.7;
+      ctx.fillStyle = '#38b6ff';
+      let tiltNorm = (tilt/2.2);
+      let markerX = cx + tiltNorm * (barW/2-12);
+      ctx.beginPath();
+      ctx.arc(markerX, cy, 11, 0, Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.font = 'bold 13px Orbitron, sans-serif';
+      ctx.fillStyle = '#172949';
+      ctx.textAlign = 'center';
+      ctx.fillText('TILT', cx, cy+4);
+      ctx.restore();
     }
     function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
       let angle = Math.PI / points;
@@ -686,6 +747,16 @@
       ctx.fill();
     }
     function loop() {
+      // Desktop: smoothly adjust tilt if using keys
+      if (!('ontouchstart' in window) && !window.DeviceOrientationEvent) {
+        if (tiltKey !== 0) {
+          tilt += 0.13 * tiltKey;
+        } else {
+          // Auto-center tilt
+          tilt *= 0.85;
+        }
+        tilt = Math.max(-2.2, Math.min(2.2, tilt));
+      }
       if (gameStarted && !gameOver) {
         update();
         draw();
@@ -700,13 +771,27 @@
       let x = (e.clientX - rect.left) * canvas.width / rect.width;
       dropBall(x);
     });
+    // Desktop: left/right arrow or A/D to tilt
+    let tiltKey = 0;
     window.addEventListener('keydown', e => {
       if (!gameStarted && (e.code=="Space"||e.code=="Enter")){
         startGame();
       } else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) {
         dropBall();
       }
+      if (gameStarted && !gameOver) {
+        if (e.code === "ArrowLeft" || e.code === "KeyA") {
+          tiltKey = -1;
+        } else if (e.code === "ArrowRight" || e.code === "KeyD") {
+          tiltKey = 1;
+        }
+      }
       if (gameOver && (e.code=="Space"||e.code=="Enter")) playAgain();
+    });
+    window.addEventListener('keyup', e => {
+      if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "ArrowRight" || e.code === "KeyD") {
+        tiltKey = 0;
+      }
     });
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
@@ -742,21 +827,81 @@
       resetGame();
     }
     document.getElementById('play-again-btn').onclick = playAgain;
-    // Accelerometer support (tilt to move ball left/right)
+    // --- TILT/ACCELEROMETER ---
     function handleTilt(event) {
       if (!gameStarted || gameOver) return;
       let gamma = event.gamma || 0;
-      if (typeof window.orientation !== "undefined" && window.orientation === 90) gamma = -event.beta;
-      tilt = Math.max(-2.2, Math.min(2.2, gamma/9));
+      let beta = event.beta || 0;
+      // Try to handle both portrait and landscape
+      let orientation = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
+      if (orientation === 90 || orientation === -90) {
+        gamma = -beta;
+      }
+      tiltRaw = Math.max(-2.2, Math.min(2.2, gamma/9));
+      tiltHistory.push(tiltRaw);
+      if (tiltHistory.length > TILT_HISTORY_SIZE) tiltHistory.shift();
+      // Smooth tilt
+      tilt = tiltHistory.reduce((a,b)=>a+b,0) / tiltHistory.length;
     }
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener("deviceorientation", handleTilt, true);
+    function requestTiltPermission() {
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(function(response) {
+          if (response === 'granted') {
+            window.addEventListener("deviceorientation", handleTilt, true);
+          } else {
+            showTiltMessage('Tilt permission denied.');
+          }
+        }).catch(()=>showTiltMessage('Tilt permission error.'));
+      } else {
+        window.addEventListener("deviceorientation", handleTilt, true);
+      }
     }
+    function showTiltMessage(msg) {
+      let el = document.getElementById('tilt-msg');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'tilt-msg';
+        el.style.position = 'fixed';
+        el.style.bottom = '80px';
+        el.style.left = '50%';
+        el.style.transform = 'translateX(-50%)';
+        el.style.background = 'rgba(30,40,80,0.93)';
+        el.style.color = '#ffe24b';
+        el.style.padding = '12px 24px';
+        el.style.borderRadius = '16px';
+        el.style.fontFamily = "Orbitron, Manrope, Arial, sans-serif";
+        el.style.fontSize = '1.1em';
+        el.style.zIndex = 9999;
+        document.body.appendChild(el);
+      }
+      el.textContent = msg;
+      el.style.display = 'block';
+      setTimeout(()=>{ el.style.display = 'none'; }, 3500);
+    }
+    // Request permission on iOS, or attach listener directly
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.DeviceOrientationEvent) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          showTiltMessage('Tap to enable tilt control.');
+          document.body.addEventListener('click', requestTiltPermission, { once: true });
+        } else {
+          window.addEventListener("deviceorientation", handleTilt, true);
+        }
+      } else {
+        showTiltMessage('Tilt not supported on this device.');
+      }
+    });
     function resize() {
-      let w = Math.min(window.innerWidth, 480);
-      let h = Math.max(Math.min(window.innerHeight-90, 700), 420);
-      canvas.width = w;
-      canvas.height = h;
+      // Responsive 4K/Retina canvas
+      const dpr = window.devicePixelRatio || 1;
+      let logicalWidth = Math.min(window.innerWidth, 480);
+      let logicalHeight = Math.max(Math.min(window.innerHeight-90, 700), 420);
+      canvas.width = logicalWidth * dpr;
+      canvas.height = logicalHeight * dpr;
+      canvas.style.width = logicalWidth + 'px';
+      canvas.style.height = logicalHeight + 'px';
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(dpr, dpr);
       makePegs();
       drawSlots();
     }
