@@ -2,181 +2,241 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BenBlinko</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
+  <title>BenBlinko • Neon Laser 4K</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #111a3f 0%, #2bb7ff 100%);
-      font-family: 'Manrope', Arial, sans-serif;
-      color: #222;
-      overflow-x: hidden;
+    html,body {
+      margin:0;padding:0;min-height:100vh;
+      background: #111a3f;
+      font-family:'Manrope',Arial,sans-serif;
+      color:#fff;overflow:hidden;
     }
+    body {
+      /* Dynamic background: animated laser gradient */
+      background: repeating-linear-gradient(
+        120deg, #22284b 0 12px, #162044 16px 36px, #1f3877 40px 70px, #181a2d 74px 90px
+      ),
+      radial-gradient(ellipse at 50% 30%, #2bb7ff55 0%, #ffe24b33 68%, #01081a 100%);
+      animation: laserbg 12s linear infinite alternate;
+    }
+    @keyframes laserbg {
+      0%{ background-position:0 0,50% 40%;}
+      100%{ background-position:120px 200px,50% 55%;}
+    }
+
+    /* Overlay Styles */
     #overlay, #gameover-overlay {
-      position: fixed;
-      z-index: 99;
-      inset: 0;
-      background: radial-gradient(ellipse at 50% 30%, #031c2e 60%, #ffe24b 120%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      opacity: 1;
-      transition: opacity 0.7s;
+      position:fixed;z-index:1000;inset:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:rgba(10,20,40,0.95);
+      pointer-events:auto;transition:opacity 0.4s cubic-bezier(.46,.03,.52,.96);
+      opacity:1;
+      overflow:hidden;
     }
-    #overlay.hide, #gameover-overlay.hide { pointer-events: none; opacity: 0; }
+    #overlay.hide, #gameover-overlay.hide { opacity:0;pointer-events:none;}
+    .laser-bg {
+      position:absolute; z-index:0; inset:0;
+      pointer-events:none;
+      width:100vw;height:100vh;
+      overflow:hidden;
+    }
+    /* Animated Laser Streaks */
+    .laser {
+      position:absolute; width:150vw; height:2vw; left:-25vw;
+      background:linear-gradient(90deg,#38b6ff00 0%,#ffe24b 40%,#ff58fa 70%,#38b6ff00 100%);
+      filter:blur(2px) brightness(1.7);
+      opacity:0.42;
+      animation: laserani 6s linear infinite;
+    }
+    .laser.l1 { top:20vh; transform:rotate(-6deg);}
+    .laser.l2 { top:40vh; transform:rotate(3deg); animation-delay:1.5s;}
+    .laser.l3 { top:60vh; transform:rotate(-3deg); animation-delay:3s;}
+    .laser.l4 { top:80vh; transform:rotate(5deg); animation-delay:2.2s;}
+    @keyframes laserani { from{left:-25vw;} to{left:0vw;} }
+
     #logo-entrance {
-      display: block;
-      width: min(340px, 60vw);
-      max-width: 80vw;
-      margin-bottom: 4vh;
-      animation: pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
-      filter: drop-shadow(0 0 40px #fff9);
-      user-select: none;
+      width: clamp(160px, 28vw, 340px);
+      max-height: 20vh;
+      margin-bottom: clamp(1.5vh, 4vw, 5vh);
+      animation:pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
+      filter: drop-shadow(0 0 32px #38b6ffcc) drop-shadow(0 0 8px #ffe24b);
+      z-index:1;
+      user-select:none;
+      background:linear-gradient(90deg,#ffe24b33 60%,#2bb7ff33 100%);
+      border-radius:2vw;
     }
-    @keyframes pulse { 0% { transform: scale(1);} 100% { transform: scale(1.04);} }
+    @keyframes pulse { 0%{transform:scale(1);} 100%{transform:scale(1.05);} }
+
     #tap-to-start {
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: clamp(1.3em, 5vw, 2.5em);
-      letter-spacing: 4px; color: #fff;
-      text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
-      background: linear-gradient(90deg,#2bb7ff,#ffe24b 80%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: blink 1.7s infinite alternate; margin-bottom: 2vh;
-      user-select: none; text-align: center; width: 100%; display: block;
+      font-family:'Orbitron','Manrope',Arial,sans-serif;
+      font-size: clamp(1.5em, 5vw, 2.7em);
+      text-align:center;
+      background:linear-gradient(90deg,#38b6ff 0,#ffe24b 80%,#ff89aa 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      letter-spacing: 0.12em;
+      filter: drop-shadow(0 0 10px #2bb7ffcc);
+      text-shadow: 0 0 10px #2bb7ff70, 0 0 20px #ffe24b40;
+      margin-bottom: 2vh;
+      animation:blinker 1.2s infinite alternate;
+      z-index:1;
+      user-select:none;
     }
-    @keyframes blink { 0% { opacity: 1;} 100% {opacity: 0.6;} }
+    @keyframes blinker { 0%{opacity:1;} 100%{opacity:0.55;} }
+
     #enable-tilt-btn {
-      display: none;
-      font-size: 1.2em; margin: 14px auto 0 auto; padding: 14px 28px;
-      background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
-      color: #222; border: none; border-radius: 20px;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-weight: bold; box-shadow: 0 4px 24px #2bb7ff44;
-      cursor: pointer; transition: background 0.2s, color 0.18s, transform 0.13s;
+      display:none;
+      font-size:clamp(1em,4vw,1.5em);padding:1vw 6vw;margin:2vh auto 0 auto;
+      background:linear-gradient(90deg,#38b6ff 0,#ffe24b 100%);
+      color:#080c1c;font-family:'Orbitron','Manrope',Arial,sans-serif;
+      border:none;border-radius:2em;box-shadow:0 0 24px #ffe24b99,0 2px 8px #38b6ff33;
+      font-weight:bold;letter-spacing:0.09em;
+      cursor:pointer;transition:background 0.15s, color 0.1s, transform 0.1s;
+      z-index:1;
+      outline:2px solid #fff5;
+      filter:drop-shadow(0 0 12px #ffe24b88);
     }
     #enable-tilt-btn:hover {
-      background: linear-gradient(90deg,#ffe24b 30%,#2bb7ff 100%);
-      color: #0a1a2f; transform: scale(1.03);
+      background:linear-gradient(90deg,#ffe24b 0,#38b6ff 100%);
+      color:#222;transform:scale(1.04);
     }
     #credit {
-      color: #fff9; font-size: 1.1em; margin-top: 2vh; letter-spacing: 2px;
-      font-family: 'Manrope', Arial, sans-serif; text-shadow: 0 0 8px #2bb7ff44;
-      user-select: none; text-align: center; width: 100%; display: block;
+      color:#fff9;font-size:clamp(0.92em,2vw,1.3em);margin-top:2vh;letter-spacing:2px;
+      font-family:'Manrope',Arial,sans-serif;text-shadow:0 0 10px #2bb7ff33;
+      user-select:none;text-align:center;width:100%;display:block;z-index:1;
     }
     #help-btn {
-      position: absolute; top: 2vw; right: 4vw;
-      background: linear-gradient(90deg,#2bb7ff 30%,#ffe24b 100%);
-      color: #222; border: none;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; font-weight: bold;
-      padding: 8px 22px; border-radius: 14px; font-size: 1em;
-      cursor: pointer; box-shadow: 0 4px 18px #2bb7ff33;
-      transition: background 0.18s, color 0.18s, transform 0.14s; z-index: 101;
+      position:absolute;top:2vw;right:4vw;z-index:2;
+      background:linear-gradient(90deg,#38b6ff 30%,#ffe24b 100%);
+      color:#181a2d;border:none;
+      font-family:'Orbitron','Manrope',Arial,sans-serif;font-weight:bold;
+      padding:8px 22px;border-radius:14px;font-size:1em;
+      cursor:pointer;box-shadow:0 4px 18px #2bb7ff33;
+      transition:background 0.18s, color 0.18s, transform 0.14s;
     }
     #help-btn:hover {
-      background: linear-gradient(90deg,#ffe24b 30%,#2bb7ff 100%);
-      color: #0a1a2f; transform: scale(1.06);
+      background:linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
+      color:#0a1a2f;transform:scale(1.06);
     }
+    /* Canvas Responsive */
     #game-canvas {
-      display: block;
-      margin: 0 auto;
-      background: radial-gradient(ellipse at 50% 35%,#21396a 60%,#ffe24b 140%);
-      border-radius: 24px;
-      box-shadow: 0 8px 88px #ffe24b44, 0 4px 48px #2bb7ff55;
-      border: 3px solid #ffe24b; outline: none; touch-action: none; z-index: 1;
-      max-width: 98vw;
-      width: 100%;
-      aspect-ratio: 7/12;
-      height: auto;
-      position: relative;
+      display:block;margin:0 auto;
+      background:radial-gradient(ellipse at 50% 35%,#24396a 60%,#ffe24b 140%);
+      border-radius:2vw;box-shadow:0 8px 44px #ffe24b44,0 4px 24px #38b6ff44;
+      border:3px solid #ffe24b;outline:none;touch-action:none;z-index:1;
+      max-width:99vw;max-height:93vh;width:100%;aspect-ratio:7/12;height:auto;position:relative;
+      transition:box-shadow 0.2s;
     }
+    /* Score Bar */
     #bottom-bar {
-      position: fixed; bottom: 0; left: 0; width: 100vw;
-      background: linear-gradient(90deg, #172949 55%, #2bb7ff 100%);
-      border-top-left-radius: 24px; border-top-right-radius: 24px;
-      box-shadow: 0 -8px 36px #ffe24bbb inset, 0 -2px 12px #2bb7ff99;
-      padding: 10px 0 10px 0; display: flex; justify-content: center; align-items: center;
-      z-index: 10; flex-wrap: wrap;
+      position:fixed;bottom:0;left:0;width:100vw;
+      background:rgba(15,28,61,0.93);
+      border-top-left-radius:24px;border-top-right-radius:24px;
+      box-shadow:0 -8px 36px #ffe24bbb inset,0 -2px 12px #2bb7ff99;
+      padding: 0.5em 0;display:flex;justify-content:center;align-items:center;
+      z-index:10;flex-wrap:wrap;
+      backdrop-filter:blur(3px);
     }
     #score-bar {
-      display: flex; align-items: center; gap: 18px; font-size: 1.1em; flex-wrap: wrap; justify-content: center;
+      display:flex;align-items:center;gap:1.3em;font-size:1.2em;flex-wrap:wrap;justify-content:center;
+      filter:drop-shadow(0 0 8px #2bb7ffcc);
     }
     .score {
-      background: linear-gradient(90deg,#fff9 60%,#ffe24b 100%);
-      padding: 8px 14px; border-radius: 14px; border: 2px solid #2bb7ffcc;
-      font-weight: bold; color: #24396a; text-shadow: 0 0 8px #2bb7ff33, 0 0 1px #fff9;
-      letter-spacing: 1.5px; font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 1em; min-width: 52px; text-align: center; display: inline-block;
-      box-shadow: 0 8px 18px #2bb7ff44; margin: 0 2px; transition: background 0.2s, border 0.2s; user-select: none;
+      background:linear-gradient(90deg,#fff9 60%,#ffe24b 100%);
+      padding:0.4em 1.2em;border-radius:1em;border:2px solid #2bb7ffcc;
+      font-weight:bold;color:#24396a;text-shadow:0 0 7px #2bb7ff33,0 0 1px #fff9;
+      letter-spacing:1.5px;font-family:'Orbitron','Manrope',Arial,sans-serif;
+      font-size:1em;min-width:48px;text-align:center;display:inline-block;
+      box-shadow:0 2px 12px #2bb7ff55;margin:0 2px;transition:background 0.2s,border 0.2s;
+      user-select:none;position:relative;overflow:hidden;
+    }
+    .score:before {
+      content:"";position:absolute;left:0;top:0;width:100%;height:100%;
+      background:linear-gradient(120deg,#fff6 0 70%,#ffe24b66 100%);
+      opacity:0.23;pointer-events:none;
+      border-radius:inherit;z-index:0;
     }
     #multiplier-box {
-      min-width: 72px; background: linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
-      border: 2px solid #ffe24b; font-weight: bold; font-size: 1em; display: flex; align-items: center; justify-content: center;
-      letter-spacing: 1px; gap: 0; transition: background 0.18s, color 0.12s, border 0.13s, min-width 0.13s;
-      box-shadow: 0 0 16px #ffe24b66, 0 0 8px #ff89aa44;
-      color: #111; text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #ffe24b80;
+      min-width:70px;background:linear-gradient(90deg,#ffe24b 44%,#ff89aa 100%);
+      border:2px solid #ffe24b;font-weight:bold;font-size:1em;display:flex;
+      align-items:center;justify-content:center;letter-spacing:1px;gap:0;
+      box-shadow:0 0 16px #ffe24b88,0 0 8px #ff89aa44;
+      color:#111;text-shadow:1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #ffe24b80;
+      position:relative;overflow:hidden;
     }
+    #multiplier-box:after {
+      content:"";
+      position:absolute;left:-40%;top:-100%;width:180%;height:200%;
+      background:linear-gradient(110deg,#fff9 12%,#ffe24bcc 44%,#ff89aa77 70%,#fff0 100%);
+      opacity:0.22;pointer-events:none;z-index:1;
+      transform:rotate(-18deg);
+      animation:laserstripe 2.7s linear infinite;
+    }
+    @keyframes laserstripe { 0%{top:-100%;} 100%{top:0%;} }
     #multiplier-box.inactive {
-      background: linear-gradient(90deg,#fff9 80%,#b7aaf7 100%);
-      border: 2px solid #b7aaf7; opacity: 0.83; box-shadow: none; color: #555;
-      text-shadow: 1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #b7aaf7;
+      background:linear-gradient(90deg,#fff9 80%,#b7aaf7 100%);
+      border:2px solid #b7aaf7;opacity:0.83;box-shadow:none;color:#555;
+      text-shadow:1px 1px 0 #fff,2px 2px 2px #000,0 0 8px #b7aaf7;
     }
     #multiplier-box .bonus-label {
-      margin-left: 8px; font-size: 1em; opacity: 0.93; font-weight: 900; white-space: nowrap; color: #111;
-      text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 4px #ffe24b;
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif; letter-spacing: 1px;
+      margin-left:8px;font-size:1em;opacity:0.93;font-weight:900;white-space:nowrap;color:#111;
+      text-shadow:1px 1px 4px #fff,2px 2px 4px #000,0 0 4px #ffe24b;
+      font-family:'Orbitron','Manrope',Arial,sans-serif;letter-spacing:1px;
+      z-index:2;
     }
     #multiplier-box .bonus-label.inactive { color: #555; opacity: 0.6; text-shadow: 1px 1px 4px #fff,2px 2px 4px #000,0 0 4px #b7aaf7; }
     .animated { animation: bounce 0.5s cubic-bezier(.68,-0.55,.27,1.55);}
     @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
     #slots-row {
       position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-evenly;
-      z-index: 3; pointer-events: none; height: 48px;
+      z-index: 3; pointer-events: none; height: 7vh; min-height: 24px; max-height:50px;
     }
     .slot-box {
-      width: 38px; height: 48px; background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
-      border-radius: 0 0 12px 12px; border: 2px solid #2bb7ffcc; box-shadow: 0 4px 16px #2bb7ff44, 0 0 12px #ffe24b33;
-      display: flex; flex-direction: column; align-items: center; justify-content: flex-end; position: relative; margin: 0 2px;
+      width: clamp(26px,5vw,40px); height:100%;background:linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
+      border-radius:0 0 12px 12px;border:2px solid #2bb7ffcc;box-shadow:0 4px 16px #2bb7ff44,0 0 12px #ffe24b33;
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;margin:0 2px;
     }
     .slot-value {
-      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
-      font-size: 1em; font-weight: bold; color: #111;
-      text-shadow: 2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
-      background: none; margin-bottom: 6px; user-select: none; text-align: center; width: 100%; display: block; letter-spacing: 1px;
+      font-family:'Orbitron','Manrope',Arial,sans-serif;font-size:1em;font-weight:bold;color:#111;
+      text-shadow:2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
+      background:none;margin-bottom:6px;user-select:none;text-align:center;width:100%;display:block;letter-spacing:1px;
     }
     .slot-box.active {
-      background: linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
-      box-shadow: 0 0 20px #ffe24b99, 0 0 12px #ff89aa77;
+      background:linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
+      box-shadow:0 0 20px #ffe24b99,0 0 12px #ff89aa77;
+      filter:brightness(1.2) drop-shadow(0 0 10px #ffe24b66);
+      border-color:#ff89aa;
     }
+    /* Game Over Overlay */
     #gameover-overlay {
-      background: rgba(20,40,80,0.98); flex-direction: column; align-items: center; justify-content: center; text-align: center; display: flex; opacity: 1; z-index: 200; transition: opacity 0.7s;
+      background:rgba(20,40,80,0.98);flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;display:flex;opacity:1;z-index:200;transition:opacity 0.7s;
     }
     #gameover-title {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 2em; color: #ffe24b; text-shadow: 0 4px 54px #2bb7ff, 0 2px 8px #000a;
-      margin-bottom: 14px; letter-spacing: 2px;
+      font-family:'Orbitron',Arial,sans-serif;font-size:2em;color:#ffe24b;
+      text-shadow:0 4px 34px #2bb7ff,0 2px 8px #000a;
+      margin-bottom:1.1em;letter-spacing:2px;filter:drop-shadow(0 0 8px #ff89aa);
     }
     #final-score {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.3em; color: #fff; margin-bottom: 24px; letter-spacing: 1px;
+      font-family:'Orbitron',Arial,sans-serif;font-size:1.3em;color:#fff;
+      margin-bottom:1.8em;letter-spacing:1px;filter:drop-shadow(0 0 8px #2bb7ff);
     }
     #play-again-btn {
-      font-family: 'Orbitron', Arial, sans-serif; font-size: 1.3em;
-      background: linear-gradient(90deg,#ffe24b 44%,#2bb7ff 100%);
-      color: #232; border: none; border-radius: 16px; padding: 12px 28px;
-      box-shadow: 0 4px 24px #2bb7ff77; cursor: pointer; margin-top: 12px; font-weight: bold; letter-spacing: 2px;
-      transition: background 0.18s, color 0.12s, transform 0.13s;
+      font-family:'Orbitron',Arial,sans-serif;font-size:1.2em;
+      background:linear-gradient(90deg,#ffe24b 44%,#38b6ff 100%);
+      color:#232;border:none;border-radius:16px;padding:12px 28px;
+      box-shadow:0 4px 24px #38b6ff77;cursor:pointer;margin-top:12px;font-weight:bold;letter-spacing:2px;
+      transition:background 0.18s, color 0.12s, transform 0.13s;
     }
     #play-again-btn:hover {
-      background: linear-gradient(90deg,#2bb7ff 20%,#ffe24b 100%);
-      color: #0a1a2f; transform: scale(1.04);
+      background:linear-gradient(90deg,#38b6ff 20%,#ffe24b 100%);
+      color:#0a1a2f;transform:scale(1.03);
     }
     @media (max-width: 800px) {
-      #logo-entrance { width: 80vw;}
+      #logo-entrance { width: 60vw;}
       #game-canvas { max-width: 99vw; width: 99vw; height: 76vw;}
-      #slots-row { height: 30px; }
-      .slot-box { width: 4vw; height: 30px;}
+      #slots-row { height: 3vh; }
+      .slot-box { width: 5vw; }
     }
   </style>
 </head>
@@ -185,6 +245,12 @@
   <audio id="game-audio" src="/sounds/gameplay.mp3" loop></audio>
   <audio id="end-audio" src="/sounds/end.mp3"></audio>
   <div id="overlay">
+    <div class="laser-bg">
+      <div class="laser l1"></div>
+      <div class="laser l2"></div>
+      <div class="laser l3"></div>
+      <div class="laser l4"></div>
+    </div>
     <img src="https://raw.githubusercontent.com/BensBar/games/main/img/logo.png" id="logo-entrance" alt="BenBlinko Logo">
     <div id="tap-to-start">Tap or Press Space to Start</div>
     <button id="enable-tilt-btn" type="button">Enable Tilt Control</button>
@@ -192,6 +258,12 @@
     <button id="help-btn" type="button">Help</button>
   </div>
   <div id="gameover-overlay" class="hide">
+    <div class="laser-bg">
+      <div class="laser l1"></div>
+      <div class="laser l2"></div>
+      <div class="laser l3"></div>
+      <div class="laser l4"></div>
+    </div>
     <div id="gameover-title">Game Over</div>
     <div id="final-score"></div>
     <button id="play-again-btn">Play Again</button>
@@ -215,12 +287,10 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     function setCanvasResolution() {
-      // Responsive portrait (7:12)
       let maxW = Math.min(window.innerWidth * 0.98, 700);
-      let maxH = Math.min(window.innerHeight * 0.9, maxW * 12/7);
-      // If too tall, shrink width to fit height
-      if (maxH > window.innerHeight * 0.9) {
-        maxH = window.innerHeight * 0.9;
+      let maxH = Math.min(window.innerHeight * 0.93, maxW * 12/7);
+      if (maxH > window.innerHeight * 0.93) {
+        maxH = window.innerHeight * 0.93;
         maxW = maxH * 7/12;
       }
       const dpr = window.devicePixelRatio || 1;
@@ -433,7 +503,7 @@
     });
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
-      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.");
+      alert("BenBlinko Neon Laser 4K\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the points slots at the bottom. On mobile devices, tap 'Enable Tilt Control' to play by tilting your device.\n\nEnjoy the new glossy, laser-inspired look!");
     };
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
