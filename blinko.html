@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BenBlinko • Neon Laser 4K</title>
+  <title>BenBlinko • Neon Laser Deluxe</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -15,16 +15,16 @@
       box-sizing:border-box;
     }
     body {
-      background: repeating-linear-gradient(
-        120deg, #22284b 0 12px, #162044 16px 36px, #1f3877 40px 70px, #181a2d 74px 90px
-      ),
+      /* Neon animated background */
+      background: linear-gradient(120deg, #22284b 0 35%, #162044 60%, #1f3877 100%),
       radial-gradient(ellipse at 50% 30%, #2bb7ff55 0%, #ffe24b33 68%, #01081a 100%);
-      animation: laserbg 12s linear infinite alternate;
+      animation: laserbg 14s linear infinite alternate;
     }
     @keyframes laserbg {
       0%{ background-position:0 0,50% 40%;}
       100%{ background-position:120px 200px,50% 55%;}
     }
+    /* Overlay Styles */
     #overlay, #gameover-overlay {
       position:fixed;z-index:1000;inset:0;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -32,41 +32,38 @@
       pointer-events:auto;transition:opacity 0.4s cubic-bezier(.46,.03,.52,.96);
       opacity:1;
       overflow:hidden;
-      min-height:100vh;
-      min-width:100vw;
+      min-height:100vh;min-width:100vw;
     }
     #overlay.hide, #gameover-overlay.hide { opacity:0;pointer-events:none;}
     .laser-bg {
-      position:absolute; z-index:0; inset:0;
-      pointer-events:none;width:100vw;height:100vh;overflow:hidden;
+      position:absolute; z-index:0; inset:0; pointer-events:none;width:100vw;height:100vh;overflow:hidden;
     }
     .laser {
-      position:absolute; width:180vw; height:2vw; left:-40vw;
+      position:absolute; width:200vw; height:2vw; left:-60vw;
       background:linear-gradient(90deg,#38b6ff00 0%,#ffe24b 40%,#ff58fa 70%,#38b6ff00 100%);
-      filter:blur(4px) brightness(1.9);
-      opacity:0.39;
+      filter:blur(6px) brightness(2.1);
+      opacity:0.37;
       animation: laserani 6s linear infinite;
     }
-    .laser.l1 { top:16vh; transform:rotate(-8deg);}
-    .laser.l2 { top:32vh; transform:rotate(3deg); animation-delay:1.5s;}
-    .laser.l3 { top:60vh; transform:rotate(-5deg); animation-delay:3s;}
-    .laser.l4 { top:81vh; transform:rotate(7deg); animation-delay:2.2s;}
-    @keyframes laserani { from{left:-40vw;} to{left:0vw;} }
+    .laser.l1 { top:18vh; transform:rotate(-8deg);}
+    .laser.l2 { top:36vh; transform:rotate(3deg); animation-delay:2.2s;}
+    .laser.l3 { top:62vh; transform:rotate(-5deg); animation-delay:3.7s;}
+    .laser.l4 { top:85vh; transform:rotate(7deg); animation-delay:1.2s;}
+    @keyframes laserani { from{left:-60vw;} to{left:0vw;} }
+
     #logo-entrance {
-      width: clamp(140px, 28vw, 320px);
-      max-height: 19vh;
+      width: clamp(120px, 38vw, 340px);
+      max-height: 12vh;
       margin-bottom: clamp(1.5vh, 4vw, 3vh);
-      animation:pulse 2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
-      filter: drop-shadow(0 0 32px #38b6ffcc) drop-shadow(0 0 8px #ffe24b);
-      z-index:1;
-      user-select:none;
-      background:linear-gradient(90deg,#ffe24b33 60%,#2bb7ff33 100%);
+      animation:pulse 2.2s infinite alternate cubic-bezier(0.68,-0.55,0.27,1.55);
+      filter: drop-shadow(0 0 36px #38b6ffcc) drop-shadow(0 0 12px #ffe24b);
+      z-index:1;user-select:none;background:linear-gradient(90deg,#ffe24b33 60%,#2bb7ff33 100%);
       border-radius:2vw;
     }
     @keyframes pulse { 0%{transform:scale(1);} 100%{transform:scale(1.04);} }
     #tap-to-start {
       font-family:'Orbitron','Manrope',Arial,sans-serif;
-      font-size: clamp(1.4em, 5vw, 2.4em);
+      font-size: clamp(1.2em, 5vw, 2.1em);
       text-align:center;
       background:linear-gradient(90deg,#38b6ff 0,#ffe24b 80%,#ff89aa 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -75,8 +72,7 @@
       text-shadow: 0 0 10px #2bb7ff70, 0 0 20px #ffe24b40;
       margin-bottom: 2vh;
       animation:blinker 1.2s infinite alternate;
-      z-index:1;
-      user-select:none;
+      z-index:1;user-select:none;
     }
     @keyframes blinker { 0%{opacity:1;} 100%{opacity:0.55;} }
     #enable-tilt-btn {
@@ -87,8 +83,7 @@
       border:none;border-radius:2em;box-shadow:0 0 24px #ffe24b99,0 2px 8px #38b6ff33;
       font-weight:bold;letter-spacing:0.09em;
       cursor:pointer;transition:background 0.15s, color 0.1s, transform 0.1s;
-      z-index:1;
-      outline:2px solid #fff5;
+      z-index:1;outline:2px solid #fff5;
       filter:drop-shadow(0 0 12px #ffe24b88);
     }
     #enable-tilt-btn:hover {
@@ -113,13 +108,13 @@
       background:linear-gradient(90deg,#ffe24b 30%,#38b6ff 100%);
       color:#0a1a2f;transform:scale(1.06);
     }
+
     #game-canvas {
       display:block;margin:0 auto;
       background:radial-gradient(ellipse at 50% 35%,#24396a 60%,#ffe24b 140%);
       border-radius:2vw;box-shadow:0 8px 44px #ffe24b44,0 4px 24px #38b6ff44;
-      border:3px solid #ffe24b;
-      outline:none;touch-action:none;z-index:1;
-      max-width:99vw;max-height:82vh;width:100%;aspect-ratio:7/10;height:auto;position:relative;
+      border:3px solid #ffe24b;outline:none;touch-action:none;z-index:1;
+      max-width:98vw;max-height:65vh;width:100%;aspect-ratio:7/9;height:auto;position:relative;
       transition:box-shadow 0.2s;
     }
     #bottom-bar {
@@ -127,9 +122,8 @@
       background:rgba(15,28,61,0.93);
       border-top-left-radius:24px;border-top-right-radius:24px;
       box-shadow:0 -8px 36px #ffe24bbb inset,0 -2px 12px #2bb7ff99;
-      padding: 0.5em 0;display:flex;justify-content:center;align-items:center;
-      z-index:10;flex-wrap:wrap;
-      backdrop-filter:blur(3px);
+      padding:0.5em 0;display:flex;justify-content:center;align-items:center;
+      z-index:10;flex-wrap:wrap;backdrop-filter:blur(3px);
     }
     #score-bar {
       display:flex;align-items:center;gap:1.3em;font-size:1.2em;flex-wrap:wrap;justify-content:center;
@@ -183,31 +177,31 @@
     @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
     #slots-row {
       position: absolute; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-evenly;
-      z-index: 3; pointer-events: none; height: 12vh; min-height: 46px; max-height:120px;
+      z-index: 3; pointer-events: none; height: 16vh; min-height: 56px; max-height:140px;
     }
     .slot-box {
       height:100%;
-      width: clamp(48px,11vw,98px); /* much wider buckets */
+      width: clamp(56px,14vw,110px); /* large buckets */
       font-size:1.3em;
       background:linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
-      border-radius:0 0 22px 22px;
-      border:2px solid #2bb7ffcc;
-      box-shadow:0 4px 24px #2bb7ff44,0 0 24px #ffe24b33;
+      border-radius:0 0 28px 28px;
+      border:3px solid #2bb7ffcc;
+      box-shadow:0 6px 32px #2bb7ff44,0 0 32px #ffe24b33;
       display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative;margin:0 3px;
-      filter:drop-shadow(0 0 8px #ffe24baa);
+      filter:drop-shadow(0 0 16px #ffe24baa);
       overflow:hidden;
     }
     .slot-value {
       font-family:'Orbitron','Manrope',Arial,sans-serif;
-      font-size:1.2em;font-weight:bold;color:#111;
-      text-shadow:2px 2px 8px #fff, 1px 1px 4px #000, 0 0 12px #ffe24b80;
-      background:none;margin-bottom:10px;user-select:none;text-align:center;width:100%;display:block;letter-spacing:1px;
-      filter:drop-shadow(0 0 3px #ffef40);
+      font-size:1.34em;font-weight:bold;color:#111;
+      text-shadow:2px 2px 10px #fff, 1px 1px 4px #000, 0 0 16px #ffe24b80;
+      background:none;margin-bottom:16px;user-select:none;text-align:center;width:100%;display:block;letter-spacing:1px;
+      filter:drop-shadow(0 0 5px #ffef40);
     }
     .slot-box.active {
       background:linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
-      box-shadow:0 0 40px #ffe24b99,0 0 24px #ff89aa77;
-      filter:brightness(1.2) drop-shadow(0 0 20px #ffe24b99);
+      box-shadow:0 0 60px #ffe24b99,0 0 34px #ff89aa77;
+      filter:brightness(1.3) drop-shadow(0 0 27px #ffe24b99);
       border-color:#ff89aa;
     }
     #gameover-overlay {
@@ -236,9 +230,9 @@
     }
     @media (max-width: 800px) {
       #logo-entrance { width: 60vw;}
-      #game-canvas { max-width: 99vw; width: 99vw; height: 76vw;}
-      #slots-row { height: 7vh; }
-      .slot-box { width: 10vw; }
+      #game-canvas { max-width: 99vw; width: 99vw;}
+      #slots-row { height: 10vh; }
+      .slot-box { width: 14vw; }
     }
   </style>
 </head>
@@ -271,7 +265,7 @@
     <button id="play-again-btn">Play Again</button>
   </div>
   <div style="position:relative;max-width:700px;margin:0 auto;">
-    <canvas id="game-canvas" width="700" height="1000" tabindex="1"></canvas>
+    <canvas id="game-canvas" width="700" height="900" tabindex="1"></canvas>
     <div id="slots-row"></div>
   </div>
   <div id="bottom-bar">
@@ -289,11 +283,12 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     function setCanvasResolution() {
+      // Responsive: always fit in 98vw and 65vh (not too tall on any phone)
       let maxW = Math.min(window.innerWidth * 0.98, 700);
-      let aspect = 10/7;
-      let maxH = Math.min(window.innerHeight * 0.82, maxW * aspect);
-      if (maxH > window.innerHeight * 0.82) {
-        maxH = window.innerHeight * 0.82;
+      let aspect = 9/7;
+      let maxH = Math.min(window.innerHeight * 0.65, maxW * aspect);
+      if (maxH > window.innerHeight * 0.65) {
+        maxH = window.innerHeight * 0.65;
         maxW = maxH / aspect;
       }
       const dpr = window.devicePixelRatio || 1;
@@ -320,10 +315,10 @@
     let gameStarted = false, gameOver = false, ballsThisGame = 7;
     const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
     const slotColors = ["#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"];
-    let boardPadding = 44, slotsHeight = 120, ROWS = 14;
+    let boardPadding = 44, slotsHeight = 140, ROWS = 14;
     const COLS = slotValues.length;
     let PEG_GAP = 0, PEG_Y_START = 0;
-    const BALL_RADIUS = 20, PEG_RADIUS = 12, BALL_START_Y = 50, BALL_DROP_DELAY = 900;
+    const BALL_RADIUS = 24, PEG_RADIUS = 14, BALL_START_Y = 60, BALL_DROP_DELAY = 850;
     let pegs = [], balls = [], confetti = [];
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
     let specialPegEvery = 3, tilt = 0, tiltRaw = 0, tiltHistory = [], TILT_HISTORY_SIZE = 6;
@@ -442,7 +437,7 @@
       }
       for (let ball of balls) {
         ctx.save(); ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-        ctx.fillStyle = ball.color; ctx.shadowColor = "#fff"; ctx.shadowBlur = 12; ctx.globalAlpha = 0.98; ctx.fill(); ctx.restore();
+        ctx.fillStyle = ball.color; ctx.shadowColor = "#fff"; ctx.shadowBlur = 16; ctx.globalAlpha = 0.98; ctx.fill(); ctx.restore();
       }
       for (let c of confetti) {
         ctx.save(); ctx.globalAlpha = Math.max(0, 1 - c.t/80); ctx.fillStyle = c.color;
@@ -451,7 +446,7 @@
         ctx.restore();
       }
       for (let ft of floatingText) {
-        ctx.save(); ctx.globalAlpha = ft.opacity; ctx.font = "bold 20px Orbitron, sans-serif";
+        ctx.save(); ctx.globalAlpha = ft.opacity; ctx.font = "bold 22px Orbitron, sans-serif";
         ctx.strokeStyle = "#fff"; ctx.lineWidth = 4;
         ctx.strokeText(ft.txt, ft.x-38, ft.y);
         ctx.fillStyle = ft.col1; ctx.fillText(ft.txt, ft.x-38, ft.y); ctx.restore();
@@ -460,7 +455,7 @@
     }
     function drawTiltBar() {
       let barW = Math.max(80, canvas.width * 0.5), barH = 10;
-      let cx = canvas.width/2, cy = canvas.height - 12;
+      let cx = canvas.width/2, cy = canvas.height - 18;
       ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#fff'; ctx.beginPath();
       if (ctx.roundRect) { ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 5);}
       else { ctx.rect(cx-barW/2, cy-barH/2, barW, barH);}
