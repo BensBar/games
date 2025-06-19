@@ -7,9 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
   <style>
     html, body {
-      background: linear-gradient(135deg,#172949 0%,#38b6ff 100%);
+      background: linear-gradient(135deg, #172949 0%, #38b6ff 100%);
       min-height: 100vh;
-      width: 100vw;
       margin: 0;
       padding: 0;
       font-family: 'Manrope', Arial, sans-serif;
@@ -58,6 +57,9 @@
       animation: blink 1.7s infinite alternate;
       margin-bottom: 18px;
       user-select: none;
+      text-align: center;
+      width: 100%;
+      display: block;
     }
     @keyframes blink {
       0% { opacity: 1;}
@@ -71,6 +73,9 @@
       font-family: 'Manrope', Arial, sans-serif;
       text-shadow: 0 0 8px #38b6ff44;
       user-select: none;
+      text-align: center;
+      width: 100%;
+      display: block;
     }
     #help-btn {
       position: absolute;
@@ -105,9 +110,8 @@
       touch-action: none;
       z-index: 1;
       max-width: 96vw;
-      max-height: 72vh;
       width: 480px;
-      height: 640px;
+      height: 780px;
       transition: box-shadow 0.2s;
     }
     /* --- Bottom bar --- */
@@ -199,18 +203,67 @@
       80% { transform: scale(1.13);}
       100% { transform: scale(1);}
     }
+    /* Points slots styling */
+    #slots-row {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+      z-index: 3;
+      pointer-events: none;
+      height: 70px;
+    }
+    .slot-box {
+      width: 54px;
+      height: 68px;
+      background: linear-gradient(180deg, #fff9 60%, #ffe24b 100%);
+      border-radius: 0 0 18px 18px;
+      border: 3px solid #38b6ffcc;
+      box-shadow: 0 2px 18px #38b6ff44, 0 0 18px #ffe24b33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      margin: 0 3px;
+    }
+    .slot-value {
+      font-family: 'Orbitron', 'Manrope', Arial, sans-serif;
+      font-size: 1.15em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 2px 10px #38b6ff88, 0 0 2px #ffe24b, 0 0 2px #000;
+      background: linear-gradient(90deg,#38b6ff,#ff89aa 90%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      user-select: none;
+      text-align: center;
+      width: 100%;
+      display: block;
+    }
+    .slot-box.active {
+      background: linear-gradient(180deg, #ffe24b 80%, #ff89aa 100%);
+      box-shadow: 0 0 20px #ffe24b99, 0 0 12px #ff89aa77;
+    }
     @media (max-width: 700px) {
       #logo-entrance { width: 60vw; }
-      #game-canvas { max-width: 99vw; max-height: 54vh; width: 99vw; height: 54vh;}
+      #game-canvas { max-width: 99vw; width: 99vw; height: 64vw; min-height: 400px;}
       #bottom-bar { font-size: 1em; padding: 7px 0; }
       .score, #multiplier-box { font-size: 1em; padding: 8px 8px; min-width: 56px;}
       #help-btn { font-size: 1em; padding: 7px 12px;}
+      #slots-row { height: 48px; }
+      .slot-box { width: 12vw; height: 48px;}
     }
     @media (max-width: 480px) {
       #logo-entrance { width: 84vw;}
       #bottom-bar { padding: 4px 0; }
       .score, #multiplier-box { font-size: 0.96em; padding: 5px 4px; min-width: 38px;}
       #help-btn { margin: 0; font-size: 0.93em; }
+      #slots-row { height: 38px; }
+      .slot-box { width: 10vw; height: 38px;}
     }
   </style>
 </head>
@@ -221,7 +274,10 @@
     <div id="credit">by BensBar</div>
     <button id="help-btn" type="button">Help</button>
   </div>
-  <canvas id="game-canvas" width="480" height="640" tabindex="1"></canvas>
+  <div style="position:relative;max-width:480px;margin:0 auto;">
+    <canvas id="game-canvas" width="480" height="780" tabindex="1"></canvas>
+    <div id="slots-row"></div>
+  </div>
   <div id="bottom-bar">
     <div id="score-bar">
       <span class="score"><b>🏆</b> <span id="score-val">0</span></span>
@@ -233,20 +289,26 @@
     </div>
   </div>
   <script>
-    // --- BenBlinko Spectacular Edition ---
+    // --- BenBlinko Spectacular Arcade Edition ---
 
     /*** STATE ***/
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     let gameStarted = false;
 
+    // Slot values & colors
+    const slotValues = [10, 50, 100, 200, 500, 200, 100, 50, 10];
+    const slotColors = [
+      "#38b6ff", "#ffef40", "#ff89aa", "#b7aaf7", "#31ed8a", "#b7aaf7", "#ff89aa", "#ffef40", "#38b6ff"
+    ];
+
     // Game constants
     const GRAVITY = 0.00014 * canvas.height;
     const BOUNCE_DAMPING = 0.44;
     const BALL_RADIUS = 12;
     const PEG_RADIUS = 8;
-    const ROWS = 9;
-    const COLS = 9;
+    const ROWS = 10;
+    const COLS = slotValues.length;
     const PEG_GAP = 48;
     const PEG_Y_START = 100;
     const BALL_START_Y = 44;
@@ -258,6 +320,19 @@
     let specialPegEvery = 3; // every 3rd row
     let tilt = 0;
 
+    // Slot drawing and landing logic
+    function drawSlots(activeCol = -1) {
+      const slotsRow = document.getElementById('slots-row');
+      slotsRow.innerHTML = '';
+      for (let i = 0; i < slotValues.length; ++i) {
+        const slot = document.createElement('div');
+        slot.className = 'slot-box' + (i === activeCol ? ' active' : '');
+        slot.style.borderColor = slotColors[i];
+        slot.innerHTML = `<span class="slot-value" style="background:linear-gradient(90deg,${slotColors[i]},#fff);">${slotValues[i]}</span>`;
+        slotsRow.appendChild(slot);
+      }
+    }
+
     /********* PEGS ********/
     function makePegs() {
       pegs = [];
@@ -266,7 +341,7 @@
           let offset = (row % 2 === 0) ? 0 : PEG_GAP / 2;
           let isSpecial = (row % specialPegEvery === 0 && col % 2 === 1);
           pegs.push({
-            x: 40 + col * PEG_GAP + offset,
+            x: 36 + col * PEG_GAP + offset,
             y: PEG_Y_START + row * PEG_GAP,
             hit: false,
             anim: 0,
@@ -286,6 +361,7 @@
       confetti = [];
       makePegs();
       updateUI();
+      drawSlots();
       setTimeout(dropBall, 900);
     }
 
@@ -329,11 +405,13 @@
         vy: 0,
         radius: BALL_RADIUS,
         color: "#ffe24b",
-        landed: false
+        landed: false,
+        slot: null
       });
     }
 
     function update() {
+      let landedThisFrame = false, landedCol = -1;
       for (let ball of balls) {
         if (ball.landed) continue;
         ball.vy += GRAVITY;
@@ -380,12 +458,36 @@
           }
         }
 
-        // Landed
-        if (ball.y > canvas.height - ball.radius) {
-          ball.y = canvas.height - ball.radius;
+        // Landed in a slot
+        if (ball.y > canvas.height - 80 - ball.radius) {
+          // Find which slot
+          let slotW = canvas.width / slotValues.length;
+          let col = Math.floor(ball.x / slotW);
+          col = Math.max(0, Math.min(slotValues.length-1, col));
+          ball.x = col * slotW + slotW/2;
+          ball.y = canvas.height - 80 - ball.radius;
           ball.vy = 0; ball.vx = 0;
           ball.landed = true;
+          ball.slot = col;
           ballInPlay = false;
+          landedThisFrame = true;
+          landedCol = col;
+
+          // Award slot points (multiplier applies only to pegs, not slot)
+          let slotScore = slotValues[col];
+          score += slotScore;
+          animateScore('score-val');
+          showFloatingText("+"+slotScore, ball.x, ball.y-18, slotColors[col], "#fff");
+          // Confetti burst
+          for (let j=0;j<14;++j) {
+            confetti.push({
+              x: ball.x, y: ball.y,
+              vx: (Math.random()-0.5)*4, vy: (Math.random()-0.8)*3,
+              color: slotColors[col],
+              t: 0,
+              shape: "star"
+            });
+          }
           setTimeout(()=>{
             // Reset combo if no peg hit on drop
             if (!comboActive) {
@@ -416,6 +518,8 @@
         ft.y -= 1.2, ft.opacity -= 0.016;
         if (ft.opacity <= 0) floatingText.splice(i,1);
       }
+      // Highlight slot
+      drawSlots(landedThisFrame ? landedCol : -1);
     }
 
     function showFloatingText(txt, x, y, col1, col2) {
@@ -515,68 +619,4 @@
       requestAnimationFrame(loop);
     }
 
-    /********* INPUTS ********/
-    // Pointer/tap to drop ball at point
-    canvas.addEventListener('pointerdown', function(e) {
-      if (!gameStarted) return;
-      if (ballInPlay || ballsLeft <= 0) return;
-      let rect = canvas.getBoundingClientRect();
-      let x = (e.clientX - rect.left) * canvas.width / rect.width;
-      dropBall(x);
-    });
-
-    // Space/Enter to start or drop ball
-    window.addEventListener('keydown', e => { 
-      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){
-        startGame();
-      } else if (gameStarted && (e.code=="Space"||e.code=="ArrowDown")) {
-        dropBall();
-      }
-    });
-
-    // Help
-    document.getElementById('help-btn').onclick = function() {
-      alert("BenBlinko\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nTilt your phone to curve the ball. Good luck!");
-    };
-
-    // Start screen overlay
-    function startGame() {
-      document.getElementById('overlay').classList.add('hide');
-      gameStarted = true;
-      resetGame();
-      setTimeout(()=>canvas.focus(), 300);
-    }
-    document.getElementById('overlay').addEventListener('pointerdown', startGame);
-
-    // Accelerometer support (tilt to move ball left/right)
-    function handleTilt(event) {
-      if (!gameStarted) return;
-      let gamma = event.gamma || 0;
-      if (typeof window.orientation !== "undefined" && window.orientation === 90) gamma = -event.beta;
-      tilt = Math.max(-2.2, Math.min(2.2, gamma/9));
-    }
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener("deviceorientation", handleTilt, true);
-    }
-
-    // Responsive: resize canvas on mobile
-    function resize() {
-      let w = Math.min(window.innerWidth, 480);
-      let h = Math.min(window.innerHeight-90, 640);
-      canvas.width = w;
-      canvas.height = h;
-    }
-    window.addEventListener('resize', resize, false);
-    resize();
-
-    // Keep canvas focus for keyboard on load
-    window.onload = () => { canvas.focus(); };
-
-    /********* LAUNCH ********/
-    makePegs();
-    updateUI();
-    loop();
-
-  </script>
-</body>
-</html>
+   
