@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BenBlinko • Neon Laser Deluxe</title>
+  <title>BenBlinko • Neon Laser Deluxe 4K</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Manrope:wght@700&display=swap" rel="stylesheet">
   <style>
@@ -102,37 +102,80 @@
       width:98vw;height:65vh;max-width:480px;max-height:65vh;position:relative;
       transition:box-shadow 0.2s;
     }
-    #bottom-bar { /* ... unchanged ... */ }
-    #score-bar { /* ... unchanged ... */ }
-    .score { /* ... unchanged ... */ }
-    .score:before { /* ... unchanged ... */ }
-    #multiplier-box { /* ... unchanged ... */ }
-    #multiplier-box:after { /* ... unchanged ... */ }
+    #bottom-bar { position:fixed;bottom:0;left:0;right:0;height:15vh;z-index:1; }
+    #score-bar { display:flex;justify-content:space-around;align-items:center;padding:10px;max-width:480px;margin:0 auto;flex-wrap:wrap; }
+    .score { font-size:clamp(1em,4vw,1.4em);color:#fff;text-shadow:0 0 8px #38b6ff;font-weight:bold;margin:0 0.4em;letter-spacing:0.05em;white-space:nowrap; }
+    .score:before { content:'';display:inline-block;width:1em;height:1em;margin-right:0.3em;vertical-align:-0.1em; }
+    #multiplier-box { 
+      position:relative;
+      background:linear-gradient(90deg,#38b6ff 0%,#ffe24b 50%,#ff89aa 100%);
+      color:#172949;padding:0.4em 0.8em;border-radius:0.6em;
+      box-shadow:0 0 20px #ffe24b88;
+      overflow:hidden;transition:all 0.2s ease-out;
+    }
+    #multiplier-box:after {
+      content:'';position:absolute;inset:0;z-index:0;
+      background:repeating-linear-gradient(45deg,#ffffff22,#ffffff22 10px,#ffffff00 10px,#ffffff00 20px);
+      animation:laserstripe 0.8s infinite linear;
+    }
     @keyframes laserstripe { 0%{top:-100%;} 100%{top:0%;} }
-    #multiplier-box.inactive { /* ... unchanged ... */ }
-    #multiplier-box .bonus-label { /* ... unchanged ... */ }
-    #multiplier-box .bonus-label.inactive { /* ... unchanged ... */ }
-    .animated { /* ... unchanged ... */ }
+    #multiplier-box.inactive { background:#2b3c64;color:#89a4de;box-shadow:none; }
+    #multiplier-box .bonus-label { position:absolute;top:-12px;right:4px;font-size:0.6em;color:#fff;text-shadow:0 0 5px #ffe24b;transition:all 0.3s ease-out; }
+    #multiplier-box .bonus-label.inactive { opacity:0; }
+    .animated { animation: bounce 0.5s ease-out; }
     @keyframes bounce { 0% { transform: scale(1);} 40% { transform: scale(1.3);} 60% { transform: scale(0.95);} 80% { transform: scale(1.13);} 100% { transform: scale(1);} }
-    #slots-row { /* ... unchanged ... */ }
-    .slot-box { /* ... unchanged ... */ }
-    .slot-value { /* ... unchanged ... */ }
-    .slot-box.active { /* ... unchanged ... */ }
-    #gameover-overlay { /* ... unchanged ... */ }
-    #gameover-title { /* ... unchanged ... */ }
-    #final-score { /* ... unchanged ... */ }
-    #play-again-btn { /* ... unchanged ... */ }
-    #play-again-btn:hover { /* ... unchanged ... */ }
+    #slots-row { display:flex;justify-content:space-between;height:8vh;margin-top:0.5vh;position:relative;max-width:480px;margin:0 auto; }
+    .slot-box { flex:1;display:flex;align-items:center;justify-content:center;border:2px solid #fff;border-radius:1vw;margin:0 1px;transition:all 0.2s; }
+    .slot-value { font-size:clamp(0.8em, 3vw, 1.1em);color:#fff;font-weight:bold;text-shadow:0 0 8px #000; }
+    .slot-box.active { transform:scale(1.1);box-shadow:0 0 15px currentColor;z-index:2; }
+    #gameover-overlay { background:rgba(10,20,40,0.93); }
+    #gameover-title { font-family:'Orbitron','Manrope',Arial,sans-serif;font-size:clamp(2em,8vw,3.5em);margin-bottom:4vh;background:linear-gradient(90deg,#ff89aa 0%,#ffe24b 50%,#38b6ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 15px #ffe24b88); }
+    #final-score { font-size:clamp(1.5em,5vw,2em);margin-bottom:5vh;text-align:center;line-height:1.6; }
+    #play-again-btn { font-size:clamp(1.2em,4vw,1.6em);padding:0.8em 2em;background:linear-gradient(90deg,#38b6ff 0%,#ffe24b 100%);color:#080c1c;font-family:'Orbitron','Manrope',Arial,sans-serif;border:none;border-radius:0.6em;box-shadow:0 0 24px #ffe24b99;font-weight:bold;cursor:pointer;transition:all 0.15s; }
+    #play-again-btn:hover { background:linear-gradient(90deg,#ffe24b 0%,#38b6ff 100%);transform:scale(1.05); }
+    
+    /* Added for 4K support */
+    @media (min-width: 1800px) or (min-resolution: 192dpi) {
+      #game-canvas {
+        max-width: 800px;
+        border-width: 4px;
+        border-radius: 12px;
+        box-shadow: 0 12px 60px #ffe24b55, 0 8px 36px #38b6ff55;
+      }
+      #score-bar, #slots-row {
+        max-width: 800px;
+      }
+      .laser {
+        filter: blur(10px) brightness(2.2);
+        height: 1.5vw;
+      }
+      #multiplier-box {
+        box-shadow: 0 0 30px #ffe24b99;
+      }
+    }
+    
     @media (max-width: 800px) {
       #logo-entrance { width: 60vw;}
       #game-canvas { max-width: 99vw; width: 99vw;}
       #slots-row { height: 10vh; }
       .slot-box { width: 14vw; }
     }
+    
+    /* 4K specific tweaks */
+    @media (min-width: 3000px) {
+      body {
+        font-size: 24px;
+      }
+      #game-canvas {
+        max-width: 1200px;
+      }
+      #score-bar, #slots-row {
+        max-width: 1200px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- ... unchanged HTML audio & overlays ... -->
   <audio id="intro-audio" src="/sounds/intro.mp3"></audio>
   <audio id="game-audio" src="/sounds/gameplay.mp3" loop></audio>
   <audio id="end-audio" src="/sounds/end.mp3"></audio>
@@ -160,7 +203,7 @@
     <div id="final-score"></div>
     <button id="play-again-btn">Play Again</button>
   </div>
-  <div style="position:relative;max-width:480px;margin:0 auto;">
+  <div style="position:relative;max-width:480px;margin:0 auto;" id="game-container">
     <canvas id="game-canvas" width="480" height="360" tabindex="1"></canvas>
     <div id="slots-row"></div>
   </div>
@@ -179,6 +222,7 @@
     let BALL_START_Y, slotsHeight, boardPadding, PEG_RADIUS, BALL_RADIUS;
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
+    const gameContainer = document.getElementById('game-container');
 
     function recalcConstants() {
       // Pegs and ball radii tuned for mobile and desktop (smaller values)
@@ -188,25 +232,50 @@
       slotsHeight = canvas.height * 0.155;
       boardPadding = canvas.height * 0.035;
     }
+    
+    // Enhanced for 4K support
     function setCanvasResolution() {
-      let maxW = Math.min(window.innerWidth * 0.98, 480);
+      const dpr = window.devicePixelRatio || 1;
+      
+      // Detect 4K displays (width > 3000px or high DPI > 2)
+      const is4K = window.innerWidth > 3000 || dpr > 2;
+      
+      // Scale based on device capabilities
+      let maxW = is4K ? Math.min(window.innerWidth * 0.8, 1200) : Math.min(window.innerWidth * 0.98, 480);
       let aspect = 1.3;
       let maxH = Math.min(window.innerHeight * 0.65, maxW * aspect);
+      
       if (maxH > window.innerHeight * 0.65) {
         maxH = window.innerHeight * 0.65;
         maxW = maxH / aspect;
       }
-      const dpr = window.devicePixelRatio || 1;
+      
+      // Set physical (buffer) size with high DPI scaling
       canvas.width = maxW * dpr;
       canvas.height = maxH * dpr;
+      
+      // Set display size
       canvas.style.width = maxW + 'px';
       canvas.style.height = maxH + 'px';
-      ctx.setTransform(1,0,0,1,0,0);
+      
+      // Update container size for proper alignment
+      gameContainer.style.maxWidth = maxW + 'px';
+      
+      // Reset transform and apply DPI scaling
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
+      
+      // Enhanced rendering quality for high-DPI displays
+      if (dpr > 1) {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+      }
+      
       recalcConstants();
       makePegs();
       drawSlots();
     }
+    
     setCanvasResolution();
     window.addEventListener('resize', setCanvasResolution);
 
@@ -218,6 +287,15 @@
     let pegs = [], balls = [], confetti = [];
     let score = 0, highscore = 0, ballsLeft = ballsThisGame, multiplier = 2, comboActive = false, ballInPlay = false;
     let specialPegEvery = 3, tilt = 0, tiltRaw = 0, tiltHistory = [], TILT_HISTORY_SIZE = 6;
+    
+    // Load high score from local storage if available
+    try {
+      const savedHighscore = localStorage.getItem('benblinko_highscore');
+      if (savedHighscore) highscore = parseInt(savedHighscore, 10);
+    } catch (e) {
+      console.log("Could not load highscore");
+    }
+    
     function drawSlots(activeCol = -1) {
       const slotsRow = document.getElementById('slots-row');
       slotsRow.innerHTML = '';
@@ -229,6 +307,7 @@
         slotsRow.appendChild(slot);
       }
     }
+    
     function makePegs() {
       let rows = ROWS, cols = COLS;
       let drawWidth = canvas.width / (window.devicePixelRatio || 1), drawHeight = canvas.height / (window.devicePixelRatio || 1);
@@ -244,11 +323,13 @@
         }
       }
     }
+    
     function resetGame() {
       score = 0; ballsLeft = ballsThisGame; multiplier = 2; comboActive = false; ballInPlay = false;
       balls = []; confetti = []; gameOver = false;
       makePegs(); updateUI(); drawSlots(); setTimeout(()=>dropBall(), 600);
     }
+    
     function updateUI() {
       document.getElementById('score-val').textContent = score;
       document.getElementById('highscore-val').textContent = highscore;
@@ -257,20 +338,23 @@
       if (!comboActive) { mb.classList.add('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO"; label.classList.add('inactive');
       } else { mb.classList.remove('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO!"; label.classList.remove('inactive'); }
     }
+    
     function animateScore(id) {
       let el = document.getElementById(id); if (!el) return;
       el.classList.add('animated'); setTimeout(()=>el.classList.remove('animated'), 500);
     }
+    
     function dropBall(x = canvas.width/2) {
       if (ballsLeft <= 0 || ballInPlay || gameOver) return; ballInPlay = true; ballsLeft--;
       updateUI(); animateScore('ball-val');
       balls.push({ x: x, y: BALL_START_Y, vx: tilt * 1.6, vy: 0, radius: BALL_RADIUS, color: "#ffe24b", landed: false, slot: null });
     }
+    
     function update() {
       if (gameOver) return; let landedThisFrame = false, landedCol = -1;
       for (let ball of balls) {
         if (ball.landed) continue;
-        ball.vy += 0.00014 * canvas.height; ball.vx += tilt * 0.13;
+        ball.vy += 0.00014 * canvas.height; ball.vx += tilt * 0.15; // Increased tilt effect
         ball.x += ball.vx; ball.y += ball.vy;
         if (ball.x < ball.radius) { ball.x = ball.radius; ball.vx = -ball.vx * 0.44; }
         if (ball.x > canvas.width - ball.radius) { ball.x = canvas.width - ball.radius; ball.vx = -ball.vx * 0.44; }
@@ -310,151 +394,342 @@
       for (let peg of pegs) if (peg.anim>0) peg.anim -= 0.10;
       for (let c of confetti) { c.x += c.vx; c.y += c.vy; c.vy += 0.12; c.t++; }
       confetti = confetti.filter(c => c.t < 80);
-      if (score > highscore) { highscore = score; animateScore('highscore-val'); }
+      if (score > highscore) { 
+        highscore = score; 
+        animateScore('highscore-val');
+        // Save highscore to localStorage
+        try {
+          localStorage.setItem('benblinko_highscore', highscore.toString());
+        } catch (e) {}
+      }
       for (let i=floatingText.length-1; i>=0; --i) { let ft = floatingText[i]; ft.y -= 1.2, ft.opacity -= 0.016; if (ft.opacity <= 0) floatingText.splice(i,1);}
       drawSlots(landedThisFrame ? landedCol : -1);
     }
+    
     function showFloatingText(txt, x, y, col1, col2) { floatingText.push({txt, x, y, opacity: 1, col1, col2}); }
     let floatingText = [];
+    
     function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      let grd = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+      const dpr = window.devicePixelRatio || 1;
+      ctx.clearRect(0, 0, canvas.width/dpr, canvas.height/dpr);
+      
+      // Enhanced background gradient for 4K
+      let grd = ctx.createLinearGradient(0, 0, canvas.width/dpr, canvas.height/dpr);
       grd.addColorStop(0, "#1d2e53");
       grd.addColorStop(1, "#2bb7ff");
-      ctx.fillStyle = grd; ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = grd; 
+      ctx.fillRect(0, 0, canvas.width/dpr, canvas.height/dpr);
+      
+      // Draw pegs with enhanced rendering
       for (let peg of pegs) {
-        ctx.save(); ctx.beginPath();
+        ctx.save(); 
+        ctx.beginPath();
         let r = PEG_RADIUS + (peg.anim>0 ? peg.anim*7 : 0);
         ctx.arc(peg.x, peg.y, r, 0, Math.PI*2);
-        if (peg.special) { ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b"; ctx.shadowColor = "#ff89aa"; }
-        else { ctx.fillStyle = peg.hit ? "#ffe24b" : "#2bb7ff"; ctx.shadowColor = "#2bb7ff"; }
-        if (peg.anim>0) ctx.shadowBlur = 18*peg.anim;
-        ctx.globalAlpha = peg.hit ? 0.93 : 0.75; ctx.fill(); ctx.restore();
-      }
-      for (let ball of balls) {
-        ctx.save(); ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-        ctx.fillStyle = ball.color; ctx.shadowColor = "#fff"; ctx.shadowBlur = 16; ctx.globalAlpha = 0.98; ctx.fill(); ctx.restore();
-      }
-      for (let c of confetti) {
-        ctx.save(); ctx.globalAlpha = Math.max(0, 1 - c.t/80); ctx.fillStyle = c.color;
-        if (c.shape === "star") { drawStar(ctx, c.x, c.y, 5, 4, 2.2 + Math.sin(c.t/3) * 1.1); }
-        else { ctx.beginPath(); ctx.arc(c.x, c.y, 2.1+Math.sin(c.t/3)*1.05, 0, Math.PI*2); ctx.fill(); }
+        
+        if (peg.special) { 
+          ctx.fillStyle = peg.hit ? "#ff89aa" : "#ffe24b"; 
+          ctx.shadowColor = "#ff89aa"; 
+        } else { 
+          ctx.fillStyle = peg.hit ? "#ffe24b" : "#2bb7ff"; 
+          ctx.shadowColor = "#2bb7ff"; 
+        }
+        
+        // Enhanced glow for 4K
+        if (peg.anim>0) {
+          ctx.shadowBlur = 18 * peg.anim * (dpr > 1 ? 1.5 : 1);
+        }
+        
+        ctx.globalAlpha = peg.hit ? 0.93 : 0.75; 
+        ctx.fill(); 
         ctx.restore();
       }
-      for (let ft of floatingText) {
-        ctx.save(); ctx.globalAlpha = ft.opacity; ctx.font = "bold 22px Orbitron, sans-serif";
-        ctx.strokeStyle = "#fff"; ctx.lineWidth = 4;
-        ctx.strokeText(ft.txt, ft.x-38, ft.y);
-        ctx.fillStyle = ft.col1; ctx.fillText(ft.txt, ft.x-38, ft.y); ctx.restore();
+      
+      // Draw balls with enhanced rendering
+      for (let ball of balls) {
+        ctx.save(); 
+        ctx.beginPath(); 
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = ball.color; 
+        ctx.shadowColor = "#fff"; 
+        ctx.shadowBlur = 16 * (dpr > 1 ? 1.5 : 1); 
+        ctx.globalAlpha = 0.98; 
+        ctx.fill(); 
+        ctx.restore();
       }
+      
+      // Draw confetti with enhanced rendering
+      for (let c of confetti) {
+        ctx.save(); 
+        ctx.globalAlpha = Math.max(0, 1 - c.t/80); 
+        ctx.fillStyle = c.color;
+        
+        if (c.shape === "star") { 
+          drawStar(ctx, c.x, c.y, 5, 4 * (dpr > 1 ? 1.2 : 1), 2.2 + Math.sin(c.t/3) * 1.1); 
+        } else { 
+          ctx.beginPath(); 
+          ctx.arc(c.x, c.y, 2.1 * (dpr > 1 ? 1.2 : 1) + Math.sin(c.t/3)*1.05, 0, Math.PI*2); 
+          ctx.fill(); 
+        }
+        
+        ctx.restore();
+      }
+      
+      // Draw floating text with enhanced rendering
+      for (let ft of floatingText) {
+        ctx.save(); 
+        ctx.globalAlpha = ft.opacity; 
+        
+        // Adjust font size for 4K
+        const fontSize = dpr > 1 ? 28 : 22;
+        ctx.font = `bold ${fontSize}px Orbitron, sans-serif`;
+        
+        ctx.strokeStyle = "#fff"; 
+        ctx.lineWidth = dpr > 1 ? 6 : 4;
+        ctx.strokeText(ft.txt, ft.x-38, ft.y);
+        ctx.fillStyle = ft.col1; 
+        ctx.fillText(ft.txt, ft.x-38, ft.y); 
+        ctx.restore();
+      }
+      
       drawTiltBar();
     }
+    
     function drawTiltBar() {
-      let barW = Math.max(80, canvas.width * 0.5), barH = 10;
-      let cx = canvas.width/2, cy = canvas.height - 18;
-      ctx.save(); ctx.globalAlpha = 0.22; ctx.fillStyle = '#fff'; ctx.beginPath();
-      if (ctx.roundRect) { ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 5);}
-      else { ctx.rect(cx-barW/2, cy-barH/2, barW, barH);}
-      ctx.fill(); ctx.globalAlpha = 0.7; ctx.fillStyle = '#2bb7ff';
+      const dpr = window.devicePixelRatio || 1;
+      let barW = Math.max(80, canvas.width/dpr * 0.5), barH = dpr > 1 ? 14 : 10;
+      let cx = (canvas.width/dpr)/2, cy = (canvas.height/dpr) - 18;
+      
+      ctx.save(); 
+      ctx.globalAlpha = 0.22; 
+      ctx.fillStyle = '#fff'; 
+      ctx.beginPath();
+      
+      if (ctx.roundRect) { 
+        ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 5);
+      } else { 
+        ctx.rect(cx-barW/2, cy-barH/2, barW, barH);
+      }
+      
+      ctx.fill(); 
+      ctx.globalAlpha = 0.7; 
+      ctx.fillStyle = '#2bb7ff';
+      
       let tiltNorm = (tilt/2.2), markerX = cx + tiltNorm * (barW/2-7);
-      ctx.beginPath(); ctx.arc(markerX, cy, 7, 0, Math.PI*2); ctx.fill();
-      ctx.globalAlpha = 1; ctx.font = 'bold 10px Orbitron, sans-serif'; ctx.fillStyle = '#172949'; ctx.textAlign = 'center'; ctx.fillText('TILT', cx, cy+3); ctx.restore();
+      ctx.beginPath(); 
+      ctx.arc(markerX, cy, dpr > 1 ? 9 : 7, 0, Math.PI*2); 
+      ctx.fill();
+      
+      ctx.globalAlpha = 1; 
+      ctx.font = `bold ${dpr > 1 ? 12 : 10}px Orbitron, sans-serif`; 
+      ctx.fillStyle = '#172949'; 
+      ctx.textAlign = 'center'; 
+      ctx.fillText('TILT', cx, cy+3); 
+      ctx.restore();
     }
+    
     function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
-      let angle = Math.PI / points; ctx.beginPath();
+      let angle = Math.PI / points; 
+      ctx.beginPath();
       for (let i = 0; i < 2 * points; i++) {
         let r = (i % 2 === 0) ? outerRadius : innerRadius;
         ctx.lineTo(x + Math.cos(i * angle) * r, y + Math.sin(i * angle) * r);
-      } ctx.closePath(); ctx.fill();
+      } 
+      ctx.closePath(); 
+      ctx.fill();
     }
+    
     function loop() {
       if (!('ontouchstart' in window) && !window.DeviceOrientationEvent) {
-        if (tiltKey !== 0) { tilt += 0.13 * tiltKey; } else { tilt *= 0.85; }
+        if (tiltKey !== 0) { 
+          tilt += 0.13 * tiltKey; 
+        } else { 
+          tilt *= 0.85; 
+        }
         tilt = Math.max(-2.2, Math.min(2.2, tilt));
       }
-      if (gameStarted && !gameOver) { update(); draw(); }
-      // ADD: If no ball is present, and game not over, force a ball in play:
+      
+      if (gameStarted && !gameOver) { 
+        update(); 
+        draw(); 
+      }
+      
+      // If no ball is present, and game not over, force a ball in play:
       if (gameStarted && balls.length === 0 && !gameOver && !ballInPlay && ballsLeft > 0) {
         dropBall();
       }
+      
       requestAnimationFrame(loop);
     }
+    
     canvas.addEventListener('pointerdown', function(e) {
       if (!gameStarted || gameOver) return;
       if (ballInPlay || ballsLeft <= 0) return;
       let rect = canvas.getBoundingClientRect();
-      let x = (e.clientX - rect.left) * canvas.width / rect.width;
+      let x = (e.clientX - rect.left) * (canvas.width / (window.devicePixelRatio || 1)) / rect.width;
       dropBall(x);
     });
+    
     let tiltKey = 0;
     window.addEventListener('keydown', e => {
-      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){ startGame(); }
-      else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) { dropBall(); }
-      if (gameStarted && !gameOver) {
-        if (e.code === "ArrowLeft" || e.code === "KeyA") { tiltKey = -1; }
-        else if (e.code === "ArrowRight" || e.code === "KeyD") { tiltKey = 1; }
+      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){ 
+        startGame(); 
+      } else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) { 
+        dropBall(); 
       }
+      
+      if (gameStarted && !gameOver) {
+        if (e.code === "ArrowLeft" || e.code === "KeyA") { 
+          tiltKey = -1; 
+        } else if (e.code === "ArrowRight" || e.code === "KeyD") { 
+          tiltKey = 1; 
+        }
+      }
+      
       if (gameOver && (e.code=="Space"||e.code=="Enter")) playAgain();
     });
+    
     window.addEventListener('keyup', e => {
-      if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "ArrowRight" || e.code === "KeyD") { tiltKey = 0; }
+      if (e.code === "ArrowLeft" || e.code === "KeyA" || e.code === "ArrowRight" || e.code === "KeyD") { 
+        tiltKey = 0; 
+      }
     });
+    
     document.getElementById('help-btn').onclick = function(e) {
       e.stopPropagation();
-      alert("BenBlinko Neon Laser 4K\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the slots at the bottom for more points.");
+      alert("BenBlinko Neon Laser 4K Deluxe\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the slots at the bottom for more points.\n\nTILT CONTROLS: Use left/right arrow keys or tilt your device to control the ball's trajectory!");
     };
+    
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
-      gameStarted = true; playGameAudio(); resetGame(); setTimeout(()=>canvas.focus(), 300);
+      gameStarted = true; 
+      playGameAudio(); 
+      resetGame(); 
+      setTimeout(()=>canvas.focus(), 300);
     }
+    
     const overlay = document.getElementById('overlay');
     ["pointerdown", "touchstart", "mousedown", "click"].forEach(eventName => {
       overlay.addEventListener(eventName, function(e) {
+        if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') return;
         e.preventDefault();
         if (!gameStarted) startGame();
         playIntroAudio();
       }, { once: true });
     });
+    
     function showGameOver() {
-      gameOver = true; stopGameAudio();
+      gameOver = true; 
+      stopGameAudio();
       let govl = document.getElementById('gameover-overlay');
       document.getElementById('final-score').innerHTML = `Score: <b>${score}</b><br>Highscore: <b>${highscore}</b>`;
       govl.classList.remove('hide');
     }
+    
     function playAgain() {
-      let govl = document.getElementById('gameover-overlay'); govl.classList.add('hide');
-      gameStarted = true; playGameAudio(); resetGame();
+      let govl = document.getElementById('gameover-overlay'); 
+      govl.classList.add('hide');
+      gameStarted = true; 
+      playGameAudio(); 
+      resetGame();
     }
+    
     document.getElementById('play-again-btn').onclick = playAgain;
 
-    // TILT/ACCELEROMETER (unchanged)
+    // IMPROVED ACCELEROMETER SUPPORT
     let tiltEnabled = false;
+    let lastGamma = 0;
+    const TILT_SENSITIVITY = 1.2; // Increased sensitivity
+    
     function handleTilt(event) {
       if (!gameStarted || gameOver || !tiltEnabled) return;
-      let gamma = event.gamma || 0, beta = event.beta || 0;
+      
+      // Get the device orientation data
+      let gamma = event.gamma || 0; // Left/right tilt (-90 to 90)
+      let beta = event.beta || 0;   // Front/back tilt (0 to 180)
+      
+      // Account for device orientation
       let orientation = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-      if (orientation === 90 || orientation === -90) gamma = -beta;
-      tiltRaw = Math.max(-2.2, Math.min(2.2, gamma/9));
+      
+      // Adjust tilt direction based on screen orientation
+      if (orientation === 90) {
+        // Landscape right
+        gamma = -beta;
+      } else if (orientation === -90) {
+        // Landscape left
+        gamma = beta;
+      } else if (orientation === 180) {
+        // Upside down
+        gamma = -gamma;
+      }
+      
+      // Apply sensitivity and limit the range
+      let tiltTarget = Math.max(-2.2, Math.min(2.2, gamma * TILT_SENSITIVITY / 12));
+      
+      // Smooth the tilt using weighted average (more responsive)
+      tiltRaw = tiltTarget * 0.3 + lastGamma * 0.7;
+      lastGamma = tiltRaw;
+      
+      // Advanced smoothing with more weight on recent values
       tiltHistory.push(tiltRaw);
       if (tiltHistory.length > TILT_HISTORY_SIZE) tiltHistory.shift();
-      tilt = tiltHistory.reduce((a,b)=>a+b,0) / tiltHistory.length;
-    }
-    function requestTiltPermission() {
-      if (window.location.protocol !== "https:") {
-        showTiltMessage('Tilt control requires HTTPS. Please use a secure connection.'); return;
+      
+      // Weighted average with more emphasis on recent readings
+      let totalWeight = 0;
+      let weightedSum = 0;
+      for (let i = 0; i < tiltHistory.length; i++) {
+        // Weight increases with index (more recent values have higher weight)
+        let weight = i + 1;
+        weightedSum += tiltHistory[i] * weight;
+        totalWeight += weight;
       }
-      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission().then(function(response) {
-          if (response === 'granted') {
-            tiltEnabled = true; window.addEventListener("deviceorientation", handleTilt, true);
-            showTiltMessage('Tilt control enabled!'); document.getElementById('enable-tilt-btn').style.display = 'none';
-          } else { showTiltMessage('Tilt permission denied.'); }
-        }).catch(()=>showTiltMessage('Tilt permission error.'));
-      } else if ('DeviceOrientationEvent' in window) {
-        tiltEnabled = true; window.addEventListener("deviceorientation", handleTilt, true);
-        showTiltMessage('Tilt control enabled!'); document.getElementById('enable-tilt-btn').style.display = 'none';
-      } else { showTiltMessage('Tilt not supported on this device.'); }
+      
+      tilt = weightedSum / totalWeight;
     }
+    
+    function requestTiltPermission() {
+      if (window.location.protocol !== "https:" && window.location.hostname !== "localhost") {
+        showTiltMessage('Tilt control requires HTTPS. Please use a secure connection.');
+        return;
+      }
+      
+      // iOS requires permission
+      if (typeof DeviceOrientationEvent !== 'undefined' && 
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(function(response) {
+            if (response === 'granted') {
+              enableTiltControl();
+            } else {
+              showTiltMessage('Tilt permission denied.');
+            }
+          })
+          .catch(function(error) {
+            console.error("Error requesting device orientation permission:", error);
+            showTiltMessage('Tilt permission error. Try again.');
+          });
+      } 
+      // Android and other devices don't need permission
+      else if ('DeviceOrientationEvent' in window || 'deviceorientation' in window) {
+        enableTiltControl();
+      } else {
+        showTiltMessage('Tilt not supported on this device.');
+      }
+    }
+    
+    function enableTiltControl() {
+      tiltEnabled = true;
+      window.addEventListener("deviceorientation", handleTilt, true);
+      showTiltMessage('Tilt control enabled! Tilt your device to control the ball.');
+      document.getElementById('enable-tilt-btn').style.display = 'none';
+      
+      // Reset tilt history to ensure clean start
+      tiltHistory = [];
+      for (let i = 0; i < TILT_HISTORY_SIZE; i++) {
+        tiltHistory.push(0);
+      }
+    }
+    
     function showTiltMessage(msg) {
       let el = document.getElementById('tilt-msg');
       if (!el) {
@@ -471,33 +746,127 @@
         el.style.fontFamily = "Orbitron, Manrope, Arial, sans-serif";
         el.style.fontSize = '1.1em';
         el.style.zIndex = 9999;
+        el.style.textAlign = 'center';
+        el.style.maxWidth = '90%';
+        el.style.boxShadow = '0 0 20px rgba(56, 182, 255, 0.5)';
         document.body.appendChild(el);
       }
       el.textContent = msg;
       el.style.display = 'block';
-      setTimeout(()=>{ el.style.display = 'none'; }, 3500);
+      setTimeout(() => { 
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.5s ease-out';
+        setTimeout(() => {
+          el.style.display = 'none';
+          el.style.opacity = '1';
+        }, 500);
+      }, 3500);
     }
+    
     function maybeShowTiltButton() {
-      let isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+      let isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase());
+      let hasMotionSensors = (window.DeviceOrientationEvent || 'ondeviceorientation' in window);
       let enableTiltBtn = document.getElementById('enable-tilt-btn');
-      if (isMobile && (window.DeviceOrientationEvent || 'ondeviceorientation' in window)) {
-        enableTiltBtn.style.display = '';
+      
+      if (isMobile && hasMotionSensors) {
+        enableTiltBtn.style.display = 'block';
+        
+        // Auto-detect if device supports orientation without permission (Android)
+        if ('DeviceOrientationEvent' in window && 
+            typeof DeviceOrientationEvent.requestPermission !== 'function') {
+          // Try auto-enabling on Android
+          window.addEventListener('deviceorientation', function autoEnableTilt(e) {
+            if (e.alpha !== null || e.beta !== null || e.gamma !== null) {
+              enableTiltControl();
+              window.removeEventListener('deviceorientation', autoEnableTilt);
+            }
+          }, { once: true });
+        }
       } else {
         enableTiltBtn.style.display = 'none';
       }
     }
+    
     document.getElementById('enable-tilt-btn').onclick = requestTiltPermission;
-    window.addEventListener('DOMContentLoaded', () => { maybeShowTiltButton(); });
-    window.addEventListener('resize', maybeShowTiltButton);
+    
+    window.addEventListener('DOMContentLoaded', () => { 
+      maybeShowTiltButton(); 
+    });
+    
+    window.addEventListener('resize', () => {
+      maybeShowTiltButton();
+      
+      // Handle orientation changes for tilt controls
+      if (tiltEnabled) {
+        // Reset tilt history on orientation change
+        tiltHistory = [];
+        for (let i = 0; i < TILT_HISTORY_SIZE; i++) {
+          tiltHistory.push(0);
+        }
+        tilt = 0;
+        lastGamma = 0;
+      }
+    });
 
-    window.onload = () => { canvas.focus(); };
-    makePegs(); updateUI(); drawSlots(); loop();
+    window.onload = () => { 
+      canvas.focus(); 
+      
+      // Try to preload the logo in high resolution for 4K displays
+      if (window.devicePixelRatio > 1) {
+        const logoImg = new Image();
+        logoImg.src = "https://raw.githubusercontent.com/BensBar/games/main/img/logo.png";
+        logoImg.onload = () => {
+          document.getElementById('logo-entrance').src = logoImg.src;
+        };
+      }
+    };
+    
+    makePegs(); 
+    updateUI(); 
+    drawSlots(); 
+    loop();
 
     // --- Audio (optional, fallback safe) ---
-    function playIntroAudio(){try{document.getElementById('intro-audio')?.play();}catch{}}
-    function playGameAudio(){try{document.getElementById('game-audio')?.play();}catch{}}
-    function stopGameAudio(){try{let a=document.getElementById('game-audio');a&&a.pause();a&&a.currentTime&&(a.currentTime=0);}catch{}}
-    function playEndAudio(){try{document.getElementById('end-audio')?.play();}catch{}}
+    function playIntroAudio(){
+      try{
+        const audio = document.getElementById('intro-audio');
+        if (audio) {
+          audio.volume = 0.7;
+          audio.play().catch(e => console.log("Audio play prevented:", e));
+        }
+      } catch(e){}
+    }
+    
+    function playGameAudio(){
+      try{
+        const audio = document.getElementById('game-audio');
+        if (audio) {
+          audio.volume = 0.5;
+          audio.loop = true;
+          audio.play().catch(e => console.log("Audio play prevented:", e));
+        }
+      } catch(e){}
+    }
+    
+    function stopGameAudio(){
+      try{
+        const audio = document.getElementById('game-audio');
+        if (audio) {
+          audio.pause();
+          if (audio.currentTime) audio.currentTime = 0;
+        }
+      } catch(e){}
+    }
+    
+    function playEndAudio(){
+      try{
+        const audio = document.getElementById('end-audio');
+        if (audio) {
+          audio.volume = 0.6;
+          audio.play().catch(e => console.log("Audio play prevented:", e));
+        }
+      } catch(e){}
+    }
   </script>
 </body>
 </html>
