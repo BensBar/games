@@ -122,8 +122,9 @@
 
     function update() {
       if (!ball || ball.stopped) return;
-      ball.vy += 0.3;
-      ball.vx += tilt * 0.08;
+      // SLOWER GRAVITY AND TILT:
+      ball.vy += 0.15;
+      ball.vx += tilt * 0.04;
       ball.x += ball.vx;
       ball.y += ball.vy;
       ball.hue = (ball.hue + 3) % 360;
@@ -142,7 +143,8 @@
           const overlap = ball.r + PEG_RADIUS - dist + 0.5;
           ball.x += Math.cos(angle) * overlap;
           ball.y += Math.sin(angle) * overlap;
-          ball.vx = Math.cos(angle + Math.PI/2) * 2;
+          // SLOWER BOUNCE
+          ball.vx = Math.cos(angle + Math.PI/2) * 1;
           ball.vy *= 0.9;
           showHaptic();
         }
@@ -197,28 +199,32 @@
         DeviceOrientationEvent.requestPermission().then(p => {
           if (p === 'granted') {
             tiltReady = true;
-            window.addEventListener('deviceorientation', e => {
-              tilt = e.gamma || 0;
-            });
-          } else {
-            alert('Tilt permission denied.');
+            window.addEventListener('deviceorientation', onTilt);
           }
-        }).catch(console.error);
-      } else {
-        tiltReady = true;
-        window.addEventListener('deviceorientation', e => {
-          tilt = e.gamma || 0;
         });
+      } else {
+        window.addEventListener('deviceorientation', onTilt);
+        tiltReady = true;
       }
+    }
+
+    function onTilt(e) {
+      tilt = e.gamma || 0;
     }
 
     startBtn.onclick = () => {
       welcome.style.display = 'none';
       container.style.display = 'flex';
-      initTilt();
       spawnBall();
-      loop();
+      initTilt();
+      requestAnimationFrame(loop);
     };
+
+    // For desktop testing: use arrow keys to simulate tilt
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') tilt -= 2;
+      if (e.key === 'ArrowRight') tilt += 2;
+    });
   </script>
 </body>
 </html>
