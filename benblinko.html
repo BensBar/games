@@ -607,13 +607,16 @@
         }
         
         // Peg collision - allow multiple bounces per frame for realistic physics
-        for (let i = 0; i < pegs.length; i++) {
+        let collisionCount = 0;
+        for (let i = 0; i < pegs.length && collisionCount < 3; i++) {
           const peg = pegs[i];
           const dx = this.x - peg.x;
           const dy = this.y - peg.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
           if (distance < this.radius + peg.radius) {
+            collisionCount++;
+            
             // Score only once per peg
             if (!peg.hit) {
               peg.hit = true;
@@ -661,12 +664,14 @@
         
         // Slot collision
         if (this.y + this.radius >= canvas.height - 60) {
-          const slotWidth = canvas.width / SLOT_VALUES.length;
-          const slotIndex = Math.floor(this.x / slotWidth);
-          if (slotIndex >= 0 && slotIndex < slots.length) {
-            const slot = slots[slotIndex];
-            score += slot.value * multiplier;
-            createParticles(this.x, this.y, slot.color, 30);
+          if (!this.toRemove) {  // Only process if not already marked for removal
+            const slotWidth = canvas.width / SLOT_VALUES.length;
+            const slotIndex = Math.floor(this.x / slotWidth);
+            if (slotIndex >= 0 && slotIndex < slots.length) {
+              const slot = slots[slotIndex];
+              score += slot.value * multiplier;
+              createParticles(this.x, this.y, slot.color, 30);
+            }
             
             // Mark for removal
             this.toRemove = true;
@@ -682,12 +687,14 @@
         
         // Remove balls that fall off screen
         if (this.y > canvas.height + 100) {
-          this.toRemove = true;
-          ballsLeft--;
-          updateUI();
-          
-          if (ballsLeft <= 0) {
-            setTimeout(() => endGame(), 500);
+          if (!this.toRemove) {  // Only process if not already marked for removal
+            this.toRemove = true;
+            ballsLeft--;
+            updateUI();
+            
+            if (ballsLeft <= 0) {
+              setTimeout(() => endGame(), 500);
+            }
           }
         }
       }
@@ -772,9 +779,11 @@
     
     // Drop Ball
     function dropBall(x) {
-      if (ballsLeft > 0 && gameState === 'playing') {
-        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
+      if (ballsLeft > 0 && gameState === 'playing' && balls.length < 10) {  // Limit max balls
+        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}, active balls: ${balls.length}`);
         balls.push(new Ball(x, 50));
+      } else {
+        console.log(`Cannot drop ball: ballsLeft=${ballsLeft}, gameState=${gameState}, activeBalls=${balls.length}`);
       }
     }
     
@@ -926,15 +935,30 @@
     
     // Game Loop
     function gameLoop() {
-      if (gameState === 'playing') {
-        // Update balls
-        balls.forEach(ball => ball.update());
+      try {
+        if (gameState === 'playing') {
+          // Update balls
+          balls.forEach(ball => {
+            if (!ball.toRemove) {
+              ball.update();
+            }
+          });
+          
+          // Remove balls marked for removal
+          const initialBallCount = balls.length;
+          balls = balls.filter(ball => !ball.toRemove);
+          
+          // Debug logging for ball removal
+          if (initialBallCount !== balls.length) {
+            console.log(`Removed ${initialBallCount - balls.length} balls, ${balls.length} remaining, ${ballsLeft} balls left`);
+          }
+        }
         
-        // Remove balls marked for removal
-        balls = balls.filter(ball => !ball.toRemove);
+        draw();
+      } catch (error) {
+        console.error('Game loop error:', error);
       }
       
-      draw();
       requestAnimationFrame(gameLoop);
     }
     
