@@ -53,6 +53,7 @@
       filter: drop-shadow(0 0 36px #38b6ffcc) drop-shadow(0 0 12px #ffe24b);
       z-index:1;user-select:none;background:linear-gradient(90deg,#ffe24b33 60%,#2bb7ff33 100%);
       border-radius:2vw;
+      object-fit: contain; /* Preserve aspect ratio */
     }
     @keyframes pulse { 0%{transform:scale(1);} 100%{transform:scale(1.04);} }
     #tap-to-start {
@@ -168,6 +169,44 @@
       #game-canvas { max-width: 1200px; }
       #game-container, #score-bar, #slots-row { max-width: 1200px; }
     }
+    
+    /* Tilt indicator styles */
+    .tilt-indicator {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 10px;
+      background: rgba(25,35,65,0.5);
+      border-radius: 5px;
+      overflow: hidden;
+      z-index: 10;
+    }
+    
+    .tilt-marker {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #ffe24b;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #ffe24b88;
+      transition: left 0.1s ease-out;
+    }
+    
+    .tilt-label {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   </style>
 </head>
 <body>
@@ -201,6 +240,10 @@
   <div style="position:relative;max-width:480px;margin:0 auto;" id="game-container">
     <canvas id="game-canvas" width="480" height="360" tabindex="1"></canvas>
     <div id="slots-row"></div>
+    <div class="tilt-indicator">
+      <div id="tilt-marker" class="tilt-marker"></div>
+      <div class="tilt-label">TILT</div>
+    </div>
   </div>
   <div id="bottom-bar">
     <div id="score-bar">
@@ -332,6 +375,18 @@
       let mb = document.getElementById('multiplier-box'), mx = document.getElementById('multi-x'), label = mb.querySelector('.bonus-label');
       if (!comboActive) { mb.classList.add('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO"; label.classList.add('inactive');
       } else { mb.classList.remove('inactive'); mx.textContent = `x${multiplier}`; label.textContent = "COMBO!"; label.classList.remove('inactive'); }
+      
+      // Update tilt indicator
+      updateTiltIndicator();
+    }
+    
+    function updateTiltIndicator() {
+      const marker = document.getElementById('tilt-marker');
+      if (!marker) return;
+      
+      // Convert tilt from -2.2 to 2.2 range to a percentage (0% to 100%)
+      const percentage = ((tilt + 2.2) / 4.4) * 100;
+      marker.style.left = `${percentage}%`;
     }
     
     function animateScore(id) {
@@ -486,41 +541,6 @@
         ctx.fillText(ft.txt, ft.x-38, ft.y); 
         ctx.restore();
       }
-      
-      drawTiltBar();
-    }
-    
-    function drawTiltBar() {
-      const dpr = window.devicePixelRatio || 1;
-      let barW = Math.max(80, canvas.width/dpr * 0.5), barH = dpr > 1 ? 14 : 10;
-      let cx = (canvas.width/dpr)/2, cy = (canvas.height/dpr) - 18;
-      
-      ctx.save(); 
-      ctx.globalAlpha = 0.22; 
-      ctx.fillStyle = '#fff'; 
-      ctx.beginPath();
-      
-      if (ctx.roundRect) { 
-        ctx.roundRect(cx-barW/2, cy-barH/2, barW, barH, 5);
-      } else { 
-        ctx.rect(cx-barW/2, cy-barH/2, barW, barH);
-      }
-      
-      ctx.fill(); 
-      ctx.globalAlpha = 0.7; 
-      ctx.fillStyle = '#2bb7ff';
-      
-      let tiltNorm = (tilt/2.2), markerX = cx + tiltNorm * (barW/2-7);
-      ctx.beginPath(); 
-      ctx.arc(markerX, cy, dpr > 1 ? 9 : 7, 0, Math.PI*2); 
-      ctx.fill();
-      
-      ctx.globalAlpha = 1; 
-      ctx.font = `bold ${dpr > 1 ? 12 : 10}px Orbitron, sans-serif`; 
-      ctx.fillStyle = '#172949'; 
-      ctx.textAlign = 'center'; 
-      ctx.fillText('TILT', cx, cy+3); 
-      ctx.restore();
     }
     
     function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
@@ -543,6 +563,9 @@
         }
         tilt = Math.max(-2.2, Math.min(2.2, tilt));
       }
+      
+      // Always update tilt indicator
+      updateTiltIndicator();
       
       if (gameStarted && !gameOver) { 
         update(); 
@@ -590,12 +613,13 @@
       }
     });
     
-    document.getElementById('help-btn').onclick = function(e) {
+    // *** FIXED: Help button click event ***
+    document.getElementById('help-btn').addEventListener('click', function(e) {
       e.stopPropagation();
       alert("BenBlinko Neon Laser 4K Deluxe\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the slots at the bottom for more points.\n\nTILT CONTROLS: Use left/right arrow keys or tilt your device to control the ball's trajectory!");
-    };
+    });
     
-    // *** FIX: Simplified Game Start Function ***
+    // *** FIXED: Start Game Function ***
     function startGame() {
       document.getElementById('overlay').classList.add('hide');
       gameStarted = true; 
@@ -604,28 +628,42 @@
       setTimeout(()=>canvas.focus(), 300);
     }
     
-    // *** FIX: Simplified overlay click handling ***
-    document.getElementById('tap-to-start').addEventListener('click', function(e) {
-      e.preventDefault();
-      startGame();
-      playIntroAudio();
-    });
-    
-    document.getElementById('logo-entrance').addEventListener('click', function(e) {
-      e.preventDefault();
-      startGame();
-      playIntroAudio();
-    });
-    
-    document.getElementById('overlay').addEventListener('click', function(e) {
-      // Don't start if clicking on buttons
-      if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') {
-        return;
-      }
-      if (!gameStarted) {
-        startGame();
-        playIntroAudio();
-      }
+    // *** FIXED: Click handling to start the game ***
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tap to start text click
+      document.getElementById('tap-to-start').addEventListener('click', function(e) {
+        if (!gameStarted) {
+          startGame();
+          playIntroAudio();
+        }
+      });
+      
+      // Logo click
+      document.getElementById('logo-entrance').addEventListener('click', function(e) {
+        if (!gameStarted) {
+          startGame();
+          playIntroAudio();
+        }
+      });
+      
+      // Simple direct click on overlay
+      document.getElementById('overlay').addEventListener('click', function(e) {
+        // Don't start if clicking on buttons
+        if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') {
+          return;
+        }
+        
+        if (!gameStarted) {
+          startGame();
+          playIntroAudio();
+        }
+      });
+      
+      // Enable tilt button
+      document.getElementById('enable-tilt-btn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        requestTiltPermission();
+      });
     });
     
     function showGameOver() {
@@ -644,7 +682,7 @@
       resetGame();
     }
     
-    document.getElementById('play-again-btn').onclick = playAgain;
+    document.getElementById('play-again-btn').addEventListener('click', playAgain);
 
     // IMPROVED ACCELEROMETER SUPPORT
     let tiltEnabled = false;
@@ -695,6 +733,9 @@
       }
       
       tilt = weightedSum / totalWeight;
+      
+      // Update tilt indicator
+      updateTiltIndicator();
     }
     
     function requestTiltPermission() {
@@ -796,11 +837,6 @@
         enableTiltBtn.style.display = 'none';
       }
     }
-    
-    document.getElementById('enable-tilt-btn').onclick = function(e) {
-      e.stopPropagation(); // Prevent event from reaching overlay
-      requestTiltPermission();
-    };
     
     window.addEventListener('DOMContentLoaded', () => { 
       maybeShowTiltButton(); 
