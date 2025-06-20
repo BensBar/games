@@ -486,7 +486,7 @@
     
     // Game Constants
     const GRAVITY = 0.3;
-    const BOUNCE = 0.7;
+    const BOUNCE = 0.8;
     const PEG_RADIUS = 8;
     const BALL_RADIUS = 12;
     const SLOT_VALUES = [100, 500, 1000, 5000, 10000, 5000, 1000, 500, 100];
@@ -839,6 +839,11 @@
       
       balls = [];
       particles = [];
+      
+      // Reset pegs
+      pegs.forEach(peg => {
+        peg.hit = false;
+      });
     }
     
     // Draw Game
