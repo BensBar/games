@@ -551,7 +551,7 @@
       for (let i = 0; i < SLOT_VALUES.length; i++) {
         slots.push({
           x: i * slotWidth,
-          y: canvas.height - 60,
+          y: canvas.height - 120,  // Raised from -60 to -120
           width: slotWidth,
           height: 50,
           value: SLOT_VALUES[i],
@@ -663,7 +663,7 @@
         }
         
         // Slot collision
-        if (this.y + this.radius >= canvas.height - 60) {
+        if (this.y + this.radius >= canvas.height - 120) {  // Updated to match new slot position
           if (!this.toRemove) {  // Only process if not already marked for removal
             const slotWidth = canvas.width / SLOT_VALUES.length;
             const slotIndex = Math.floor(this.x / slotWidth);
@@ -882,6 +882,13 @@
         ctx.textAlign = 'center';
         ctx.fillText(slot.value.toLocaleString(), slot.x + slot.width / 2, slot.y + slot.height / 2 + 6);
       });
+      
+      // Draw bottom collection area
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.fillRect(0, canvas.height - 70, canvas.width, 70);
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, canvas.height - 70, canvas.width, 70);
       
       // Draw pegs
       pegs.forEach((peg, index) => {
