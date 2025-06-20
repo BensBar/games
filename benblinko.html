@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🚀 BenBlinko • 4K Neon Laser Deluxe 🚀</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BenBlinko 4K">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Exo 2', 'Arial', sans-serif;
+      background: #0a0a1a;
+      color: #fff;
+    }
+    
+    body {
+      background: 
+        linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%),
+        radial-gradient(ellipse at top, #00d4ff33 0%, #ff006e22 70%, #000000 100%);
+      background-attachment: fixed;
+      animation: backgroundPulse 8s ease-in-out infinite alternate;
+    }
+    
+    @keyframes backgroundPulse {
+      0% { filter: hue-rotate(0deg) brightness(1); }
+      100% { filter: hue-rotate(30deg) brightness(1.1); }
+    }
+    
+    /* Intro Screen */
+    .intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 26, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    .intro-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .laser-effects {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .laser-beam {
+      position: absolute;
+      height: 3px;
+      width: 200vw;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        #00d4ff 20%, 
+        #ff006e 50%, 
+        #00ff88 80%, 
+        transparent 100%);
+      filter: blur(2px);
+      opacity: 0.6;
+      animation: laserMove 4s linear infinite;
+    }
+    
+    .laser-beam:nth-child(1) { top: 20%; transform: rotate(-5deg); animation-delay: 0s; }
+    .laser-beam:nth-child(2) { top: 40%; transform: rotate(3deg); animation-delay: 1.5s; }
+    .laser-beam:nth-child(3) { top: 60%; transform: rotate(-2deg); animation-delay: 3s; }
+    .laser-beam:nth-child(4) { top: 80%; transform: rotate(4deg); animation-delay: 0.7s; }
+    
+    @keyframes laserMove {
+      0% { left: -100vw; }
+      100% { left: 0vw; }
+    }
+    
+    .game-logo {
+      width: clamp(200px, 40vw, 500px);
+      height: auto;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 0 30px #00d4ff) drop-shadow(0 0 60px #ff006e);
+      animation: logoFloat 3s ease-in-out infinite alternate;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .game-logo:hover {
+      transform: scale(1.05);
+    }
+    
+    @keyframes logoFloat {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-10px) scale(1.02); }
+    }
+    
+    .start-text {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      background: linear-gradient(45deg, #00d4ff, #ff006e, #00ff88);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      animation: textGlow 2s ease-in-out infinite alternate;
+      cursor: pointer;
+      margin: 20px;
+      letter-spacing: 2px;
+    }
+    
+    @keyframes textGlow {
+      0% { filter: drop-shadow(0 0 10px #00d4ff88); }
+      100% { filter: drop-shadow(0 0 20px #ff006e88); }
+    }
+    
+    .credits {
+      position: absolute;
+      bottom: 30px;
+      font-size: 1.2rem;
+      color: #888;
+      letter-spacing: 1px;
+    }
+    
+    .help-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(45deg, #00d4ff, #ff006e);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .help-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #00d4ff88;
+    }
+    
+    /* Game Area */
+    .game-container {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .game-container.active {
+      display: flex;
+    }
+    
+    .game-canvas {
+      border: 4px solid #00d4ff;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #1a1a3a 0%, #2d2d5a 100%);
+      box-shadow: 
+        0 0 30px #00d4ff66,
+        inset 0 0 30px #ffffff11;
+      margin-bottom: 20px;
+      cursor: crosshair;
+    }
+    
+    .game-ui {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      width: 90%;
+      max-width: 800px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid #ffffff22;
+    }
+    
+    .score-item {
+      text-align: center;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+    }
+    
+    .score-label {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 5px;
+    }
+    
+    .score-value {
+      font-size: 1.4rem;
+      color: #00d4ff;
+      text-shadow: 0 0 10px #00d4ff88;
+    }
+    
+    .multiplier {
+      background: linear-gradient(45deg, #ff006e, #00ff88);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      animation: multiplierPulse 1s ease-in-out infinite alternate;
+    }
+    
+    @keyframes multiplierPulse {
+      0% { box-shadow: 0 0 10px #ff006e66; }
+      100% { box-shadow: 0 0 20px #00ff8866; }
+    }
+    
+    /* Game Over Screen */
+    .game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 26, 0.95);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+    }
+    
+    .game-over.show {
+      display: flex;
+    }
+    
+    .game-over-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 900;
+      background: linear-gradient(45deg, #ff006e, #00d4ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 30px;
+      animation: titleGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      0% { filter: drop-shadow(0 0 20px #ff006e88); }
+      100% { filter: drop-shadow(0 0 30px #00d4ff88); }
+    }
+    
+    .final-score {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    
+    .play-again-btn {
+      background: linear-gradient(45deg, #00d4ff, #ff006e);
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', monospace;
+    }
+    
+    .play-again-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #00d4ff88;
+    }
+    
+    /* 4K Enhancements */
+    @media (min-width: 2560px) {
+      .game-canvas {
+        border-width: 6px;
+        box-shadow: 
+          0 0 50px #00d4ff88,
+          inset 0 0 50px #ffffff15;
+      }
+      
+      .game-logo {
+        filter: drop-shadow(0 0 50px #00d4ff) drop-shadow(0 0 100px #ff006e);
+      }
+      
+      .laser-beam {
+        height: 5px;
+        filter: blur(3px);
+      }
+    }
+    
+    /* iPhone 16 Pro & Mobile optimizations */
+    @media (max-width: 430px) {
+      /* iPhone 16 Pro specific (430x932px) */
+      .game-canvas {
+        width: 90vw;
+        height: 55vh;
+        max-width: 400px;
+        max-height: 500px;
+      }
+      
+      .game-ui {
+        width: 95%;
+        padding: 10px;
+        margin-bottom: env(safe-area-inset-bottom, 20px);
+      }
+      
+      .start-text {
+        font-size: clamp(1.8rem, 6vw, 2.2rem);
+        margin: 15px;
+      }
+      
+      .game-logo {
+        width: clamp(180px, 45vw, 300px);
+        margin-bottom: 20px;
+      }
+      
+      .help-btn {
+        top: env(safe-area-inset-top, 15px);
+        right: 15px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+      
+      .credits {
+        bottom: env(safe-area-inset-bottom, 30px);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .game-ui {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+      }
+      
+      .score-item {
+        flex: 1;
+        min-width: 70px;
+      }
+      
+      .score-value {
+        font-size: 1.2rem;
+      }
+      
+      .score-label {
+        font-size: 0.8rem;
+      }
+    }
+    
+    /* Landscape mobile */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .intro-screen {
+        flex-direction: row;
+        gap: 20px;
+        padding: 20px;
+      }
+      
+      .game-logo {
+        width: clamp(120px, 25vw, 200px);
+        margin: 0;
+      }
+      
+      .start-text {
+        font-size: clamp(1.2rem, 4vw, 1.8rem);
+        margin: 10px;
+      }
+      
+      .game-canvas {
+        height: 70vh;
+        max-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Screen -->
+  <div class="intro-screen" id="introScreen">
+    <div class="laser-effects">
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+    </div>
+    
+    <img src="img/logo.png" alt="BenBlinko Logo" class="game-logo" id="gameLogo">
+    <div class="start-text" id="startText">🚀 CLICK TO START 🚀</div>
+    <div class="credits">by BensBar</div>
+    <button class="help-btn" id="helpBtn">❓ Help</button>
+  </div>
+  
+  <!-- Game Container -->
+  <div class="game-container" id="gameContainer">
+    <canvas class="game-canvas" id="gameCanvas" width="800" height="600"></canvas>
+    
+    <div class="game-ui">
+      <div class="score-item">
+        <div class="score-label">SCORE</div>
+        <div class="score-value" id="scoreValue">0</div>
+      </div>
+      
+      <div class="score-item">
+        <div class="score-label">HIGH SCORE</div>
+        <div class="score-value" id="highScoreValue">0</div>
+      </div>
+      
+      <div class="score-item">
+        <div class="score-label">BALLS LEFT</div>
+        <div class="score-value" id="ballsValue">5</div>
+      </div>
+      
+      <div class="score-item">
+        <div class="score-label">MULTIPLIER</div>
+        <div class="score-value multiplier" id="multiplierValue">x1</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Game Over Screen -->
+  <div class="game-over" id="gameOverScreen">
+    <div class="laser-effects">
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+      <div class="laser-beam"></div>
+    </div>
+    
+    <div class="game-over-title">GAME OVER</div>
+    <div class="final-score" id="finalScore"></div>
+    <button class="play-again-btn" id="playAgainBtn">🎮 PLAY AGAIN 🎮</button>
+  </div>
+
+  <script>
+    // 🚀 BENBLINKO 4K NEON LASER DELUXE 🚀
+    console.log("🚀 BenBlinko 4K Neon Laser Deluxe Loading...");
+    
+    // Game Elements
+    const introScreen = document.getElementById('introScreen');
+    const gameContainer = document.getElementById('gameContainer');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const startText = document.getElementById('startText');
+    const gameLogo = document.getElementById('gameLogo');
+    const helpBtn = document.getElementById('helpBtn');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    
+    // UI Elements
+    const scoreValue = document.getElementById('scoreValue');
+    const highScoreValue = document.getElementById('highScoreValue');
+    const ballsValue = document.getElementById('ballsValue');
+    const multiplierValue = document.getElementById('multiplierValue');
+    const finalScore = document.getElementById('finalScore');
+    
+    // Game State
+    let gameState = 'intro'; // intro, playing, gameOver
+    let score = 0;
+    let highScore = 0;
+    let ballsLeft = 5;
+    let multiplier = 1;
+    let balls = [];
+    let pegs = [];
+    let particles = [];
+    let slots = [];
+    
+    // Game Constants
+    const GRAVITY = 0.3;
+    const BOUNCE = 0.7;
+    const PEG_RADIUS = 8;
+    const BALL_RADIUS = 12;
+    const SLOT_VALUES = [100, 500, 1000, 5000, 10000, 5000, 1000, 500, 100];
+    const SLOT_COLORS = ['#ff006e', '#00d4ff', '#00ff88', '#ffff00', '#ff6600', '#ffff00', '#00ff88', '#00d4ff', '#ff006e'];
+    
+    // Load high score
+    try {
+      const saved = localStorage.getItem('benblinko_highscore');
+      if (saved) highScore = parseInt(saved);
+    } catch (e) {
+      console.log('Could not load high score');
+    }
+    
+    // Initialize Canvas
+    function initCanvas() {
+      // Set canvas size directly
+      canvas.width = 800;
+      canvas.height = 600;
+      
+      // High quality rendering
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      createPegs();
+      createSlots();
+    }
+    
+    // Create Pegs
+    function createPegs() {
+      pegs = [];
+      const rows = 12;
+      const cols = 7;
+      const pegSpacing = 80;
+      const rowSpacing = 35;
+      const startY = 120;
+      
+      for (let row = 0; row < rows; row++) {
+        const pegCount = cols - (row % 2);
+        const offsetX = (row % 2) * (pegSpacing / 2);
+        const startX = (canvas.width - (pegCount - 1) * pegSpacing) / 2 + offsetX;
+        
+        for (let col = 0; col < pegCount; col++) {
+          pegs.push({
+            x: startX + col * pegSpacing,
+            y: startY + row * rowSpacing,
+            radius: PEG_RADIUS,
+            hit: false,
+            special: Math.random() < 0.15, // 15% chance for special pegs
+            glowPhase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+      
+      console.log(`Created ${pegs.length} pegs`);
+    }
+    
+    // Create Slots
+    function createSlots() {
+      slots = [];
+      const slotWidth = canvas.width / SLOT_VALUES.length;
+      
+      for (let i = 0; i < SLOT_VALUES.length; i++) {
+        slots.push({
+          x: i * slotWidth,
+          y: canvas.height - 60,
+          width: slotWidth,
+          height: 50,
+          value: SLOT_VALUES[i],
+          color: SLOT_COLORS[i]
+        });
+      }
+      
+      console.log(`Created ${slots.length} slots`);
+    }
+    
+    // Ball Class
+    class Ball {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = 0;
+        this.radius = BALL_RADIUS;
+        this.color = '#00d4ff';
+        this.trail = [];
+        this.glowPhase = 0;
+      }
+      
+      update() {
+        // Physics
+        this.vy += GRAVITY;
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        // Trail effect
+        this.trail.push({ x: this.x, y: this.y });
+        if (this.trail.length > 10) this.trail.shift();
+        
+        this.glowPhase += 0.1;
+        
+        // Wall bouncing
+        if (this.x - this.radius < 0) {
+          this.x = this.radius;
+          this.vx *= -BOUNCE;
+        }
+        if (this.x + this.radius > canvas.width) {
+          this.x = canvas.width - this.radius;
+          this.vx *= -BOUNCE;
+        }
+        
+        // Peg collision
+        pegs.forEach(peg => {
+          const dx = this.x - peg.x;
+          const dy = this.y - peg.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < this.radius + peg.radius && !peg.hit) {
+            peg.hit = true;
+            
+            // Bounce off peg
+            const angle = Math.atan2(dy, dx);
+            this.vx = Math.cos(angle) * 3;
+            this.vy = Math.sin(angle) * 3;
+            
+            // Score
+            let points = peg.special ? 500 : 100;
+            points *= multiplier;
+            score += points;
+            
+            if (peg.special) {
+              multiplier++;
+              createParticles(peg.x, peg.y, '#00ff88', 20);
+            } else {
+              createParticles(peg.x, peg.y, '#00d4ff', 10);
+            }
+            
+            updateUI();
+          }
+        });
+        
+        // Slot collision
+        if (this.y + this.radius > canvas.height - 60) {
+          const slotWidth = canvas.width / SLOT_VALUES.length;
+          const slotIndex = Math.floor(this.x / slotWidth);
+          if (slotIndex >= 0 && slotIndex < slots.length) {
+            const slot = slots[slotIndex];
+            score += slot.value * multiplier;
+            createParticles(this.x, this.y, slot.color, 30);
+            
+            // Remove this ball
+            const ballIndex = balls.indexOf(this);
+            if (ballIndex > -1) {
+              balls.splice(ballIndex, 1);
+              ballsLeft--;
+              multiplier = 1;
+              updateUI();
+              
+              if (ballsLeft <= 0) {
+                endGame();
+              }
+            }
+          }
+        }
+      }
+      
+      draw() {
+        ctx.save();
+        
+        // Draw trail
+        for (let i = 0; i < this.trail.length; i++) {
+          const alpha = i / this.trail.length * 0.3;
+          const point = this.trail[i];
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, this.radius * (i / this.trail.length), 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
+        ctx.globalAlpha = 1;
+        
+        // Draw main ball with glow
+        const glow = Math.sin(this.glowPhase) * 0.3 + 0.7;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 20 * glow;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+      }
+    }
+    
+    // Particle Class
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 8;
+        this.vy = (Math.random() - 0.5) * 8;
+        this.color = color;
+        this.life = 1;
+        this.decay = Math.random() * 0.02 + 0.01;
+        this.size = Math.random() * 4 + 2;
+      }
+      
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.1; // gravity
+        this.life -= this.decay;
+        this.vx *= 0.99; // air resistance
+      }
+      
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+    
+    // Create Particles
+    function createParticles(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(x, y, color));
+      }
+    }
+    
+    // Update UI
+    function updateUI() {
+      scoreValue.textContent = score.toLocaleString();
+      highScoreValue.textContent = highScore.toLocaleString();
+      ballsValue.textContent = ballsLeft;
+      multiplierValue.textContent = `x${multiplier}`;
+    }
+    
+    // Drop Ball
+    function dropBall(x) {
+      if (ballsLeft > 0 && gameState === 'playing') {
+        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
+        balls.push(new Ball(x, 50));
+      }
+    }
+    
+    // Start Game
+    function startGame() {
+      console.log("🎮 Starting BenBlinko!");
+      
+      gameState = 'playing';
+      score = 0;
+      ballsLeft = 5;
+      multiplier = 1;
+      balls = [];
+      particles = [];
+      
+      // Reset pegs
+      pegs.forEach(peg => {
+        peg.hit = false;
+      });
+      
+      introScreen.classList.add('hidden');
+      gameContainer.classList.add('active');
+      gameOverScreen.classList.remove('show');
+      
+      updateUI();
+      
+      console.log(`Game started with ${pegs.length} pegs and ${slots.length} slots`);
+      
+      // Auto-drop first ball after a short delay
+      setTimeout(() => {
+        console.log("Auto-dropping first ball");
+        dropBall(canvas.width / 2);
+      }, 1000);
+    }
+    
+    // End Game
+    function endGame() {
+      gameState = 'gameOver';
+      
+      if (score > highScore) {
+        highScore = score;
+        try {
+          localStorage.setItem('benblinko_highscore', highScore.toString());
+        } catch (e) {}
+      }
+      
+      finalScore.innerHTML = `
+        <div>Final Score: <strong>${score.toLocaleString()}</strong></div>
+        <div>High Score: <strong>${highScore.toLocaleString()}</strong></div>
+      `;
+      
+      setTimeout(() => {
+        gameOverScreen.classList.add('show');
+      }, 1000);
+    }
+    
+    // Reset Game
+    function resetGame() {
+      gameState = 'intro';
+      gameContainer.classList.remove('active');
+      gameOverScreen.classList.remove('show');
+      introScreen.classList.remove('hidden');
+      
+      balls = [];
+      particles = [];
+    }
+    
+    // Draw Game
+    function draw() {
+      // Clear canvas with gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#1a1a3a');
+      gradient.addColorStop(1, '#0a0a1a');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      if (gameState !== 'playing') return;
+      
+      // Draw slots
+      slots.forEach((slot, index) => {
+        ctx.fillStyle = slot.color + '66';
+        ctx.fillRect(slot.x, slot.y, slot.width, slot.height);
+        
+        ctx.fillStyle = slot.color;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(slot.x, slot.y, slot.width, slot.height);
+        
+        // Draw slot value
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Orbitron';
+        ctx.textAlign = 'center';
+        ctx.fillText(slot.value.toLocaleString(), slot.x + slot.width / 2, slot.y + slot.height / 2 + 6);
+      });
+      
+      // Draw pegs
+      pegs.forEach((peg, index) => {
+        ctx.save();
+        
+        if (peg.hit) {
+          ctx.globalAlpha = 0.3;
+        }
+        
+        const glow = Math.sin(peg.glowPhase + Date.now() * 0.01) * 0.3 + 0.7;
+        
+        if (peg.special) {
+          ctx.shadowColor = '#00ff88';
+          ctx.shadowBlur = 15 * glow;
+          ctx.fillStyle = '#00ff88';
+        } else {
+          ctx.shadowColor = '#00d4ff';
+          ctx.shadowBlur = 10 * glow;
+          ctx.fillStyle = '#00d4ff';
+        }
+        
+        ctx.beginPath();
+        ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+      });
+      
+      // Draw balls
+      balls.forEach((ball, index) => {
+        ball.draw();
+      });
+      
+      // Draw particles
+      particles = particles.filter(particle => {
+        particle.update();
+        particle.draw();
+        return particle.life > 0;
+      });
+      
+      // Debug info
+      if (gameState === 'playing') {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Pegs: ${pegs.length}`, 10, 20);
+        ctx.fillText(`Balls: ${balls.length}`, 10, 35);
+        ctx.fillText(`Particles: ${particles.length}`, 10, 50);
+      }
+    }
+    
+    // Game Loop
+    function gameLoop() {
+      if (gameState === 'playing') {
+        balls.forEach(ball => ball.update());
+      }
+      
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+    
+    // Event Listeners
+    startText.addEventListener('click', startGame);
+    gameLogo.addEventListener('click', startGame);
+    
+    canvas.addEventListener('click', (e) => {
+      if (gameState === 'playing') {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        console.log(`Dropping ball at x: ${x}`);
+        dropBall(x);
+      }
+    });
+    
+    playAgainBtn.addEventListener('click', resetGame);
+    
+    helpBtn.addEventListener('click', () => {
+      alert(`🚀 BenBlinko 4K Neon Laser Deluxe 🚀
+
+🎯 HOW TO PLAY:
+• Click anywhere to drop a ball
+• Hit pegs to score points
+• Special glowing pegs give bonus points and increase your multiplier
+• Balls land in slots at the bottom for bonus scores
+• Try to get the highest score possible!
+
+🎮 CONTROLS:
+• Click the logo or "CLICK TO START" to begin
+• Click anywhere on the game area to drop balls
+• Use your mouse to aim where the ball drops
+
+🏆 SCORING:
+• Regular pegs: 100 points × multiplier
+• Special pegs: 500 points × multiplier (and increases multiplier!)
+• Slot bonuses: Various point values × multiplier
+
+Good luck and have fun! 🎉`);
+    });
+    
+    // Keyboard controls
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (gameState === 'intro') {
+          startGame();
+        } else if (gameState === 'playing') {
+          dropBall(canvas.width / 2);
+        } else if (gameState === 'gameOver') {
+          resetGame();
+        }
+      }
+    });
+    
+    // Mobile Device Orientation & Accelerometer Support
+    let tiltEnabled = false;
+    let tilt = 0;
+    let lastGamma = 0;
+    const TILT_SENSITIVITY = 2.5; // Enhanced for iPhone 16 Pro
+    
+    function handleDeviceOrientation(event) {
+      if (!tiltEnabled || gameState !== 'playing') return;
+      
+      // Get the device orientation data
+      let gamma = event.gamma || 0; // Left/right tilt (-90 to 90)
+      let beta = event.beta || 0;   // Front/back tilt (-180 to 180)
+      
+      // Account for different device orientations
+      let orientation = screen.orientation ? screen.orientation.angle : window.orientation || 0;
+      
+      // Adjust tilt direction based on screen orientation
+      switch (orientation) {
+        case 90: // Landscape left
+          gamma = beta;
+          break;
+        case -90: // Landscape right  
+          gamma = -beta;
+          break;
+        case 180: // Portrait upside down
+          gamma = -gamma;
+          break;
+        default: // Portrait
+          // gamma stays as is
+          break;
+      }
+      
+      // Apply sensitivity and smooth the movement
+      const targetTilt = Math.max(-3, Math.min(3, gamma * TILT_SENSITIVITY / 30));
+      tilt = tilt * 0.8 + targetTilt * 0.2; // Smooth interpolation
+      
+      // Apply tilt to balls
+      balls.forEach(ball => {
+        if (!ball.landed) {
+          ball.vx += tilt * 0.1;
+        }
+      });
+    }
+    
+    function requestMotionPermission() {
+      // Show tilt enable button on mobile devices
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        const tiltBtn = document.createElement('button');
+        tiltBtn.innerHTML = '📱 Enable Tilt Control';
+        tiltBtn.style.cssText = `
+          position: absolute;
+          bottom: 80px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(45deg, #00d4ff, #ff006e);
+          border: none;
+          padding: 12px 24px;
+          border-radius: 25px;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 1rem;
+          z-index: 1002;
+          box-shadow: 0 0 20px #00d4ff88;
+        `;
+        
+        tiltBtn.addEventListener('click', async () => {
+          try {
+            // Request permission for iOS devices
+            if (typeof DeviceOrientationEvent !== 'undefined' && 
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+              const permission = await DeviceOrientationEvent.requestPermission();
+              if (permission === 'granted') {
+                enableTiltControl();
+                tiltBtn.remove();
+              }
+            } else {
+              // Android devices usually don't need permission
+              enableTiltControl();
+              tiltBtn.remove();
+            }
+          } catch (error) {
+            console.log('Motion permission error:', error);
+            alert('Could not enable tilt control. Please ensure you are on HTTPS.');
+          }
+        });
+        
+        document.getElementById('introScreen').appendChild(tiltBtn);
+      }
+    }
+    
+    function enableTiltControl() {
+      tiltEnabled = true;
+      window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+      
+      // Show tilt indicator
+      const tiltIndicator = document.createElement('div');
+      tiltIndicator.innerHTML = `
+        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
+                    background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 15px; 
+                    color: #00d4ff; font-size: 0.9rem; z-index: 1003;">
+          📱 Tilt device to control ball
+        </div>
+      `;
+      document.body.appendChild(tiltIndicator);
+      
+      setTimeout(() => {
+        if (tiltIndicator.parentNode) {
+          tiltIndicator.remove();
+        }
+      }, 3000);
+      
+      console.log('Tilt control enabled for mobile device');
+    }
+    
+    // Touch controls for mobile
+    let touchStartX = 0;
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      touchStartX = e.touches[0].clientX;
+    });
+    
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      if (gameState === 'playing') {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const x = (touchStartX - rect.left) * scaleX;
+        dropBall(Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x)));
+      }
+    });
+    
+    // Initialize motion controls
+    window.addEventListener('load', () => {
+      setTimeout(requestMotionPermission, 1000);
+    });
+    
+    // Initialize
+    window.addEventListener('load', () => {
+      console.log("🚀 BenBlinko 4K Neon Laser Deluxe Loaded!");
+      initCanvas();
+      updateUI();
+      gameLoop();
+    });
+    
+    window.addEventListener('resize', initCanvas);
+    
+    console.log("🚀 BenBlinko 4K Neon Laser Deluxe Ready!");
+  </script>
+</body>
+</html>
