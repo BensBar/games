@@ -576,10 +576,19 @@
       }
       
       update() {
+        // Apply tilt if enabled
+        if (tiltEnabled && gameState === 'playing') {
+          this.vx += tilt * 0.05;
+        }
+        
         // Physics
         this.vy += GRAVITY;
         this.x += this.vx;
         this.y += this.vy;
+        
+        // Air resistance to prevent excessive speed
+        this.vx *= 0.995;
+        this.vy *= 0.999;
         
         // Trail effect
         this.trail.push({ x: this.x, y: this.y });
@@ -590,45 +599,68 @@
         // Wall bouncing
         if (this.x - this.radius < 0) {
           this.x = this.radius;
-          this.vx *= -BOUNCE;
+          this.vx = Math.abs(this.vx) * BOUNCE;
         }
         if (this.x + this.radius > canvas.width) {
           this.x = canvas.width - this.radius;
-          this.vx *= -BOUNCE;
+          this.vx = -Math.abs(this.vx) * BOUNCE;
         }
         
-        // Peg collision
-        pegs.forEach(peg => {
+        // Peg collision - allow multiple bounces per frame for realistic physics
+        for (let i = 0; i < pegs.length; i++) {
+          const peg = pegs[i];
           const dx = this.x - peg.x;
           const dy = this.y - peg.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < this.radius + peg.radius && !peg.hit) {
-            peg.hit = true;
-            
-            // Bounce off peg
-            const angle = Math.atan2(dy, dx);
-            this.vx = Math.cos(angle) * 3;
-            this.vy = Math.sin(angle) * 3;
-            
-            // Score
-            let points = peg.special ? 500 : 100;
-            points *= multiplier;
-            score += points;
-            
-            if (peg.special) {
-              multiplier++;
-              createParticles(peg.x, peg.y, '#00ff88', 20);
-            } else {
-              createParticles(peg.x, peg.y, '#00d4ff', 10);
+          if (distance < this.radius + peg.radius) {
+            // Score only once per peg
+            if (!peg.hit) {
+              peg.hit = true;
+              
+              let points = peg.special ? 500 : 100;
+              points *= multiplier;
+              score += points;
+              
+              if (peg.special) {
+                multiplier++;
+                createParticles(peg.x, peg.y, '#00ff88', 20);
+              } else {
+                createParticles(peg.x, peg.y, '#00d4ff', 10);
+              }
+              
+              updateUI();
             }
             
-            updateUI();
+            // Physics collision response
+            const overlap = this.radius + peg.radius - distance;
+            if (distance > 0 && overlap > 0) {
+              // Normalize and separate
+              const nx = dx / distance;
+              const ny = dy / distance;
+              
+              // Move ball out of peg
+              this.x += nx * overlap;
+              this.y += ny * overlap;
+              
+              // Reflect velocity with realistic physics
+              const dot = this.vx * nx + this.vy * ny;
+              this.vx -= 2 * dot * nx;
+              this.vy -= 2 * dot * ny;
+              
+              // Add some random bounce for realistic Plinko effect
+              this.vx += (Math.random() - 0.5) * 1.5;
+              this.vy += (Math.random() - 0.5) * 0.5;
+              
+              // Apply bounce factor
+              this.vx *= BOUNCE;
+              this.vy *= BOUNCE;
+            }
           }
-        });
+        }
         
         // Slot collision
-        if (this.y + this.radius > canvas.height - 60) {
+        if (this.y + this.radius >= canvas.height - 60) {
           const slotWidth = canvas.width / SLOT_VALUES.length;
           const slotIndex = Math.floor(this.x / slotWidth);
           if (slotIndex >= 0 && slotIndex < slots.length) {
@@ -636,18 +668,26 @@
             score += slot.value * multiplier;
             createParticles(this.x, this.y, slot.color, 30);
             
-            // Remove this ball
-            const ballIndex = balls.indexOf(this);
-            if (ballIndex > -1) {
-              balls.splice(ballIndex, 1);
-              ballsLeft--;
-              multiplier = 1;
-              updateUI();
-              
-              if (ballsLeft <= 0) {
-                endGame();
-              }
+            // Mark for removal
+            this.toRemove = true;
+            ballsLeft--;
+            multiplier = 1;
+            updateUI();
+            
+            if (ballsLeft <= 0) {
+              setTimeout(() => endGame(), 500);
             }
+          }
+        }
+        
+        // Remove balls that fall off screen
+        if (this.y > canvas.height + 100) {
+          this.toRemove = true;
+          ballsLeft--;
+          updateUI();
+          
+          if (ballsLeft <= 0) {
+            setTimeout(() => endGame(), 500);
           }
         }
       }
@@ -882,7 +922,11 @@
     // Game Loop
     function gameLoop() {
       if (gameState === 'playing') {
+        // Update balls
         balls.forEach(ball => ball.update());
+        
+        // Remove balls marked for removal
+        balls = balls.filter(ball => !ball.toRemove);
       }
       
       draw();

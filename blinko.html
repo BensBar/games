@@ -136,38 +136,55 @@
     #play-again-btn { font-size:clamp(1.2em,4vw,1.6em);padding:0.8em 2em;background:linear-gradient(90deg,#38b6ff 0%,#ffe24b 100%);color:#080c1c;font-family:'Orbitron','Manrope',Arial,sans-serif;border:none;border-radius:0.6em;box-shadow:0 0 24px #ffe24b99;font-weight:bold;cursor:pointer;transition:all 0.15s; }
     #play-again-btn:hover { background:linear-gradient(90deg,#ffe24b 0%,#38b6ff 100%);transform:scale(1.05); }
     
-    /* 4K Support */
+    /* Enhanced 4K Support */
     @media (min-width: 1800px), (min-resolution: 192dpi) {
       #game-canvas {
-        max-width: 800px;
-        border-width: 4px;
-        border-radius: 12px;
-        box-shadow: 0 12px 60px #ffe24b55, 0 8px 36px #38b6ff55;
+        max-width: 960px;
+        border-width: 5px;
+        border-radius: 16px;
+        box-shadow: 0 16px 80px #ffe24b66, 0 12px 48px #38b6ff66;
       }
       #game-container, #score-bar, #slots-row {
-        max-width: 800px;
+        max-width: 960px;
       }
       .laser {
-        filter: blur(10px) brightness(2.2);
-        height: 1.5vw;
+        filter: blur(12px) brightness(2.4);
+        height: 1.2vw;
       }
       #multiplier-box {
-        box-shadow: 0 0 30px #ffe24b99;
+        box-shadow: 0 0 40px #ffe24b99;
+      }
+      #logo-entrance {
+        width: clamp(180px, 45vw, 420px);
+        filter: drop-shadow(0 0 48px #38b6ffdd) drop-shadow(0 0 16px #ffe24b);
+      }
+      body {
+        font-size: 18px;
       }
     }
     
     @media (max-width: 800px) {
-      #logo-entrance { width: 60vw;}
+      #logo-entrance { 
+        width: clamp(140px, 65vw, 280px);
+        filter: drop-shadow(0 0 32px #38b6ffcc) drop-shadow(0 0 12px #ffe24b);
+      }
       #game-canvas { max-width: 99vw; width: 99vw;}
       #slots-row { height: 10vh; }
       .slot-box { width: 14vw; }
+      #tap-to-start {
+        font-size: clamp(1.4em, 6vw, 2.3em);
+      }
     }
     
     /* Additional 4K tweaks */
     @media (min-width: 3000px) {
-      body { font-size: 24px; }
-      #game-canvas { max-width: 1200px; }
-      #game-container, #score-bar, #slots-row { max-width: 1200px; }
+      body { font-size: 28px; }
+      #game-canvas { max-width: 1440px; }
+      #game-container, #score-bar, #slots-row { max-width: 1440px; }
+      #logo-entrance {
+        width: clamp(240px, 50vw, 500px);
+        filter: drop-shadow(0 0 60px #38b6ffee) drop-shadow(0 0 20px #ffe24b);
+      }
     }
     
     /* Tilt indicator styles */
@@ -220,7 +237,7 @@
       <div class="laser l3"></div>
       <div class="laser l4"></div>
     </div>
-    <img src="https://raw.githubusercontent.com/BensBar/games/main/img/logo.png" id="logo-entrance" alt="BenBlinko Logo">
+    <img src="img/logo.png" id="logo-entrance" alt="BenBlinko Logo">
     <div id="tap-to-start">Tap or Press Space to Start</div>
     <button id="enable-tilt-btn" type="button">Enable Tilt Control</button>
     <div id="credit">by BensBar</div>
@@ -278,14 +295,14 @@
       // Detect 4K displays (width > 3000px or high DPI > 2)
       const is4K = window.innerWidth > 3000 || dpr > 2;
       
-      // Scale based on device capabilities
-      let maxW = is4K ? Math.min(window.innerWidth * 0.8, 1200) : Math.min(window.innerWidth * 0.98, 480);
-      let aspect = 1.3;
-      let maxH = Math.min(window.innerHeight * 0.65, maxW * aspect);
+      // Scale based on device capabilities - enhanced for better visuals
+      let maxW = is4K ? Math.min(window.innerWidth * 0.75, 1440) : Math.min(window.innerWidth * 0.95, 960);
+      let aspect = 1.33; // 4:3 aspect ratio for better game area
+      let maxH = Math.min(window.innerHeight * 0.65, maxW / aspect);
       
       if (maxH > window.innerHeight * 0.65) {
         maxH = window.innerHeight * 0.65;
-        maxW = maxH / aspect;
+        maxW = maxH * aspect;
       }
       
       // Set physical (buffer) size with high DPI scaling
@@ -304,10 +321,10 @@
       ctx.scale(dpr, dpr);
       
       // Enhanced rendering quality for high-DPI displays
-      if (dpr > 1) {
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-      }
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center';
       
       recalcConstants();
       makePegs();
@@ -316,6 +333,17 @@
     
     setCanvasResolution();
     window.addEventListener('resize', setCanvasResolution);
+
+    // Initialize game immediately
+    setTimeout(() => {
+      makePegs(); 
+      updateUI(); 
+      drawSlots(); 
+      // Ensure canvas is ready
+      if (canvas && ctx) {
+        draw(); // Initial draw
+      }
+    }, 100);
 
     // --- UI & Game Logic ---
     let gameStarted = false, gameOver = false, ballsThisGame = 7;
@@ -589,22 +617,34 @@
     });
     
     let tiltKey = 0;
+    
+    // Enhanced keyboard controls
     window.addEventListener('keydown', e => {
-      if (!gameStarted && (e.code=="Space"||e.code=="Enter")){ 
+      console.log("Key pressed:", e.code);
+      
+      if (!gameStarted && (e.code === "Space" || e.code === "Enter")) { 
+        console.log("Starting game via keyboard");
+        e.preventDefault();
         startGame(); 
-      } else if (gameStarted && !gameOver && (e.code=="Space"||e.code=="ArrowDown")) { 
+      } else if (gameStarted && !gameOver && (e.code === "Space" || e.code === "ArrowDown")) { 
+        e.preventDefault();
         dropBall(); 
       }
       
       if (gameStarted && !gameOver) {
         if (e.code === "ArrowLeft" || e.code === "KeyA") { 
+          e.preventDefault();
           tiltKey = -1; 
         } else if (e.code === "ArrowRight" || e.code === "KeyD") { 
+          e.preventDefault();
           tiltKey = 1; 
         }
       }
       
-      if (gameOver && (e.code=="Space"||e.code=="Enter")) playAgain();
+      if (gameOver && (e.code === "Space" || e.code === "Enter")) {
+        e.preventDefault();
+        playAgain();
+      }
     });
     
     window.addEventListener('keyup', e => {
@@ -613,58 +653,112 @@
       }
     });
     
-    // *** FIXED: Help button click event ***
-    document.getElementById('help-btn').addEventListener('click', function(e) {
-      e.stopPropagation();
-      alert("BenBlinko Neon Laser 4K Deluxe\n\nDrop the balls and hit pegs to score! The more pegs you hit in a row, the higher your combo multiplier. Hit special pegs for big bonuses!\n\nBalls land in the slots at the bottom for more points.\n\nTILT CONTROLS: Use left/right arrow keys or tilt your device to control the ball's trajectory!");
-    });
+    // *** ENHANCED: Help button click event ***
+    function setupHelpButton() {
+      const helpBtn = document.getElementById('help-btn');
+      if (helpBtn) {
+        helpBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          alert("🎮 BenBlinko Neon Laser 4K Deluxe 🎮\n\n🏆 Drop the balls and hit pegs to score!\n⭐ The more pegs you hit in a row, the higher your combo multiplier\n🔥 Hit special glowing pegs for big bonuses!\n🎯 Balls land in the slots at the bottom for more points\n\n🎮 CONTROLS:\n• Click/Tap anywhere to drop a ball\n• Use LEFT/RIGHT arrow keys or A/D to tilt\n• On mobile: Enable tilt control to use device motion\n• SPACEBAR: Drop ball or start game\n\nGood luck achieving the highest score! 🚀");
+        });
+      }
+    }
     
-    // *** FIXED: Start Game Function ***
+    // Set up help button
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupHelpButton);
+    } else {
+      setupHelpButton();
+    }
+    
+    // *** ENHANCED: Start Game Function ***
     function startGame() {
+      console.log("Starting game...");
       document.getElementById('overlay').classList.add('hide');
       gameStarted = true; 
       playGameAudio(); 
+      
+      // Ensure canvas is properly sized and ready
+      setCanvasResolution();
+      
+      // Reset and start the game
       resetGame(); 
-      setTimeout(()=>canvas.focus(), 300);
+      
+      // Focus canvas after a brief delay
+      setTimeout(() => {
+        canvas.focus();
+        console.log("Game started successfully!");
+      }, 300);
     }
     
-    // *** FIXED: Click handling to start the game ***
-    document.addEventListener('DOMContentLoaded', function() {
+    // *** ENHANCED: Click handling to start the game ***
+    function setupEventListeners() {
+      console.log("Setting up event listeners...");
+      
       // Tap to start text click
-      document.getElementById('tap-to-start').addEventListener('click', function(e) {
-        if (!gameStarted) {
-          startGame();
-          playIntroAudio();
-        }
-      });
+      const tapToStart = document.getElementById('tap-to-start');
+      if (tapToStart) {
+        tapToStart.addEventListener('click', function(e) {
+          console.log("Tap to start clicked");
+          e.preventDefault();
+          e.stopPropagation();
+          if (!gameStarted) {
+            startGame();
+            playIntroAudio();
+          }
+        });
+      }
       
       // Logo click
-      document.getElementById('logo-entrance').addEventListener('click', function(e) {
-        if (!gameStarted) {
-          startGame();
-          playIntroAudio();
-        }
-      });
+      const logo = document.getElementById('logo-entrance');
+      if (logo) {
+        logo.addEventListener('click', function(e) {
+          console.log("Logo clicked");
+          e.preventDefault();
+          e.stopPropagation();
+          if (!gameStarted) {
+            startGame();
+            playIntroAudio();
+          }
+        });
+      }
       
       // Simple direct click on overlay
-      document.getElementById('overlay').addEventListener('click', function(e) {
-        // Don't start if clicking on buttons
-        if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') {
-          return;
-        }
-        
-        if (!gameStarted) {
-          startGame();
-          playIntroAudio();
-        }
-      });
+      const overlay = document.getElementById('overlay');
+      if (overlay) {
+        overlay.addEventListener('click', function(e) {
+          // Don't start if clicking on buttons
+          if (e.target.id === 'help-btn' || e.target.id === 'enable-tilt-btn') {
+            return;
+          }
+          
+          console.log("Overlay clicked");
+          if (!gameStarted) {
+            startGame();
+            playIntroAudio();
+          }
+        });
+      }
       
       // Enable tilt button
-      document.getElementById('enable-tilt-btn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        requestTiltPermission();
-      });
-    });
+      const tiltBtn = document.getElementById('enable-tilt-btn');
+      if (tiltBtn) {
+        tiltBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          requestTiltPermission();
+        });
+      }
+      
+      console.log("Event listeners set up successfully");
+    }
+
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupEventListeners);
+    } else {
+      setupEventListeners();
+    }
     
     function showGameOver() {
       gameOver = true; 
@@ -857,24 +951,34 @@
       }
     });
 
+    // Enhanced window load handler
     window.onload = () => { 
+      console.log("Window loaded - initializing game");
       canvas.focus(); 
       
       // Try to preload the logo in high resolution for 4K displays
       if (window.devicePixelRatio > 1) {
         const logoImg = new Image();
-        logoImg.src = "https://raw.githubusercontent.com/BensBar/games/main/img/logo.png";
+        logoImg.src = "img/logo.png";
         logoImg.onload = () => {
+          console.log("Logo loaded successfully");
           document.getElementById('logo-entrance').src = logoImg.src;
         };
+        logoImg.onerror = () => {
+          console.log("Logo failed to load, using fallback");
+        };
       }
+      
+      // Ensure everything is properly initialized
+      setTimeout(() => {
+        makePegs(); 
+        updateUI(); 
+        drawSlots(); 
+        loop(); // Start the game loop
+        console.log("Game initialization complete");
+      }, 200);
     };
     
-    makePegs(); 
-    updateUI(); 
-    drawSlots(); 
-    loop();
-
     // --- Audio (optional, fallback safe) ---
     function playIntroAudio(){
       try{
