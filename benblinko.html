@@ -169,6 +169,8 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      padding: 10px;  /* Add padding to prevent overflow */
+      box-sizing: border-box;
     }
     
     .game-container.active {
@@ -315,15 +317,15 @@
       /* iPhone 16 Pro specific (430x932px) */
       .game-canvas {
         width: 90vw;
-        height: 55vh;
+        height: 50vh;  /* Reduced from 55vh to make room for UI */
         max-width: 400px;
-        max-height: 500px;
+        max-height: 450px;  /* Reduced from 500px */
       }
       
       .game-ui {
         width: 95%;
-        padding: 10px;
-        margin-bottom: env(safe-area-inset-bottom, 20px);
+        padding: 8px;  /* Reduced padding */
+        margin-bottom: env(safe-area-inset-bottom, 10px);  /* Reduced margin */
       }
       
       .start-text {
@@ -412,7 +414,7 @@
   
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
-    <canvas class="game-canvas" id="gameCanvas" width="800" height="600"></canvas>
+    <canvas class="game-canvas" id="gameCanvas" width="800" height="550"></canvas>
     
     <div class="game-ui">
       <div class="score-item">
@@ -504,7 +506,7 @@
     function initCanvas() {
       // Set canvas size directly
       canvas.width = 800;
-      canvas.height = 600;
+      canvas.height = 550;  // Reduced from 600 to make room for UI
       
       // High quality rendering
       ctx.imageSmoothingEnabled = true;
@@ -517,24 +519,38 @@
     // Create Pegs
     function createPegs() {
       pegs = [];
-      const rows = 12;
-      const cols = 7;
-      const pegSpacing = 80;
-      const rowSpacing = 35;
-      const startY = 120;
+      const rows = 10;
+      const pegSpacing = 70;
+      const rowSpacing = 45;
+      const startY = 100;
       
       for (let row = 0; row < rows; row++) {
-        const pegCount = cols - (row % 2);
-        const offsetX = (row % 2) * (pegSpacing / 2);
-        const startX = (canvas.width - (pegCount - 1) * pegSpacing) / 2 + offsetX;
+        const pegsInRow = row + 3; // Start with 3 pegs, increase each row
+        const rowWidth = (pegsInRow - 1) * pegSpacing;
+        const startX = (canvas.width - rowWidth) / 2;
         
-        for (let col = 0; col < pegCount; col++) {
+        for (let col = 0; col < pegsInRow; col++) {
+          const pegType = Math.random();
+          let special = false;
+          let extraBall = false;
+          let color = 'normal';
+          
+          if (pegType < 0.05) { // 5% chance for extra ball peg
+            extraBall = true;
+            color = 'extraBall';
+          } else if (pegType < 0.15) { // 10% chance for special multiplier peg
+            special = true;
+            color = 'special';
+          }
+          
           pegs.push({
             x: startX + col * pegSpacing,
             y: startY + row * rowSpacing,
             radius: PEG_RADIUS,
             hit: false,
-            special: Math.random() < 0.15, // 15% chance for special pegs
+            special: special,
+            extraBall: extraBall,
+            color: color,
             glowPhase: Math.random() * Math.PI * 2
           });
         }
@@ -551,7 +567,7 @@
       for (let i = 0; i < SLOT_VALUES.length; i++) {
         slots.push({
           x: i * slotWidth,
-          y: canvas.height - 120,  // Raised from -60 to -120
+          y: canvas.height - 80,  // Adjusted for new canvas height
           width: slotWidth,
           height: 50,
           value: SLOT_VALUES[i],
@@ -621,17 +637,22 @@
             if (!peg.hit) {
               peg.hit = true;
               
-              let points = peg.special ? 500 : 100;
-              points *= multiplier;
-              score += points;
-              
+              let points = 100;
               if (peg.special) {
+                points = 500;
                 multiplier++;
                 createParticles(peg.x, peg.y, '#00ff88', 20);
+              } else if (peg.extraBall) {
+                points = 300;
+                ballsLeft++; // Grant extra ball!
+                createParticles(peg.x, peg.y, '#ff6600', 25);
+                console.log(`Extra ball granted! Balls left: ${ballsLeft}`);
               } else {
                 createParticles(peg.x, peg.y, '#00d4ff', 10);
               }
               
+              points *= multiplier;
+              score += points;
               updateUI();
             }
             
@@ -663,7 +684,7 @@
         }
         
         // Slot collision
-        if (this.y + this.radius >= canvas.height - 120) {  // Updated to match new slot position
+        if (this.y + this.radius >= canvas.height - 80) {  // Updated to match new slot position
           if (!this.toRemove) {  // Only process if not already marked for removal
             const slotWidth = canvas.width / SLOT_VALUES.length;
             const slotIndex = Math.floor(this.x / slotWidth);
@@ -779,11 +800,13 @@
     
     // Drop Ball
     function dropBall(x) {
-      if (ballsLeft > 0 && gameState === 'playing' && balls.length < 10) {  // Limit max balls
-        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}, active balls: ${balls.length}`);
+      if (ballsLeft > 0 && gameState === 'playing' && balls.length === 0) {  // Only allow one ball at a time
+        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
         balls.push(new Ball(x, 50));
+      } else if (balls.length > 0) {
+        console.log(`Cannot drop ball: another ball is still in play`);
       } else {
-        console.log(`Cannot drop ball: ballsLeft=${ballsLeft}, gameState=${gameState}, activeBalls=${balls.length}`);
+        console.log(`Cannot drop ball: ballsLeft=${ballsLeft}, gameState=${gameState}`);
       }
     }
     
@@ -885,10 +908,10 @@
       
       // Draw bottom collection area
       ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.fillRect(0, canvas.height - 70, canvas.width, 70);
+      ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
       ctx.strokeStyle = '#00d4ff';
       ctx.lineWidth = 2;
-      ctx.strokeRect(0, canvas.height - 70, canvas.width, 70);
+      ctx.strokeRect(0, canvas.height - 30, canvas.width, 30);
       
       // Draw pegs
       pegs.forEach((peg, index) => {
@@ -900,7 +923,11 @@
         
         const glow = Math.sin(peg.glowPhase + Date.now() * 0.01) * 0.3 + 0.7;
         
-        if (peg.special) {
+        if (peg.extraBall) {
+          ctx.shadowColor = '#ff6600';
+          ctx.shadowBlur = 15 * glow;
+          ctx.fillStyle = '#ff6600';
+        } else if (peg.special) {
           ctx.shadowColor = '#00ff88';
           ctx.shadowBlur = 15 * glow;
           ctx.fillStyle = '#00ff88';
@@ -990,9 +1017,10 @@
       alert(`🚀 BenBlinko 4K Neon Laser Deluxe 🚀
 
 🎯 HOW TO PLAY:
-• Click anywhere to drop a ball
+• Click anywhere to drop a ball (one ball at a time!)
 • Hit pegs to score points
-• Special glowing pegs give bonus points and increase your multiplier
+• Green pegs give bonus points and increase your multiplier
+• Orange pegs grant an extra ball!
 • Balls land in slots at the bottom for bonus scores
 • Try to get the highest score possible!
 
@@ -1002,8 +1030,9 @@
 • Use your mouse to aim where the ball drops
 
 🏆 SCORING:
-• Regular pegs: 100 points × multiplier
-• Special pegs: 500 points × multiplier (and increases multiplier!)
+• Blue pegs: 100 points × multiplier
+• Green pegs: 500 points × multiplier (and increases multiplier!)
+• Orange pegs: 300 points × multiplier (and grants extra ball!)
 • Slot bonuses: Various point values × multiplier
 
 Good luck and have fun! 🎉`);
