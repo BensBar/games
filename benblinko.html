@@ -516,7 +516,7 @@
     
     // Game Constants - BADASS EDITION
     const GRAVITY = 0.3;
-    const BOUNCE = 0.8;
+    const BOUNCE = 0.5; // Reduced from 0.8 to prevent excessive bouncing
     const PEG_RADIUS = 8;
     const BALL_RADIUS = 12;
     const SLOT_VALUES = [100, 500, 1000, 5000, 10000, 5000, 1000, 500, 100];
@@ -675,9 +675,13 @@
         this.x += this.vx;
         this.y += this.vy;
         
-        // Air resistance to prevent excessive speed
-        this.vx *= 0.995;
-        this.vy *= 0.999;
+        // Enhanced air resistance to prevent excessive bouncing
+        this.vx *= 0.988; // Increased resistance
+        this.vy *= 0.995;
+        
+        // Velocity dampening to prevent wild bouncing
+        if (Math.abs(this.vx) > 8) this.vx *= 0.8;
+        if (Math.abs(this.vy) > 12) this.vy *= 0.8;
         
         // Trail effect
         this.trail.push({ x: this.x, y: this.y });
@@ -1205,20 +1209,36 @@
         ctx.stroke();
       }
       
-      // BensBar Logo in digital island
+      // BensBar Logo in digital island - ENHANCED VISIBILITY
       ctx.save();
+      
+      // Logo background for better visibility
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.fillRect(10, 10, 220, 65);
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(10, 10, 220, 65);
+      
+      // Main logo text
       ctx.fillStyle = '#00d4ff';
-      ctx.font = 'bold 24px Orbitron';
+      ctx.font = 'bold 28px Orbitron, Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.shadowColor = '#00d4ff';
-      ctx.shadowBlur = 15;
-      ctx.fillText('BensBar', 20, 35);
+      ctx.shadowBlur = 20;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.strokeText('BensBar', 20, 40);
+      ctx.fillText('BensBar', 20, 40);
       
-      // Subtitle
-      ctx.fillStyle = '#ffffff88';
-      ctx.font = '12px Orbitron';
-      ctx.shadowBlur = 5;
-      ctx.fillText('4K NEON LASER DELUXE', 20, 55);
+      // Subtitle with enhanced visibility
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px Orbitron, Arial, sans-serif';
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 10;
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 0.5;
+      ctx.strokeText('4K NEON LASER DELUXE', 20, 60);
+      ctx.fillText('4K NEON LASER DELUXE', 20, 60);
       ctx.restore();
       
       // COMBO DISPLAY in digital island
