@@ -319,10 +319,10 @@
     @media (max-width: 430px) {
       /* iPhone 16 Pro specific (430x932px) */
       .game-canvas {
-        width: 90vw;
-        height: 55vh;
-        max-width: 400px;
-        max-height: 500px;
+        width: 95vw;
+        height: 75vh; /* Increased from 55vh to show full game area */
+        max-width: 420px; /* Increased to use more screen space */
+        max-height: 700px; /* Increased to accommodate taller game */
       }
       
       .game-ui {
@@ -359,10 +359,18 @@
     }
     
     @media (max-width: 768px) {
+      .game-canvas {
+        width: 95vw;
+        height: 70vh; /* Increased for better mobile visibility */
+        max-width: 420px;
+        max-height: 650px;
+      }
+      
       .game-ui {
         flex-wrap: wrap;
         gap: 8px;
         padding: 12px;
+        width: 95%;
       }
       
       .score-item {
@@ -398,8 +406,9 @@
       }
       
       .game-canvas {
-        height: 70vh;
-        max-height: 300px;
+        height: 85vh; /* Increased to use more landscape space */
+        max-height: 400px;
+        width: 95vw;
       }
     }
   </style>
@@ -422,7 +431,7 @@
   
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
-    <canvas class="game-canvas" id="gameCanvas" width="800" height="600"></canvas>
+    <canvas class="game-canvas" id="gameCanvas" width="800" height="800"></canvas>
     
     <div class="game-ui">
       <div class="score-item">
@@ -512,9 +521,9 @@
     
     // Initialize Canvas
     function initCanvas() {
-      // Set canvas size directly
+      // Set canvas size directly - made taller for better mobile experience
       canvas.width = 800;
-      canvas.height = 600;
+      canvas.height = 800; // Increased from 600 to 800 for better mobile visibility
       
       // High quality rendering
       ctx.imageSmoothingEnabled = true;
@@ -527,11 +536,11 @@
     // Create Pegs
     function createPegs() {
       pegs = [];
-      const rows = 8; // Reduced to ensure pegs don't overlap with slots
+      const rows = 12; // Increased back to 12 since we have taller canvas
       const pegsPerRow = 7;
       const pegSpacing = 80;
       const rowSpacing = 40;
-      const startY = 120; // Last peg at y=400, slots at y=480, perfect spacing
+      const startY = 120; // With 12 rows: last peg at y=560, slots at y=680, perfect spacing
       
       for (let row = 0; row < rows; row++) {
         // Stagger every other row by offsetting odd rows
@@ -563,7 +572,7 @@
       for (let i = 0; i < SLOT_VALUES.length; i++) {
         slots.push({
           x: i * slotWidth,
-          y: canvas.height - 120,  // Raised from -60 to -120
+          y: canvas.height - 120,  // Now at y=680 (800-120) for taller canvas
           width: slotWidth,
           height: 50,
           value: SLOT_VALUES[i],
