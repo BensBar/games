@@ -531,7 +531,7 @@
       const pegsPerRow = 7;
       const pegSpacing = 80;
       const rowSpacing = 40;
-      const startY = -60; // Shifted up by another 80px (2 more rows) to clear slots
+      const startY = 80; // Positioned to start from the digital island edge
       
       for (let row = 0; row < rows; row++) {
         // Stagger every other row by offsetting odd rows
@@ -578,13 +578,14 @@
     class Ball {
       constructor(x, y) {
         this.x = x;
-        this.y = y;
+        this.y = y || 30; // Start from digital island area
         this.vx = (Math.random() - 0.5) * 2;
         this.vy = 0;
         this.radius = BALL_RADIUS;
         this.color = '#00d4ff';
         this.trail = [];
         this.glowPhase = 0;
+        this.sparkles = []; // Add sparkle effects
       }
       
       update() {
@@ -629,6 +630,7 @@
             // Score only once per peg
             if (!peg.hit) {
               peg.hit = true;
+              peg.hitTime = Date.now(); // Record hit time for visual effects
               
               let points = peg.special ? 500 : 100;
               points *= multiplier;
@@ -713,27 +715,62 @@
       draw() {
         ctx.save();
         
-        // Draw trail
+        // Enhanced trail effect with gradient
         for (let i = 0; i < this.trail.length; i++) {
-          const alpha = i / this.trail.length * 0.3;
+          const alpha = (i / this.trail.length) * 0.5;
           const point = this.trail[i];
+          const trailRadius = this.radius * (i / this.trail.length) * 0.8;
+          
+          // Trail gradient
+          const trailGradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, trailRadius);
+          trailGradient.addColorStop(0, this.color + Math.floor(alpha * 255).toString(16).padStart(2, '0'));
+          trailGradient.addColorStop(1, this.color + '00');
+          
           ctx.globalAlpha = alpha;
-          ctx.fillStyle = this.color;
+          ctx.fillStyle = trailGradient;
           ctx.beginPath();
-          ctx.arc(point.x, point.y, this.radius * (i / this.trail.length), 0, Math.PI * 2);
+          ctx.arc(point.x, point.y, trailRadius, 0, Math.PI * 2);
           ctx.fill();
         }
         
         ctx.globalAlpha = 1;
         
-        // Draw main ball with glow
-        const glow = Math.sin(this.glowPhase) * 0.3 + 0.7;
+        // Enhanced main ball with multiple glow layers
+        const glow = Math.sin(this.glowPhase) * 0.3 + 0.9;
+        
+        // Outer glow
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 20 * glow;
-        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 25 * glow;
+        
+        // Ball gradient
+        const ballGradient = ctx.createRadialGradient(
+          this.x - 4, this.y - 4, 0,
+          this.x, this.y, this.radius
+        );
+        ballGradient.addColorStop(0, '#ffffff');
+        ballGradient.addColorStop(0.3, this.color);
+        ballGradient.addColorStop(1, '#0066aa');
+        
+        ctx.fillStyle = ballGradient;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Inner highlight
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff66';
+        ctx.beginPath();
+        ctx.arc(this.x - 3, this.y - 3, this.radius * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Outer ring
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius + 1, 0, Math.PI * 2);
+        ctx.stroke();
         
         ctx.restore();
       }
@@ -793,7 +830,7 @@
       // Only allow one ball at a time
       if (ballsLeft > 0 && gameState === 'playing' && balls.length === 0) {
         console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
-        balls.push(new Ball(x, 50));
+        balls.push(new Ball(x, 30)); // Start from digital island area
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
       } else {
@@ -880,21 +917,92 @@
       
       if (gameState !== 'playing') return;
       
-      // Draw slots
+      // Draw digital island ball drop area at top
+      const dropZoneHeight = 60;
+      const dropZoneGradient = ctx.createLinearGradient(0, 0, 0, dropZoneHeight);
+      dropZoneGradient.addColorStop(0, '#2a2a5a88');
+      dropZoneGradient.addColorStop(0.7, '#1a1a3a66');
+      dropZoneGradient.addColorStop(1, 'transparent');
+      ctx.fillStyle = dropZoneGradient;
+      ctx.fillRect(0, 0, canvas.width, dropZoneHeight);
+      
+      // Digital grid pattern in drop zone
+      ctx.strokeStyle = '#00d4ff22';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, dropZoneHeight);
+        ctx.stroke();
+      }
+      for (let y = 0; y < dropZoneHeight; y += 20) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      
+      // Glowing drop zone border
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 2;
+      ctx.shadowColor = '#00d4ff';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(0, dropZoneHeight);
+      ctx.lineTo(canvas.width, dropZoneHeight);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      
+      // Draw slots with enhanced 4K visuals
       slots.forEach((slot, index) => {
-        ctx.fillStyle = slot.color + '66';
+        ctx.save();
+        
+        // Enhanced slot background with gradient
+        const slotGradient = ctx.createLinearGradient(slot.x, slot.y, slot.x, slot.y + slot.height);
+        slotGradient.addColorStop(0, slot.color + '88');
+        slotGradient.addColorStop(0.5, slot.color + 'BB');
+        slotGradient.addColorStop(1, slot.color + '44');
+        ctx.fillStyle = slotGradient;
         ctx.fillRect(slot.x, slot.y, slot.width, slot.height);
         
-        ctx.fillStyle = slot.color;
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
+        // Glowing outer border
+        ctx.strokeStyle = slot.color;
+        ctx.lineWidth = 3;
+        ctx.shadowColor = slot.color;
+        ctx.shadowBlur = 15;
         ctx.strokeRect(slot.x, slot.y, slot.width, slot.height);
         
-        // Draw slot value
+        // Remove top border to make it look like an open slot
+        ctx.strokeStyle = '#1a1a3a'; // Match background
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(slot.x, slot.y);
+        ctx.lineTo(slot.x + slot.width, slot.y);
+        ctx.stroke();
+        
+        // Add inner glow effect
+        ctx.shadowColor = slot.color;
+        ctx.shadowBlur = 8;
+        ctx.strokeStyle = slot.color + '66';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(slot.x + 2, slot.y + 2, slot.width - 4, slot.height - 4);
+        
+        // Draw slot value with enhanced styling
+        ctx.shadowColor = '#000000';
+        ctx.shadowBlur = 3;
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px Orbitron';
+        ctx.font = 'bold 16px Orbitron';
         ctx.textAlign = 'center';
-        ctx.fillText(slot.value.toLocaleString(), slot.x + slot.width / 2, slot.y + slot.height / 2 + 6);
+        ctx.fillText(slot.value.toLocaleString(), slot.x + slot.width / 2, slot.y + slot.height / 2 + 8);
+        
+        // Add a subtle highlight on high-value slots
+        if (slot.value >= 5000) {
+          ctx.fillStyle = '#ffffff22';
+          ctx.fillRect(slot.x + 1, slot.y + 1, slot.width - 2, slot.height / 3);
+        }
+        
+        ctx.restore();
       });
       
       // Draw bottom collection area
@@ -904,29 +1012,70 @@
       ctx.lineWidth = 2;
       ctx.strokeRect(0, canvas.height - 70, canvas.width, 70);
       
-      // Draw pegs
+      // Draw pegs with enhanced 4K visuals
       pegs.forEach((peg, index) => {
         ctx.save();
         
-        if (peg.hit) {
-          ctx.globalAlpha = 0.3;
-        }
+        // Dynamic glow based on time and position
+        const glow = Math.sin(peg.glowPhase + Date.now() * 0.01) * 0.4 + 0.8;
+        const pulseGlow = Math.sin(Date.now() * 0.005 + index * 0.3) * 0.2 + 0.8;
         
-        const glow = Math.sin(peg.glowPhase + Date.now() * 0.01) * 0.3 + 0.7;
+        if (peg.hit) {
+          ctx.globalAlpha = 0.4;
+          // Hit pegs have a fading glow
+          const fadeGlow = Math.max(0.1, 1 - ((Date.now() - (peg.hitTime || 0)) / 2000));
+          ctx.globalAlpha *= fadeGlow;
+        }
         
         if (peg.special) {
+          // Special pegs - enhanced rainbow effect
           ctx.shadowColor = '#00ff88';
-          ctx.shadowBlur = 15 * glow;
-          ctx.fillStyle = '#00ff88';
+          ctx.shadowBlur = 20 * glow * pulseGlow;
+          
+          // Create rainbow gradient for special pegs
+          const specialGradient = ctx.createRadialGradient(peg.x, peg.y, 0, peg.x, peg.y, peg.radius * 2);
+          specialGradient.addColorStop(0, '#00ff88');
+          specialGradient.addColorStop(0.3, '#00d4ff');
+          specialGradient.addColorStop(0.6, '#ff006e');
+          specialGradient.addColorStop(1, '#00ff88');
+          ctx.fillStyle = specialGradient;
+          
+          // Extra outer glow ring
+          ctx.beginPath();
+          ctx.arc(peg.x, peg.y, peg.radius + 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#00ff8833';
+          ctx.fill();
         } else {
+          // Regular pegs - enhanced cyan glow
           ctx.shadowColor = '#00d4ff';
-          ctx.shadowBlur = 10 * glow;
-          ctx.fillStyle = '#00d4ff';
+          ctx.shadowBlur = 15 * glow;
+          
+          // Enhanced gradient for regular pegs
+          const pegGradient = ctx.createRadialGradient(peg.x - 3, peg.y - 3, 0, peg.x, peg.y, peg.radius);
+          pegGradient.addColorStop(0, '#ffffff');
+          pegGradient.addColorStop(0.3, '#00d4ff');
+          pegGradient.addColorStop(1, '#0088cc');
+          ctx.fillStyle = pegGradient;
         }
         
+        // Main peg circle
         ctx.beginPath();
         ctx.arc(peg.x, peg.y, peg.radius, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Inner highlight
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff44';
+        ctx.beginPath();
+        ctx.arc(peg.x - 2, peg.y - 2, peg.radius * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Subtle outer ring
+        ctx.strokeStyle = peg.special ? '#00ff88' : '#00d4ff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(peg.x, peg.y, peg.radius + 1, 0, Math.PI * 2);
+        ctx.stroke();
         
         ctx.restore();
       });
