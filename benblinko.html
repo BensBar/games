@@ -536,11 +536,11 @@
     // Create Pegs
     function createPegs() {
       pegs = [];
-      const rows = 12; // Increased back to 12 since we have taller canvas
-      const pegsPerRow = 9; // Increased from 7 to 9 to extend closer to side slots
-      const pegSpacing = 70; // Reduced from 80 to 70 to fit more pegs
+      const rows = 12;
+      const pegsPerRow = 10; // Increased from 9 to 10 for even wider coverage
+      const pegSpacing = 65; // Reduced from 70 to 65 to fit more pegs wider
       const rowSpacing = 40;
-      const startY = 120; // With 12 rows: last peg at y=560, slots at y=680, perfect spacing
+      const startY = 120;
       
       for (let row = 0; row < rows; row++) {
         // Stagger every other row by offsetting odd rows
