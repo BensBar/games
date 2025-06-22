@@ -877,6 +877,34 @@
       console.log('Could not load logo image, using text fallback');
     };
     
+    // Intro Music
+    const introMusic = new Audio('sounds/intro.mp3');
+    introMusic.loop = true;
+    introMusic.volume = 0.4; // Set a comfortable volume
+    let musicStarted = false;
+    
+    // Try to start music when user first interacts with the page
+    const startIntroMusic = () => {
+      if (!musicStarted) {
+        introMusic.play().then(() => {
+          musicStarted = true;
+          console.log('Intro music started');
+        }).catch(error => {
+          console.log('Could not start intro music:', error);
+        });
+      }
+    };
+    
+    // Stop intro music
+    const stopIntroMusic = () => {
+      if (musicStarted) {
+        introMusic.pause();
+        introMusic.currentTime = 0;
+        musicStarted = false;
+        console.log('Intro music stopped');
+      }
+    };
+    
     // Game Constants - BADASS EDITION
     const GRAVITY = 0.3;
     const BOUNCE = 0.5; // Reduced from 0.8 to prevent excessive bouncing
@@ -1505,6 +1533,9 @@
     function startGame() {
       console.log("🎮 Starting BenBlinko!");
       
+      // Stop intro music when game starts
+      stopIntroMusic();
+      
       gameState = 'playing';
       score = 0;
       ballsLeft = 5;
@@ -1559,6 +1590,14 @@
       gameContainer.classList.remove('active');
       gameOverScreen.classList.remove('show');
       introScreen.classList.remove('hidden');
+      
+      // Restart intro music when returning to intro screen
+      if (musicStarted) {
+        introMusic.currentTime = 0; // Reset to beginning
+        introMusic.play().catch(error => {
+          console.log('Could not restart intro music:', error);
+        });
+      }
       
       balls = [];
       particles = [];
@@ -1810,8 +1849,19 @@
     }
     
     // Event Listeners
-    startText.addEventListener('click', startGame);
-    gameLogo.addEventListener('click', startGame);
+    startText.addEventListener('click', () => {
+      startIntroMusic(); // Start music on first interaction
+      startGame();
+    });
+    
+    gameLogo.addEventListener('click', () => {
+      startIntroMusic(); // Start music on first interaction
+      startGame();
+    });
+    
+    // Also try to start music when hovering intro elements
+    startText.addEventListener('mouseenter', startIntroMusic);
+    gameLogo.addEventListener('mouseenter', startIntroMusic);
     
     canvas.addEventListener('click', (e) => {
       if (gameState === 'playing') {
@@ -2072,62 +2122,7 @@
         }
       }
       
-      // Show tilt indicator with real-time feedback
-      const tiltIndicator = document.createElement('div');
-      tiltIndicator.id = 'tiltIndicator';
-      tiltIndicator.innerHTML = `
-        <div style="position: fixed; top: 10px; left: 10px; 
-                    background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 10px; 
-                    color: #00d4ff; font-size: 0.8rem; z-index: 1003; font-family: monospace;
-                    border: 1px solid #00d4ff44; backdrop-filter: blur(5px);">
-          📱 Tilt: <span id="tiltValue">0.0</span>° | Orient: <span id="orientValue">0</span>°
-        </div>
-      `;
-      document.body.appendChild(tiltIndicator);
-      
-      // Update tilt display with detailed info
-      const updateTiltDisplay = () => {
-        const tiltValueElement = document.getElementById('tiltValue');
-        const orientValueElement = document.getElementById('orientValue');
-        
-        if (tiltValueElement && tiltEnabled) {
-          tiltValueElement.textContent = tilt.toFixed(1);
-        }
-        
-        if (orientValueElement) {
-          const orientation = window.screen && window.screen.orientation ? 
-                             window.screen.orientation.angle : 
-                             (window.orientation || 0);
-          orientValueElement.textContent = orientation;
-        }
-      };
-      
-      // Update display every 100ms
-      const tiltDisplayInterval = setInterval(updateTiltDisplay, 100);
-      
-      // Store interval ID to clear it later if needed
-      window.tiltDisplayInterval = tiltDisplayInterval;
-      
       console.log('Tilt control enabled for mobile device');
-      
-      // Show success message with instructions
-      const successMsg = document.createElement('div');
-      successMsg.innerHTML = `
-        <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                    background: rgba(0,255,136,0.9); padding: 12px 20px; border-radius: 15px; 
-                    color: white; font-size: 0.9rem; z-index: 1004; text-align: center;
-                    box-shadow: 0 0 20px rgba(0,255,136,0.5); max-width: 300px;">
-          ✅ Tilt control enabled!<br>
-          <small>Tilt your device left/right to guide the ball</small>
-        </div>
-      `;
-      document.body.appendChild(successMsg);
-      
-      setTimeout(() => {
-        if (successMsg.parentNode) {
-          successMsg.remove();
-        }
-      }, 4000);
       
       // Test orientation immediately
       setTimeout(() => {
@@ -2147,18 +2142,6 @@
       // Remove event listeners
       window.removeEventListener('deviceorientation', handleDeviceOrientation);
       window.removeEventListener('deviceorientationabsolute', handleDeviceOrientation);
-      
-      // Clear display update interval
-      if (window.tiltDisplayInterval) {
-        clearInterval(window.tiltDisplayInterval);
-        window.tiltDisplayInterval = null;
-      }
-      
-      // Remove tilt indicator
-      const tiltIndicator = document.getElementById('tiltIndicator');
-      if (tiltIndicator) {
-        tiltIndicator.remove();
-      }
       
       console.log('Tilt control disabled');
     }
