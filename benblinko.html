@@ -1537,6 +1537,56 @@
     
     // Start Game
     function startGame() {
+      // Check if on mobile device and accelerometer permission is required
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && !accelerometerPermissionGranted) {
+        // Show permission required message
+        const permissionMsg = document.createElement('div');
+        permissionMsg.innerHTML = `
+          <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                      background: rgba(255, 68, 68, 0.95); padding: 20px 30px; border-radius: 20px; 
+                      color: white; font-size: 1.1rem; z-index: 1005; text-align: center; max-width: 350px;
+                      border: 2px solid #ff4444; box-shadow: 0 0 30px rgba(255, 68, 68, 0.5);">
+            <h3 style="margin: 0 0 15px 0; color: #ffff00;">🚫 Accelerometer Required</h3>
+            <p style="margin: 0 0 15px 0; line-height: 1.4;">
+              Please enable tilt control first to get the full BenBlinko experience!
+            </p>
+            <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">
+              Look for the "📱 Enable Tilt Control" button below
+            </p>
+          </div>
+        `;
+        document.body.appendChild(permissionMsg);
+        
+        // Shake the permission button if it exists
+        const tiltBtn = document.querySelector('button');
+        if (tiltBtn && tiltBtn.innerHTML.includes('Enable Tilt Control')) {
+          tiltBtn.style.animation = 'shake 0.5s ease-in-out 3';
+          const shakeStyle = document.createElement('style');
+          shakeStyle.textContent = `
+            @keyframes shake {
+              0%, 100% { transform: translateX(-50%) translateY(0px); }
+              25% { transform: translateX(-50%) translateY(-5px); }
+              75% { transform: translateX(-50%) translateY(5px); }
+            }
+          `;
+          document.head.appendChild(shakeStyle);
+          
+          setTimeout(() => {
+            tiltBtn.style.animation = '';
+            if (shakeStyle.parentNode) shakeStyle.remove();
+          }, 1500);
+        }
+        
+        // Remove message after 4 seconds
+        setTimeout(() => {
+          if (permissionMsg.parentNode) {
+            permissionMsg.remove();
+          }
+        }, 4000);
+        
+        return; // Don't start the game
+      }
+      
       console.log("🎮 Starting BenBlinko!");
       
       // Stop intro music when game starts
@@ -1926,6 +1976,7 @@
     let tiltEnabled = false;
     let tilt = 0;
     let lastGamma = 0;
+    let accelerometerPermissionGranted = false; // Track if permission is granted
     const TILT_SENSITIVITY = 3.5; // Optimized for responsive control
     
     function handleDeviceOrientation(event) {
@@ -2109,6 +2160,7 @@
     
     function enableTiltControl() {
       tiltEnabled = true;
+      accelerometerPermissionGranted = true; // Mark permission as granted
       
       // Add event listeners for device orientation with better browser support
       if (window.DeviceOrientationEvent) {
@@ -2190,6 +2242,13 @@
     // Initialize
     window.addEventListener('load', () => {
       console.log("🚀 BenBlinko 4K Neon Laser Deluxe Loaded!");
+      
+      // Auto-grant permission for desktop devices
+      if (!/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        accelerometerPermissionGranted = true;
+        console.log('Desktop device detected - accelerometer permission auto-granted');
+      }
+      
       initCanvas();
       updateUI();
       gameLoop();
