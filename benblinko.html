@@ -732,7 +732,7 @@
       const pegsPerRow = 10; // Increased from 9 to 10 for even wider coverage
       const pegSpacing = 65; // Reduced from 70 to 65 to fit more pegs wider
       const rowSpacing = 40;
-      const startY = 120;
+      const startY = 80; // Reduced from 120 to give more space without digital island
       
       for (let row = 0; row < rows; row++) {
         // Stagger every other row by offsetting odd rows
@@ -779,7 +779,7 @@
     class Ball {
       constructor(x, y, type = 'normal') {
         this.x = x;
-        this.y = y || 85; // Start below the digital island
+        this.y = y || 70; // Start below the top logo area
         this.vx = (Math.random() - 0.5) * 1;
         this.vy = 0;
         this.radius = BALL_RADIUS;
@@ -1296,7 +1296,7 @@
         
         console.log(`Dropping ${ballType} ball at position ${x}, balls left: ${ballsLeft}`);
         const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
-        balls.push(new Ball(clampedX, 85, ballType)); // Start below the taller digital island
+        balls.push(new Ball(clampedX, 70, ballType)); // Start below the top logo
         // Don't reset combo here - let it build across the ball's journey
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
@@ -1402,122 +1402,57 @@
         return;
       }
       
-      // Draw BADASS digital island with logo and combo
-      const dropZoneHeight = 80; // Increased height for logo and combo
-      const dropZoneGradient = ctx.createLinearGradient(0, 0, 0, dropZoneHeight);
-      dropZoneGradient.addColorStop(0, '#2a2a5a88');
-      dropZoneGradient.addColorStop(0.7, '#1a1a3a66');
-      dropZoneGradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = dropZoneGradient;
-      ctx.fillRect(0, 0, canvas.width, dropZoneHeight);
-      
-      // Digital grid pattern in drop zone
-      ctx.strokeStyle = '#00d4ff22';
-      ctx.lineWidth = 1;
-      for (let x = 0; x < canvas.width; x += 40) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, dropZoneHeight);
-        ctx.stroke();
-      }
-      for (let y = 0; y < dropZoneHeight; y += 20) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(canvas.width, y);
-        ctx.stroke();
-      }
-      
-      // Use the actual logo image from intro screen
+      // Draw logo at top center
       ctx.save();
       
-      // Logo background for better visibility
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      ctx.fillRect(10, 10, 120, 65);
-      ctx.strokeStyle = '#00d4ff';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(10, 10, 120, 65);
-      
       if (logoLoaded) {
-        // Draw the actual logo image scaled to fit - only show top third
-        const logoScale = 0.15; // Adjust scale to fit the digital island
+        // Draw the actual logo image at top center
+        const logoScale = 0.2; // Slightly larger for better visibility
         const logoWidth = logoImage.width * logoScale;
         const logoHeight = logoImage.height * logoScale;
-        const logoX = 15;
-        const logoY = 15;
-        
-        // Create clipping region to show only top third of logo
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(logoX, logoY, logoWidth, logoHeight / 3); // Only top third height
-        ctx.clip();
+        const logoX = (canvas.width - logoWidth) / 2; // Center horizontally
+        const logoY = 10; // Top margin
         
         // Add glow effect to the logo
         ctx.shadowColor = '#00d4ff';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 15;
         ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
         ctx.shadowBlur = 0;
-        ctx.restore();
-        
-        // Add subtitle below the clipped logo
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '8px Orbitron, Arial, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.shadowColor = '#ffffff';
-        ctx.shadowBlur = 5;
-        ctx.fillText('4K NEON LASER DELUXE', 15, logoY + (logoHeight / 3) + 12);
       } else {
-        // Fallback to text-based logo - show only top third of text
-        ctx.save();
-        
-        // Create clipping region for text
-        ctx.beginPath();
-        ctx.rect(15, 25, 100, 10); // Show only top portion of text
-        ctx.clip();
-        
+        // Fallback to text-based logo at top center
         ctx.fillStyle = '#00d4ff';
-        ctx.font = 'bold 16px Orbitron, Arial, sans-serif';
-        ctx.textAlign = 'left';
+        ctx.font = 'bold 24px Orbitron, Arial, sans-serif';
+        ctx.textAlign = 'center';
         ctx.shadowColor = '#00d4ff';
         ctx.shadowBlur = 15;
-        ctx.fillText('BenBlinko', 15, 35);
-        ctx.restore();
+        ctx.fillText('BenBlinko', canvas.width / 2, 35);
         
         // Subtitle
         ctx.fillStyle = '#ffffff';
-        ctx.font = '10px Orbitron, Arial, sans-serif';
+        ctx.font = '12px Orbitron, Arial, sans-serif';
         ctx.shadowColor = '#ffffff';
         ctx.shadowBlur = 8;
-        ctx.fillText('4K NEON LASER', 15, 50);
-        ctx.fillText('DELUXE', 15, 65);
+        ctx.fillText('4K NEON LASER DELUXE', canvas.width / 2, 55);
       }
       ctx.restore();
       
-      // COMBO DISPLAY in digital island
+      // COMBO DISPLAY at top right
       if (comboCount > 1) {
         ctx.save();
         ctx.textAlign = 'right';
         ctx.fillStyle = comboCount > 5 ? '#ffff00' : '#ff006e';
-        ctx.font = `bold ${Math.min(32 + comboCount * 2, 48)}px Orbitron`;
+        ctx.font = `bold ${Math.min(20 + comboCount * 2, 32)}px Orbitron`;
         ctx.shadowColor = comboCount > 5 ? '#ffff00' : '#ff006e';
-        ctx.shadowBlur = 20 + comboCount * 2;
-        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 40);
+        ctx.shadowBlur = 15 + comboCount * 2;
+        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 30);
         
         // Combo streak indicator
         ctx.fillStyle = '#ffffff88';
         ctx.font = '10px Orbitron';
         ctx.shadowBlur = 5;
-        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 60);
+        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 45);
         ctx.restore();
       }
-      
-      // Glowing drop zone border
-      ctx.strokeStyle = '#00d4ff';
-      ctx.lineWidth = 2;
-      ctx.shadowColor = '#00d4ff';
-      ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.moveTo(0, dropZoneHeight);
-      ctx.lineTo(canvas.width, dropZoneHeight);
       ctx.stroke();
       ctx.shadowBlur = 0;
       
