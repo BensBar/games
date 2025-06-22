@@ -527,11 +527,11 @@
     // Create Pegs
     function createPegs() {
       pegs = [];
-      const rows = 12;
+      const rows = 8; // Reduced to ensure pegs don't overlap with slots
       const pegsPerRow = 7;
       const pegSpacing = 80;
       const rowSpacing = 40;
-      const startY = 80; // Positioned to start from the digital island edge
+      const startY = 120; // Last peg at y=400, slots at y=480, perfect spacing
       
       for (let row = 0; row < rows; row++) {
         // Stagger every other row by offsetting odd rows
@@ -578,8 +578,8 @@
     class Ball {
       constructor(x, y) {
         this.x = x;
-        this.y = y || 30; // Start from digital island area
-        this.vx = (Math.random() - 0.5) * 2;
+        this.y = y || 10; // Start at very top of digital island
+        this.vx = (Math.random() - 0.5) * 1; // Reduced initial velocity
         this.vy = 0;
         this.radius = BALL_RADIUS;
         this.color = '#00d4ff';
@@ -606,14 +606,28 @@
         
         this.glowPhase += 0.1;
         
-        // Wall bouncing
-        if (this.x - this.radius < 0) {
+        // Enhanced wall bouncing with visual effects and stronger collision
+        if (this.x - this.radius <= 0) {
           this.x = this.radius;
           this.vx = Math.abs(this.vx) * BOUNCE;
+          // Ensure ball doesn't get stuck in wall
+          if (this.vx < 0.5) this.vx = 0.5;
+          // Create wall bounce particles
+          createParticles(this.x, this.y, '#ff006e', 8);
         }
-        if (this.x + this.radius > canvas.width) {
+        if (this.x + this.radius >= canvas.width) {
           this.x = canvas.width - this.radius;
           this.vx = -Math.abs(this.vx) * BOUNCE;
+          // Ensure ball doesn't get stuck in wall
+          if (this.vx > -0.5) this.vx = -0.5;
+          // Create wall bounce particles
+          createParticles(this.x, this.y, '#ff006e', 8);
+        }
+        
+        // Top boundary (prevent ball from going above digital island)
+        if (this.y - this.radius < 0) {
+          this.y = this.radius;
+          this.vy = Math.abs(this.vy) * BOUNCE;
         }
         
         // Peg collision - allow multiple bounces per frame for realistic physics
@@ -627,25 +641,21 @@
           if (distance < this.radius + peg.radius) {
             collisionCount++;
             
-            // Score only once per peg
+            // Only track hit for visual effects and multiplier bonuses
             if (!peg.hit) {
               peg.hit = true;
               peg.hitTime = Date.now(); // Record hit time for visual effects
               
-              let points = peg.special ? 500 : 100;
-              points *= multiplier;
-              score += points;
-              
+              // Special pegs double the final slot score and grant extra ball
               if (peg.special) {
-                multiplier++;
+                multiplier = Math.min(multiplier + 1, 10); // Cap multiplier at 10x
                 ballsLeft++; // Grant extra ball for special pegs!
                 createParticles(peg.x, peg.y, '#00ff88', 30);
-                console.log(`Special peg hit! Granted extra ball. Balls left: ${ballsLeft}`);
+                console.log(`Special peg hit! Multiplier now ${multiplier}x, granted extra ball. Balls left: ${ballsLeft}`);
+                updateUI();
               } else {
                 createParticles(peg.x, peg.y, '#00d4ff', 10);
               }
-              
-              updateUI();
             }
             
             // Physics collision response
@@ -675,15 +685,73 @@
           }
         }
         
-        // Slot collision
+        // Slot collision with haptic feedback
         if (this.y + this.radius >= canvas.height - 120) {  // Updated to match new slot position
           if (!this.toRemove) {  // Only process if not already marked for removal
             const slotWidth = canvas.width / SLOT_VALUES.length;
             const slotIndex = Math.floor(this.x / slotWidth);
             if (slotIndex >= 0 && slotIndex < slots.length) {
               const slot = slots[slotIndex];
-              score += slot.value * multiplier;
-              createParticles(this.x, this.y, slot.color, 30);
+              const slotScore = slot.value * multiplier;
+              score += slotScore;
+              
+              // Enhanced visual feedback
+              createParticles(this.x, this.y, slot.color, 40);
+              
+              // Haptic feedback for mobile devices
+              if ('vibrate' in navigator) {
+                // Different vibration patterns based on slot value
+                if (slot.value >= 10000) {
+                  navigator.vibrate([100, 50, 100, 50, 200]); // Jackpot pattern
+                } else if (slot.value >= 5000) {
+                  navigator.vibrate([80, 30, 80]); // High value pattern
+                } else if (slot.value >= 1000) {
+                  navigator.vibrate([60, 20, 60]); // Medium value pattern
+                } else {
+                  navigator.vibrate(40); // Basic vibration
+                }
+              }
+              
+              // Visual slot scoring feedback
+              const scorePopup = document.createElement('div');
+              scorePopup.innerHTML = `+${slotScore.toLocaleString()}`;
+              scorePopup.style.cssText = `
+                position: fixed;
+                left: ${(slotIndex + 0.5) * (100 / SLOT_VALUES.length)}%;
+                top: 70%;
+                transform: translateX(-50%);
+                color: ${slot.color};
+                font-size: 1.5rem;
+                font-weight: bold;
+                font-family: 'Orbitron', monospace;
+                text-shadow: 0 0 10px ${slot.color};
+                pointer-events: none;
+                z-index: 1005;
+                animation: scoreFloat 2s ease-out forwards;
+              `;
+              
+              // Add floating score animation
+              const style = document.createElement('style');
+              style.textContent = `
+                @keyframes scoreFloat {
+                  0% { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1); }
+                  50% { opacity: 1; transform: translateX(-50%) translateY(-30px) scale(1.2); }
+                  100% { opacity: 0; transform: translateX(-50%) translateY(-60px) scale(0.8); }
+                }
+              `;
+              document.head.appendChild(style);
+              document.body.appendChild(scorePopup);
+              
+              setTimeout(() => {
+                if (scorePopup.parentNode) {
+                  scorePopup.remove();
+                }
+                if (style.parentNode) {
+                  style.remove();
+                }
+              }, 2000);
+              
+              console.log(`Ball scored ${slotScore} points in slot ${slotIndex} (value: ${slot.value})`);
             }
             
             // Mark for removal
@@ -830,7 +898,9 @@
       // Only allow one ball at a time
       if (ballsLeft > 0 && gameState === 'playing' && balls.length === 0) {
         console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
-        balls.push(new Ball(x, 30)); // Start from digital island area
+        // Ensure ball starts within canvas bounds and at top of digital island
+        const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
+        balls.push(new Ball(clampedX, 10)); // Start at very top of digital island
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
       } else {
@@ -953,6 +1023,23 @@
       ctx.stroke();
       ctx.shadowBlur = 0;
       
+      // Draw invisible wall indicators (subtle glow on sides)
+      ctx.strokeStyle = '#ff006e33';
+      ctx.lineWidth = 1;
+      ctx.shadowColor = '#ff006e';
+      ctx.shadowBlur = 5;
+      // Left wall
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, canvas.height);
+      ctx.stroke();
+      // Right wall
+      ctx.beginPath();
+      ctx.moveTo(canvas.width, 0);
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      
       // Draw slots with enhanced 4K visuals
       slots.forEach((slot, index) => {
         ctx.save();
@@ -1020,12 +1107,7 @@
         const glow = Math.sin(peg.glowPhase + Date.now() * 0.01) * 0.4 + 0.8;
         const pulseGlow = Math.sin(Date.now() * 0.005 + index * 0.3) * 0.2 + 0.8;
         
-        if (peg.hit) {
-          ctx.globalAlpha = 0.4;
-          // Hit pegs have a fading glow
-          const fadeGlow = Math.max(0.1, 1 - ((Date.now() - (peg.hitTime || 0)) / 2000));
-          ctx.globalAlpha *= fadeGlow;
-        }
+        // Pegs remain bright even when hit - no darkening effect
         
         if (peg.special) {
           // Special pegs - enhanced rainbow effect
