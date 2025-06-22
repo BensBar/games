@@ -1406,12 +1406,12 @@
       ctx.save();
       
       if (logoLoaded) {
-        // Draw the actual logo image at top center
+        // Draw the actual logo image at top center - top edge at screen top
         const logoScale = 0.2; // Slightly larger for better visibility
         const logoWidth = logoImage.width * logoScale;
         const logoHeight = logoImage.height * logoScale;
         const logoX = (canvas.width - logoWidth) / 2; // Center horizontally
-        const logoY = 10; // Top margin
+        const logoY = 0; // Top edge at screen top
         
         // Add glow effect to the logo
         ctx.shadowColor = '#00d4ff';
@@ -1425,14 +1425,14 @@
         ctx.textAlign = 'center';
         ctx.shadowColor = '#00d4ff';
         ctx.shadowBlur = 15;
-        ctx.fillText('BenBlinko', canvas.width / 2, 35);
+        ctx.fillText('BenBlinko', canvas.width / 2, 25); // Closer to top
         
         // Subtitle
         ctx.fillStyle = '#ffffff';
         ctx.font = '12px Orbitron, Arial, sans-serif';
         ctx.shadowColor = '#ffffff';
         ctx.shadowBlur = 8;
-        ctx.fillText('4K NEON LASER DELUXE', canvas.width / 2, 55);
+        ctx.fillText('4K NEON LASER DELUXE', canvas.width / 2, 40); // Closer to top
       }
       ctx.restore();
       
@@ -1444,13 +1444,13 @@
         ctx.font = `bold ${Math.min(20 + comboCount * 2, 32)}px Orbitron`;
         ctx.shadowColor = comboCount > 5 ? '#ffff00' : '#ff006e';
         ctx.shadowBlur = 15 + comboCount * 2;
-        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 30);
+        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 25); // Higher up to align with logo
         
         // Combo streak indicator
         ctx.fillStyle = '#ffffff88';
         ctx.font = '10px Orbitron';
         ctx.shadowBlur = 5;
-        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 45);
+        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 40);
         ctx.restore();
       }
       ctx.stroke();
