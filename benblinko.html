@@ -159,6 +159,109 @@
       transform: scale(1.1);
       box-shadow: 0 0 20px #00d4ff88;
     }
+
+    /* Help Screen */
+    .help-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 26, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      backdrop-filter: blur(10px);
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .help-screen.visible {
+      display: flex;
+    }
+    
+    .help-content {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+      border: 2px solid #00d4ff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 0 50px rgba(0, 212, 255, 0.3);
+      animation: helpSlideIn 0.5s ease-out;
+    }
+    
+    @keyframes helpSlideIn {
+      0% { opacity: 0; transform: scale(0.8) translateY(-50px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .help-content h2 {
+      color: #00d4ff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 25px;
+      text-shadow: 0 0 15px #00d4ff;
+    }
+    
+    .help-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      border-left: 4px solid #ff006e;
+    }
+    
+    .help-section h3 {
+      color: #ff006e;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #ff006e;
+    }
+    
+    .help-section p {
+      color: #ffffff;
+      margin: 5px 0;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+    
+    .help-section p strong {
+      color: #00ff88;
+      text-shadow: 0 0 5px #00ff88;
+    }
+    
+    .help-section p em {
+      color: #ffff00;
+      font-style: italic;
+    }
+    
+    .close-help-btn {
+      background: linear-gradient(45deg, #00ff88, #00d4ff);
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px rgba(0,0,0,0.8);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      display: block;
+      margin: 20px auto 0;
+      width: fit-content;
+    }
+    
+    .close-help-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+    }
     
     /* Game Area */
     .game-container {
@@ -439,6 +542,56 @@
     <div class="credits">by BensBar</div>
     <button class="help-btn" id="helpBtn">❓ Help</button>
   </div>
+
+  <!-- Help Screen -->
+  <div class="help-screen" id="helpScreen">
+    <div class="help-content">
+      <h2>🎮 How to Play BenBlinko</h2>
+      
+      <div class="help-section">
+        <h3>🎯 Basic Gameplay</h3>
+        <p>• Click or tap to drop balls from the top</p>
+        <p>• Balls bounce off pegs and land in scoring slots</p>
+        <p>• Higher slots = bigger points!</p>
+        <p>• Try to get high scores with your 5 balls</p>
+      </div>
+      
+      <div class="help-section">
+        <h3>📱 Mobile Controls</h3>
+        <p>• Tap anywhere to drop a ball</p>
+        <p>• Tilt your device left/right to guide balls</p>
+        <p>• Haptic feedback when balls score</p>
+      </div>
+      
+      <div class="help-section">
+        <h3>🔥 Combo System</h3>
+        <p>• Hit pegs in sequence to build a combo counter</p>
+        <p>• Each peg hit increases your combo by 1</p>
+        <p>• When ball lands in slot: get 10% bonus per combo hit</p>
+        <p>• Example: 5 combo hits = 50% bonus to slot score!</p>
+        <p>• Combo resets after each ball (landed or lost)</p>
+      </div>
+      
+      <div class="help-section">
+        <h3>⚡ Special Ball Types</h3>
+        <p>� <strong>Normal Ball:</strong> Standard bouncy ball (85% chance)</p>
+        <p>🔴 <strong>Explosive Ball:</strong> Creates big explosion hitting many pegs</p>
+        <p>� <strong>Magnetic Ball:</strong> Attracted to special rainbow pegs</p>
+        <p>🟡 <strong>Lightning Ball:</strong> Moves faster with electric speed</p>
+        <p><em>Special balls appear randomly (15% chance total)</em></p>
+      </div>
+      
+      <div class="help-section">
+        <h3>🏆 Scoring Tips</h3>
+        <p>• Aim for center slots (higher values)</p>
+        <p>• Build long combos for bonus multipliers</p>
+        <p>• Special pegs (rainbow) give extra effects</p>
+        <p>• Use device tilt to fine-tune ball direction</p>
+      </div>
+    </div>
+    
+    <button class="close-help-btn" id="closeHelpBtn">✅ Got It!</button>
+  </div>
   
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
@@ -489,11 +642,13 @@
     const introScreen = document.getElementById('introScreen');
     const gameContainer = document.getElementById('gameContainer');
     const gameOverScreen = document.getElementById('gameOverScreen');
+    const helpScreen = document.getElementById('helpScreen');
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const startText = document.getElementById('startText');
     const gameLogo = document.getElementById('gameLogo');
     const helpBtn = document.getElementById('helpBtn');
+    const closeHelpBtn = document.getElementById('closeHelpBtn');
     const playAgainBtn = document.getElementById('playAgainBtn');
     
     // UI Elements
@@ -513,6 +668,18 @@
     let pegs = [];
     let particles = [];
     let slots = [];
+    
+    // Load logo image for use in digital island
+    const logoImage = new Image();
+    logoImage.src = 'img/logo.png';
+    let logoLoaded = false;
+    logoImage.onload = () => {
+      logoLoaded = true;
+      console.log('Logo image loaded for digital island');
+    };
+    logoImage.onerror = () => {
+      console.log('Could not load logo image, using text fallback');
+    };
     
     // Game Constants - BADASS EDITION
     const GRAVITY = 0.3;
@@ -804,7 +971,50 @@
             const slotIndex = Math.floor(this.x / slotWidth);
             if (slotIndex >= 0 && slotIndex < slots.length) {
               const slot = slots[slotIndex];
-              const slotScore = slot.value * multiplier;
+              let slotScore = slot.value * multiplier;
+              
+              // Add combo bonus - clear and simple!
+              if (comboCount > 1) {
+                const comboBonus = Math.floor(slotScore * (comboCount / 10)); // 10% bonus per combo hit
+                slotScore += comboBonus;
+                
+                // Show combo bonus popup 
+                const comboPopup = document.createElement('div');
+                comboPopup.innerHTML = `🔥 COMBO x${comboCount}<br>+${comboBonus.toLocaleString()} BONUS!`;
+                comboPopup.style.cssText = `
+                  position: fixed;
+                  left: ${(slotIndex + 0.5) * (100 / SLOT_VALUES.length)}%;
+                  top: 60%;
+                  transform: translateX(-50%);
+                  color: #ffff00;
+                  font-size: 1.2rem;
+                  font-weight: bold;
+                  font-family: 'Orbitron', monospace;
+                  text-shadow: 0 0 15px #ffff00;
+                  pointer-events: none;
+                  z-index: 1006;
+                  text-align: center;
+                  animation: comboPopupFloat 2.5s ease-out forwards;
+                `;
+                
+                // Add combo popup animation
+                const comboStyle = document.createElement('style');
+                comboStyle.textContent = `
+                  @keyframes comboPopupFloat {
+                    0% { opacity: 1; transform: translateX(-50%) translateY(0px) scale(1.2); }
+                    20% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.3); }
+                    100% { opacity: 0; transform: translateX(-50%) translateY(-40px) scale(0.9); }
+                  }
+                `;
+                document.head.appendChild(comboStyle);
+                document.body.appendChild(comboPopup);
+                
+                setTimeout(() => {
+                  if (comboPopup.parentNode) comboPopup.remove();
+                  if (comboStyle.parentNode) comboStyle.remove();
+                }, 2500);
+              }
+              
               score += slotScore;
               
               // Enhanced visual feedback
@@ -877,6 +1087,10 @@
             this.toRemove = true;
             ballsLeft--;
             multiplier = 1;
+            
+            // Reset combo after ball lands (this is where combo ends)
+            comboCount = 0;
+            
             updateUI();
             
             if (ballsLeft <= 0) {
@@ -890,6 +1104,10 @@
           if (!this.toRemove) {  // Only process if not already marked for removal
             this.toRemove = true;
             ballsLeft--;
+            
+            // Reset combo when ball is lost
+            comboCount = 0;
+            
             updateUI();
             
             if (ballsLeft <= 0) {
@@ -1079,7 +1297,7 @@
         console.log(`Dropping ${ballType} ball at position ${x}, balls left: ${ballsLeft}`);
         const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
         balls.push(new Ball(clampedX, 85, ballType)); // Start below the taller digital island
-        comboCount = 0; // Reset combo for new ball
+        // Don't reset combo here - let it build across the ball's journey
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
       } else {
@@ -1209,36 +1427,54 @@
         ctx.stroke();
       }
       
-      // BensBar Logo in digital island - ENHANCED VISIBILITY
+      // Use the actual logo image from intro screen
       ctx.save();
       
       // Logo background for better visibility
       ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      ctx.fillRect(10, 10, 220, 65);
+      ctx.fillRect(10, 10, 120, 65);
       ctx.strokeStyle = '#00d4ff';
       ctx.lineWidth = 2;
-      ctx.strokeRect(10, 10, 220, 65);
+      ctx.strokeRect(10, 10, 120, 65);
       
-      // Main logo text
-      ctx.fillStyle = '#00d4ff';
-      ctx.font = 'bold 28px Orbitron, Arial, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.shadowColor = '#00d4ff';
-      ctx.shadowBlur = 20;
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.strokeText('BensBar', 20, 40);
-      ctx.fillText('BensBar', 20, 40);
-      
-      // Subtitle with enhanced visibility
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 14px Orbitron, Arial, sans-serif';
-      ctx.shadowColor = '#ffffff';
-      ctx.shadowBlur = 10;
-      ctx.strokeStyle = '#00d4ff';
-      ctx.lineWidth = 0.5;
-      ctx.strokeText('4K NEON LASER DELUXE', 20, 60);
-      ctx.fillText('4K NEON LASER DELUXE', 20, 60);
+      if (logoLoaded) {
+        // Draw the actual logo image scaled to fit
+        const logoScale = 0.15; // Adjust scale to fit the digital island
+        const logoWidth = logoImage.width * logoScale;
+        const logoHeight = logoImage.height * logoScale;
+        const logoX = 15;
+        const logoY = 15;
+        
+        // Add glow effect to the logo
+        ctx.shadowColor = '#00d4ff';
+        ctx.shadowBlur = 10;
+        ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
+        ctx.shadowBlur = 0;
+        
+        // Add subtitle below logo
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '8px Orbitron, Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 5;
+        ctx.fillText('4K NEON LASER DELUXE', 15, logoY + logoHeight + 12);
+      } else {
+        // Fallback to text-based logo if image fails to load
+        ctx.fillStyle = '#00d4ff';
+        ctx.font = 'bold 16px Orbitron, Arial, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.shadowColor = '#00d4ff';
+        ctx.shadowBlur = 15;
+        ctx.fillText('BenBlinko', 15, 35);
+        
+        // Subtitle
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '10px Orbitron, Arial, sans-serif';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 8;
+        ctx.fillText('4K NEON LASER', 15, 50);
+        ctx.fillText('DELUXE', 15, 65);
+      }
       ctx.restore();
       
       // COMBO DISPLAY in digital island
@@ -1479,30 +1715,18 @@
     playAgainBtn.addEventListener('click', resetGame);
     
     helpBtn.addEventListener('click', () => {
-      alert(`🚀 BenBlinko 4K Neon Laser Deluxe 🚀
-
-🎯 HOW TO PLAY:
-• Click anywhere to drop a ball (one at a time)
-• Hit pegs to score points
-• Green special pegs give bonus points, increase multiplier AND grant an extra ball!
-• Balls land in slots at the bottom for bonus scores
-• Try to get the highest score possible!
-
-🎮 CONTROLS:
-• Click the logo or "CLICK TO START" to begin
-• Click anywhere on the game area to drop balls
-• Use your mouse to aim where the ball drops
-• Only one ball drops at a time for strategic gameplay
-
-🏆 SCORING:
-• Regular pegs: 100 points × multiplier
-• Special green pegs: 500 points × multiplier + extra ball + multiplier boost!
-• Slot bonuses: Various point values × multiplier
-
-🎁 BONUS:
-• Hit green special pegs to earn extra balls and extend your game!
-
-Good luck and have fun! 🎉`);
+      helpScreen.classList.add('visible');
+    });
+    
+    closeHelpBtn.addEventListener('click', () => {
+      helpScreen.classList.remove('visible');
+    });
+    
+    // Close help screen when clicking outside content
+    helpScreen.addEventListener('click', (e) => {
+      if (e.target === helpScreen) {
+        helpScreen.classList.remove('visible');
+      }
     });
     
     // Keyboard controls
