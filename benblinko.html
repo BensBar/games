@@ -1438,34 +1438,49 @@
       ctx.strokeRect(10, 10, 120, 65);
       
       if (logoLoaded) {
-        // Draw the actual logo image scaled to fit
+        // Draw the actual logo image scaled to fit - only show top third
         const logoScale = 0.15; // Adjust scale to fit the digital island
         const logoWidth = logoImage.width * logoScale;
         const logoHeight = logoImage.height * logoScale;
         const logoX = 15;
         const logoY = 15;
         
+        // Create clipping region to show only top third of logo
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(logoX, logoY, logoWidth, logoHeight / 3); // Only top third height
+        ctx.clip();
+        
         // Add glow effect to the logo
         ctx.shadowColor = '#00d4ff';
         ctx.shadowBlur = 10;
         ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
         ctx.shadowBlur = 0;
+        ctx.restore();
         
-        // Add subtitle below logo
+        // Add subtitle below the clipped logo
         ctx.fillStyle = '#ffffff';
         ctx.font = '8px Orbitron, Arial, sans-serif';
         ctx.textAlign = 'left';
         ctx.shadowColor = '#ffffff';
         ctx.shadowBlur = 5;
-        ctx.fillText('4K NEON LASER DELUXE', 15, logoY + logoHeight + 12);
+        ctx.fillText('4K NEON LASER DELUXE', 15, logoY + (logoHeight / 3) + 12);
       } else {
-        // Fallback to text-based logo if image fails to load
+        // Fallback to text-based logo - show only top third of text
+        ctx.save();
+        
+        // Create clipping region for text
+        ctx.beginPath();
+        ctx.rect(15, 25, 100, 10); // Show only top portion of text
+        ctx.clip();
+        
         ctx.fillStyle = '#00d4ff';
         ctx.font = 'bold 16px Orbitron, Arial, sans-serif';
         ctx.textAlign = 'left';
         ctx.shadowColor = '#00d4ff';
         ctx.shadowBlur = 15;
         ctx.fillText('BenBlinko', 15, 35);
+        ctx.restore();
         
         // Subtitle
         ctx.fillStyle = '#ffffff';
