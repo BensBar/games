@@ -883,14 +883,20 @@
     introMusic.volume = 0.4; // Set a comfortable volume
     let musicStarted = false;
     
-    // Try to start music when user first interacts with the page
+    // Start intro music immediately
     const startIntroMusic = () => {
       if (!musicStarted) {
         introMusic.play().then(() => {
           musicStarted = true;
           console.log('Intro music started');
         }).catch(error => {
-          console.log('Could not start intro music:', error);
+          console.log('Could not start intro music (browser autoplay policy):', error);
+          // Try again on first user interaction
+          document.addEventListener('click', () => {
+            if (!musicStarted && gameState === 'intro') {
+              startIntroMusic();
+            }
+          }, { once: true });
         });
       }
     };
@@ -1592,12 +1598,15 @@
       introScreen.classList.remove('hidden');
       
       // Restart intro music when returning to intro screen
-      if (musicStarted) {
+      setTimeout(() => {
         introMusic.currentTime = 0; // Reset to beginning
-        introMusic.play().catch(error => {
+        introMusic.play().then(() => {
+          musicStarted = true;
+          console.log('Intro music restarted');
+        }).catch(error => {
           console.log('Could not restart intro music:', error);
         });
-      }
+      }, 100); // Small delay to ensure screen transition
       
       balls = [];
       particles = [];
@@ -1849,19 +1858,8 @@
     }
     
     // Event Listeners
-    startText.addEventListener('click', () => {
-      startIntroMusic(); // Start music on first interaction
-      startGame();
-    });
-    
-    gameLogo.addEventListener('click', () => {
-      startIntroMusic(); // Start music on first interaction
-      startGame();
-    });
-    
-    // Also try to start music when hovering intro elements
-    startText.addEventListener('mouseenter', startIntroMusic);
-    gameLogo.addEventListener('mouseenter', startIntroMusic);
+    startText.addEventListener('click', startGame);
+    gameLogo.addEventListener('click', startGame);
     
     canvas.addEventListener('click', (e) => {
       if (gameState === 'playing') {
@@ -2195,6 +2193,9 @@
       initCanvas();
       updateUI();
       gameLoop();
+      
+      // Start intro music immediately when page loads
+      setTimeout(startIntroMusic, 500); // Small delay to ensure everything is loaded
     });
     
     window.addEventListener('resize', initCanvas);
