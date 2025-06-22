@@ -278,6 +278,35 @@
       display: flex;
     }
     
+    /* Game Logo Header */
+    .game-logo-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+      border-bottom: 2px solid #00d4ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1002;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 212, 255, 0.3);
+    }
+    
+    .game-header-logo {
+      height: 45px;
+      width: auto;
+      filter: drop-shadow(0 0 15px #00d4ff);
+      animation: logoGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes logoGlow {
+      0% { filter: drop-shadow(0 0 15px #00d4ff); }
+      100% { filter: drop-shadow(0 0 25px #00d4ff) drop-shadow(0 0 35px #ff006e); }
+    }
+    
     .game-canvas {
       border: 4px solid #00d4ff;
       border-radius: 15px;
@@ -286,6 +315,7 @@
         0 0 30px #00d4ff66,
         inset 0 0 30px #ffffff11;
       margin-bottom: 20px;
+      margin-top: 70px; /* Account for header logo */
       cursor: crosshair;
     }
     
@@ -434,9 +464,18 @@
       /* iPhone 16 Pro specific (430x932px) */
       .game-canvas {
         width: 95vw;
-        height: 75vh; /* Increased from 55vh to show full game area */
+        height: 70vh; /* Reduced to account for header */
         max-width: 420px; /* Increased to use more screen space */
-        max-height: 700px; /* Increased to accommodate taller game */
+        max-height: 650px; /* Reduced to account for header */
+        margin-top: 65px; /* Account for mobile header */
+      }
+      
+      .game-logo-header {
+        height: 50px;
+      }
+      
+      .game-header-logo {
+        height: 35px;
       }
       
       .game-ui {
@@ -475,9 +514,10 @@
     @media (max-width: 768px) {
       .game-canvas {
         width: 95vw;
-        height: 70vh; /* Increased for better mobile visibility */
+        height: 65vh; /* Reduced for header */
         max-width: 420px;
-        max-height: 650px;
+        max-height: 600px; /* Reduced for header */
+        margin-top: 65px;
       }
       
       .game-ui {
@@ -595,6 +635,11 @@
   
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
+    <!-- Game Logo Header at top of screen -->
+    <div class="game-logo-header" id="gameLogoHeader">
+      <img src="img/logo.png" alt="BenBlinko Logo" class="game-header-logo">
+    </div>
+    
     <canvas class="game-canvas" id="gameCanvas" width="800" height="800"></canvas>
     
     <div class="game-ui">
@@ -1402,41 +1447,7 @@
         return;
       }
       
-      // Draw logo at top center
-      ctx.save();
-      
-      if (logoLoaded) {
-        // Draw the actual logo image at top center - top edge at screen top
-        const logoScale = 0.2; // Slightly larger for better visibility
-        const logoWidth = logoImage.width * logoScale;
-        const logoHeight = logoImage.height * logoScale;
-        const logoX = (canvas.width - logoWidth) / 2; // Center horizontally
-        const logoY = 0; // Top edge at screen top
-        
-        // Add glow effect to the logo
-        ctx.shadowColor = '#00d4ff';
-        ctx.shadowBlur = 15;
-        ctx.drawImage(logoImage, logoX, logoY, logoWidth, logoHeight);
-        ctx.shadowBlur = 0;
-      } else {
-        // Fallback to text-based logo at top center
-        ctx.fillStyle = '#00d4ff';
-        ctx.font = 'bold 24px Orbitron, Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.shadowColor = '#00d4ff';
-        ctx.shadowBlur = 15;
-        ctx.fillText('BenBlinko', canvas.width / 2, 25); // Closer to top
-        
-        // Subtitle
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '12px Orbitron, Arial, sans-serif';
-        ctx.shadowColor = '#ffffff';
-        ctx.shadowBlur = 8;
-        ctx.fillText('4K NEON LASER DELUXE', canvas.width / 2, 40); // Closer to top
-      }
-      ctx.restore();
-      
-      // COMBO DISPLAY at top right
+      // COMBO DISPLAY at top right of canvas
       if (comboCount > 1) {
         ctx.save();
         ctx.textAlign = 'right';
@@ -1444,13 +1455,13 @@
         ctx.font = `bold ${Math.min(20 + comboCount * 2, 32)}px Orbitron`;
         ctx.shadowColor = comboCount > 5 ? '#ffff00' : '#ff006e';
         ctx.shadowBlur = 15 + comboCount * 2;
-        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 25); // Higher up to align with logo
+        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 35);
         
         // Combo streak indicator
         ctx.fillStyle = '#ffffff88';
         ctx.font = '10px Orbitron';
         ctx.shadowBlur = 5;
-        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 40);
+        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 50);
         ctx.restore();
       }
       ctx.stroke();
