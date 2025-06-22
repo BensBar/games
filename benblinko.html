@@ -612,7 +612,7 @@
     class Ball {
       constructor(x, y, type = 'normal') {
         this.x = x;
-        this.y = y || 10;
+        this.y = y || 85; // Start below the digital island
         this.vx = (Math.random() - 0.5) * 1;
         this.vy = 0;
         this.radius = BALL_RADIUS;
@@ -725,6 +725,7 @@
               peg.hit = true;
               peg.hitTime = Date.now();
               comboCount++; // Increment combo counter
+              maxCombo = Math.max(maxCombo, comboCount); // Track max combo
               totalBounces++;
               
               // EXPLOSIVE BALL BADASS EFFECT
@@ -805,18 +806,25 @@
               // Enhanced visual feedback
               createParticles(this.x, this.y, slot.color, 40);
               
-              // Haptic feedback for mobile devices
+              // BADASS haptic feedback for mobile devices
               if ('vibrate' in navigator) {
-                // Different vibration patterns based on slot value
-                if (slot.value >= 10000) {
-                  navigator.vibrate([100, 50, 100, 50, 200]); // Jackpot pattern
-                } else if (slot.value >= 5000) {
-                  navigator.vibrate([80, 30, 80]); // High value pattern
-                } else if (slot.value >= 1000) {
-                  navigator.vibrate([60, 20, 60]); // Medium value pattern
-                } else {
-                  navigator.vibrate(40); // Basic vibration
+                try {
+                  // Different vibration patterns based on slot value
+                  if (slot.value >= 10000) {
+                    navigator.vibrate([150, 50, 150, 50, 300]); // MASSIVE jackpot pattern
+                  } else if (slot.value >= 5000) {
+                    navigator.vibrate([100, 40, 100, 40, 100]); // High value pattern
+                  } else if (slot.value >= 1000) {
+                    navigator.vibrate([80, 30, 80]); // Medium value pattern
+                  } else {
+                    navigator.vibrate(60); // Basic vibration
+                  }
+                  console.log(`Haptic feedback triggered for ${slot.value} point slot`);
+                } catch (error) {
+                  console.log('Haptic feedback error:', error);
                 }
+              } else {
+                console.log('Haptic feedback not supported on this device');
               }
               
               // Visual slot scoring feedback
@@ -1066,7 +1074,7 @@
         
         console.log(`Dropping ${ballType} ball at position ${x}, balls left: ${ballsLeft}`);
         const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
-        balls.push(new Ball(clampedX, 10, ballType));
+        balls.push(new Ball(clampedX, 85, ballType)); // Start below the taller digital island
         comboCount = 0; // Reset combo for new ball
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
@@ -1172,8 +1180,8 @@
         return;
       }
       
-      // Draw digital island ball drop area at top
-      const dropZoneHeight = 60;
+      // Draw BADASS digital island with logo and combo
+      const dropZoneHeight = 80; // Increased height for logo and combo
       const dropZoneGradient = ctx.createLinearGradient(0, 0, 0, dropZoneHeight);
       dropZoneGradient.addColorStop(0, '#2a2a5a88');
       dropZoneGradient.addColorStop(0.7, '#1a1a3a66');
@@ -1195,6 +1203,40 @@
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
         ctx.stroke();
+      }
+      
+      // BensBar Logo in digital island
+      ctx.save();
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = 'bold 24px Orbitron';
+      ctx.textAlign = 'left';
+      ctx.shadowColor = '#00d4ff';
+      ctx.shadowBlur = 15;
+      ctx.fillText('BensBar', 20, 35);
+      
+      // Subtitle
+      ctx.fillStyle = '#ffffff88';
+      ctx.font = '12px Orbitron';
+      ctx.shadowBlur = 5;
+      ctx.fillText('4K NEON LASER DELUXE', 20, 55);
+      ctx.restore();
+      
+      // COMBO DISPLAY in digital island
+      if (comboCount > 1) {
+        ctx.save();
+        ctx.textAlign = 'right';
+        ctx.fillStyle = comboCount > 5 ? '#ffff00' : '#ff006e';
+        ctx.font = `bold ${Math.min(32 + comboCount * 2, 48)}px Orbitron`;
+        ctx.shadowColor = comboCount > 5 ? '#ffff00' : '#ff006e';
+        ctx.shadowBlur = 20 + comboCount * 2;
+        ctx.fillText(`${comboCount}x COMBO!`, canvas.width - 20, 40);
+        
+        // Combo streak indicator
+        ctx.fillStyle = '#ffffff88';
+        ctx.font = '10px Orbitron';
+        ctx.shadowBlur = 5;
+        ctx.fillText(`MAX: ${maxCombo}`, canvas.width - 20, 60);
+        ctx.restore();
       }
       
       // Glowing drop zone border
