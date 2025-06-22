@@ -528,16 +528,16 @@
     function createPegs() {
       pegs = [];
       const rows = 12;
-      const baseCols = 8;
-      const pegSpacing = 70;
+      const pegsPerRow = 7;
+      const pegSpacing = 80;
       const rowSpacing = 40;
       const startY = 100;
       
       for (let row = 0; row < rows; row++) {
-        // Stagger every other row
-        const isEvenRow = row % 2 === 0;
-        const pegCount = isEvenRow ? baseCols : baseCols - 1;
-        const offsetX = isEvenRow ? 0 : pegSpacing / 2;
+        // Stagger every other row by offsetting odd rows
+        const isOddRow = row % 2 === 1;
+        const pegCount = pegsPerRow;
+        const offsetX = isOddRow ? pegSpacing / 2 : 0;
         const startX = (canvas.width - (pegCount - 1) * pegSpacing) / 2 + offsetX;
         
         for (let col = 0; col < pegCount; col++) {
@@ -552,7 +552,7 @@
         }
       }
       
-      console.log(`Created ${pegs.length} pegs with proper staggering`);
+      console.log(`Created ${pegs.length} pegs with proper alternating stagger pattern`);
     }
     
     // Create Slots
@@ -588,10 +588,7 @@
       }
       
       update() {
-        // Apply tilt if enabled
-        if (tiltEnabled && gameState === 'playing') {
-          this.vx += tilt * 0.05;
-        }
+        // Apply tilt if enabled (moved to handleDeviceOrientation for better responsiveness)
         
         // Physics
         this.vy += GRAVITY;
@@ -1048,7 +1045,7 @@ Good luck and have fun! 🎉`);
     let tiltEnabled = false;
     let tilt = 0;
     let lastGamma = 0;
-    const TILT_SENSITIVITY = 2.5; // Enhanced for iPhone 16 Pro
+    const TILT_SENSITIVITY = 3.5; // Optimized for responsive control
     
     function handleDeviceOrientation(event) {
       if (!tiltEnabled || gameState !== 'playing') return;
@@ -1056,34 +1053,47 @@ Good luck and have fun! 🎉`);
       // Get the device orientation data
       let gamma = event.gamma || 0; // Left/right tilt (-90 to 90)
       let beta = event.beta || 0;   // Front/back tilt (-180 to 180)
+      let alpha = event.alpha || 0; // Compass direction (0-360)
       
       // Account for different device orientations
-      let orientation = screen.orientation ? screen.orientation.angle : window.orientation || 0;
+      let orientation = window.screen && window.screen.orientation ? 
+                       window.screen.orientation.angle : 
+                       (window.orientation || 0);
       
-      // Adjust tilt direction based on screen orientation
+      // Correct tilt values based on device orientation
+      let adjustedTilt = gamma;
       switch (orientation) {
-        case 90: // Landscape left
-          gamma = beta;
+        case 90: // Landscape left (rotated counter-clockwise)
+          adjustedTilt = beta;
           break;
-        case -90: // Landscape right  
-          gamma = -beta;
+        case -90: // Landscape right (rotated clockwise)
+        case 270: // Landscape right (270 degrees)
+          adjustedTilt = -beta;
           break;
         case 180: // Portrait upside down
-          gamma = -gamma;
+          adjustedTilt = -gamma;
           break;
-        default: // Portrait
-          // gamma stays as is
+        default: // Portrait (0 degrees)
+          adjustedTilt = gamma;
           break;
       }
       
-      // Apply sensitivity and smooth the movement
-      const targetTilt = Math.max(-3, Math.min(3, gamma * TILT_SENSITIVITY / 30));
-      tilt = tilt * 0.8 + targetTilt * 0.2; // Smooth interpolation
+      // Apply sensitivity and bounds - increased sensitivity for better responsiveness
+      const rawTilt = adjustedTilt * TILT_SENSITIVITY / 15; // Increased sensitivity
+      const targetTilt = Math.max(-8, Math.min(8, rawTilt)); // Wider range
       
-      // Apply tilt to balls
+      // Smooth interpolation with quicker response
+      tilt = tilt * 0.6 + targetTilt * 0.4;
+      
+      // Apply tilt force directly to active balls with enhanced effect
       balls.forEach(ball => {
-        if (!ball.landed) {
-          ball.vx += tilt * 0.1;
+        if (!ball.toRemove) {
+          // Apply horizontal force based on tilt
+          const tiltForce = tilt * 0.05; // Increased force multiplier
+          ball.vx += tiltForce;
+          
+          // Prevent excessive horizontal velocity
+          ball.vx = Math.max(-12, Math.min(12, ball.vx));
         }
       });
     }
@@ -1108,26 +1118,107 @@ Good luck and have fun! 🎉`);
           font-size: 1rem;
           z-index: 1002;
           box-shadow: 0 0 20px #00d4ff88;
+          transition: all 0.3s ease;
         `;
+        
+        // Add hover effect
+        tiltBtn.addEventListener('mouseenter', () => {
+          tiltBtn.style.transform = 'translateX(-50%) scale(1.05)';
+        });
+        
+        tiltBtn.addEventListener('mouseleave', () => {
+          tiltBtn.style.transform = 'translateX(-50%) scale(1)';
+        });
         
         tiltBtn.addEventListener('click', async () => {
           try {
-            // Request permission for iOS devices
+            // Disable button during request
+            tiltBtn.disabled = true;
+            tiltBtn.innerHTML = '🔄 Requesting Permission...';
+            
+            // Check for iOS 13+ permission system
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
+              
+              console.log('Requesting iOS motion permission...');
               const permission = await DeviceOrientationEvent.requestPermission();
+              
               if (permission === 'granted') {
+                console.log('iOS motion permission granted');
                 enableTiltControl();
                 tiltBtn.remove();
+              } else {
+                console.log('iOS motion permission denied:', permission);
+                tiltBtn.innerHTML = '❌ Permission Denied';
+                tiltBtn.style.background = 'linear-gradient(45deg, #ff4444, #cc0000)';
+                
+                setTimeout(() => {
+                  tiltBtn.innerHTML = '📱 Enable Tilt Control';
+                  tiltBtn.style.background = 'linear-gradient(45deg, #00d4ff, #ff006e)';
+                  tiltBtn.disabled = false;
+                }, 2000);
+                
+                // Show helpful message
+                const helpMsg = document.createElement('div');
+                helpMsg.innerHTML = `
+                  <div style="position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%); 
+                              background: rgba(255,68,68,0.9); padding: 12px 20px; border-radius: 15px; 
+                              color: white; font-size: 0.9rem; z-index: 1004; text-align: center; max-width: 280px;">
+                    To enable tilt control:<br>
+                    1. Go to Safari Settings<br>
+                    2. Enable Motion & Orientation Access<br>
+                    3. Refresh this page
+                  </div>
+                `;
+                document.body.appendChild(helpMsg);
+                
+                setTimeout(() => {
+                  if (helpMsg.parentNode) {
+                    helpMsg.remove();
+                  }
+                }, 5000);
               }
             } else {
-              // Android devices usually don't need permission
-              enableTiltControl();
-              tiltBtn.remove();
+              // Android devices or older browsers - test if orientation events work
+              console.log('Non-iOS device or older browser, testing orientation support...');
+              
+              // Test if we can receive orientation events
+              let testTimeout = setTimeout(() => {
+                console.log('Orientation events not supported or blocked');
+                tiltBtn.innerHTML = '❌ Not Supported';
+                tiltBtn.style.background = 'linear-gradient(45deg, #ff4444, #cc0000)';
+                setTimeout(() => {
+                  tiltBtn.remove();
+                }, 2000);
+              }, 2000);
+              
+              const testOrientation = (event) => {
+                clearTimeout(testTimeout);
+                window.removeEventListener('deviceorientation', testOrientation);
+                console.log('Orientation events working on non-iOS device');
+                enableTiltControl();
+                tiltBtn.remove();
+              };
+              
+              window.addEventListener('deviceorientation', testOrientation, { once: true });
             }
           } catch (error) {
-            console.log('Motion permission error:', error);
-            alert('Could not enable tilt control. Please ensure you are on HTTPS.');
+            console.error('Motion permission error:', error);
+            
+            // Try to enable anyway for older devices/browsers
+            tiltBtn.innerHTML = '🔄 Enabling...';
+            
+            setTimeout(() => {
+              try {
+                enableTiltControl();
+                tiltBtn.remove();
+              } catch (fallbackError) {
+                console.error('Fallback enable failed:', fallbackError);
+                tiltBtn.innerHTML = '❌ Failed';
+                tiltBtn.style.background = 'linear-gradient(45deg, #ff4444, #cc0000)';
+                setTimeout(() => tiltBtn.remove(), 2000);
+              }
+            }, 1000);
           }
         });
         
@@ -1137,44 +1228,145 @@ Good luck and have fun! 🎉`);
     
     function enableTiltControl() {
       tiltEnabled = true;
-      window.addEventListener('deviceorientation', handleDeviceOrientation, true);
       
-      // Show tilt indicator
+      // Add event listeners for device orientation with better browser support
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: false });
+        
+        // Some browsers support absolute orientation events (more stable)
+        if ('ondeviceorientationabsolute' in window) {
+          window.addEventListener('deviceorientationabsolute', handleDeviceOrientation, { passive: false });
+        }
+      }
+      
+      // Show tilt indicator with real-time feedback
       const tiltIndicator = document.createElement('div');
+      tiltIndicator.id = 'tiltIndicator';
       tiltIndicator.innerHTML = `
-        <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); 
-                    background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 15px; 
-                    color: #00d4ff; font-size: 0.9rem; z-index: 1003;">
-          📱 Tilt device to control ball
+        <div style="position: fixed; top: 10px; left: 10px; 
+                    background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 10px; 
+                    color: #00d4ff; font-size: 0.8rem; z-index: 1003; font-family: monospace;
+                    border: 1px solid #00d4ff44; backdrop-filter: blur(5px);">
+          📱 Tilt: <span id="tiltValue">0.0</span>° | Orient: <span id="orientValue">0</span>°
         </div>
       `;
       document.body.appendChild(tiltIndicator);
       
-      setTimeout(() => {
-        if (tiltIndicator.parentNode) {
-          tiltIndicator.remove();
+      // Update tilt display with detailed info
+      const updateTiltDisplay = () => {
+        const tiltValueElement = document.getElementById('tiltValue');
+        const orientValueElement = document.getElementById('orientValue');
+        
+        if (tiltValueElement && tiltEnabled) {
+          tiltValueElement.textContent = tilt.toFixed(1);
         }
-      }, 3000);
+        
+        if (orientValueElement) {
+          const orientation = window.screen && window.screen.orientation ? 
+                             window.screen.orientation.angle : 
+                             (window.orientation || 0);
+          orientValueElement.textContent = orientation;
+        }
+      };
+      
+      // Update display every 100ms
+      const tiltDisplayInterval = setInterval(updateTiltDisplay, 100);
+      
+      // Store interval ID to clear it later if needed
+      window.tiltDisplayInterval = tiltDisplayInterval;
       
       console.log('Tilt control enabled for mobile device');
+      
+      // Show success message with instructions
+      const successMsg = document.createElement('div');
+      successMsg.innerHTML = `
+        <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+                    background: rgba(0,255,136,0.9); padding: 12px 20px; border-radius: 15px; 
+                    color: white; font-size: 0.9rem; z-index: 1004; text-align: center;
+                    box-shadow: 0 0 20px rgba(0,255,136,0.5); max-width: 300px;">
+          ✅ Tilt control enabled!<br>
+          <small>Tilt your device left/right to guide the ball</small>
+        </div>
+      `;
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => {
+        if (successMsg.parentNode) {
+          successMsg.remove();
+        }
+      }, 4000);
+      
+      // Test orientation immediately
+      setTimeout(() => {
+        console.log('Testing initial device orientation...');
+        if (window.DeviceOrientationEvent) {
+          // Dispatch a test event to see if the handler works
+          console.log('Device orientation support confirmed');
+        }
+      }, 500);
     }
     
-    // Touch controls for mobile
+    // Disable tilt control (for cleanup)
+    function disableTiltControl() {
+      tiltEnabled = false;
+      tilt = 0;
+      
+      // Remove event listeners
+      window.removeEventListener('deviceorientation', handleDeviceOrientation);
+      window.removeEventListener('deviceorientationabsolute', handleDeviceOrientation);
+      
+      // Clear display update interval
+      if (window.tiltDisplayInterval) {
+        clearInterval(window.tiltDisplayInterval);
+        window.tiltDisplayInterval = null;
+      }
+      
+      // Remove tilt indicator
+      const tiltIndicator = document.getElementById('tiltIndicator');
+      if (tiltIndicator) {
+        tiltIndicator.remove();
+      }
+      
+      console.log('Tilt control disabled');
+    }
+    
+    // Touch controls for mobile with improved responsiveness
     let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    
     canvas.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      touchStartX = e.touches[0].clientX;
-    });
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchStartTime = Date.now();
+    }, { passive: false });
     
     canvas.addEventListener('touchend', (e) => {
       e.preventDefault();
+      
       if (gameState === 'playing') {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const x = (touchStartX - rect.left) * scaleX;
-        dropBall(Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x)));
+        const touchDuration = Date.now() - touchStartTime;
+        
+        // Only register as tap if touch was brief (< 300ms) and didn't move much
+        if (touchDuration < 300) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const x = (touchStartX - rect.left) * scaleX;
+          
+          // Ensure ball is dropped within canvas bounds
+          const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
+          console.log(`Touch drop at x: ${clampedX} (original: ${x})`);
+          dropBall(clampedX);
+        }
       }
-    });
+    }, { passive: false });
+    
+    // Prevent scrolling on the canvas
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
     
     // Initialize motion controls
     window.addEventListener('load', () => {
