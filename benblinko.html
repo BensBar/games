@@ -262,6 +262,103 @@
       transform: scale(1.05);
       box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
     }
+
+    /* Multiplier Explanation Popup */
+    .multiplier-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 26, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1003;
+      backdrop-filter: blur(10px);
+      padding: 20px;
+    }
+    
+    .multiplier-popup.visible {
+      display: flex;
+    }
+    
+    .multiplier-content {
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+      border: 2px solid #ff006e;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 0 50px rgba(255, 0, 110, 0.3);
+      animation: multiplierSlideIn 0.4s ease-out;
+    }
+    
+    @keyframes multiplierSlideIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(-30px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .multiplier-content h2 {
+      color: #ff006e;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px #ff006e;
+    }
+    
+    .multiplier-example {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #00ff88;
+    }
+    
+    .multiplier-example h4 {
+      color: #00ff88;
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 8px;
+      text-shadow: 0 0 8px #00ff88;
+    }
+    
+    .multiplier-example p {
+      color: #ffffff;
+      margin: 3px 0;
+      line-height: 1.4;
+    }
+    
+    .multiplier-math {
+      color: #ffff00;
+      font-family: 'Orbitron', monospace;
+      font-weight: bold;
+      text-shadow: 0 0 5px #ffff00;
+    }
+    
+    .close-multiplier-btn {
+      background: linear-gradient(45deg, #ff006e, #00d4ff);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      text-shadow: 0 0 8px rgba(0,0,0,0.8);
+      box-shadow: 0 0 15px rgba(255, 0, 110, 0.3);
+      display: block;
+      margin: 20px auto 0;
+      width: fit-content;
+    }
+    
+    .close-multiplier-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 0, 110, 0.5);
+    }
     
     /* Game Area */
     .game-container {
@@ -361,6 +458,13 @@
       border-radius: 20px;
       font-weight: bold;
       animation: multiplierPulse 1s ease-in-out infinite alternate;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .multiplier:hover {
+      transform: scale(1.05);
+      animation-duration: 0.5s;
     }
     
     @keyframes multiplierPulse {
@@ -633,6 +737,51 @@
     <button class="close-help-btn" id="closeHelpBtn">✅ Got It!</button>
   </div>
   
+  <!-- Multiplier Explanation Popup -->
+  <div class="multiplier-popup" id="multiplierPopup">
+    <div class="multiplier-content">
+      <h2>🎯 Multiplier & Combo System</h2>
+      
+      <div class="multiplier-example">
+        <h4>🔥 How Combos Work</h4>
+        <p>• Each peg you hit builds your combo counter</p>
+        <p>• Combos give you bonus points when ball lands in slot</p>
+        <p>• <strong>Bonus = 10% per combo hit</strong></p>
+        <p>• Combo resets after each ball</p>
+      </div>
+      
+      <div class="multiplier-example">
+        <h4>💎 Special Peg Multipliers</h4>
+        <p>• Rainbow pegs increase your multiplier permanently</p>
+        <p>• Higher multiplier = more points from slots</p>
+        <p>• Special pegs also give you extra balls!</p>
+        <p>• Multiplier resets after each ball lands</p>
+      </div>
+      
+      <div class="multiplier-example">
+        <h4>🧮 Scoring Examples</h4>
+        <p><strong>Example 1:</strong> 3 combo hits, land in 1000 slot</p>
+        <p class="multiplier-math">1000 + (30% bonus) = 1300 points!</p>
+        
+        <p><strong>Example 2:</strong> 5 combo hits, 2x multiplier, 5000 slot</p>
+        <p class="multiplier-math">5000 × 2 + (50% bonus) = 15,000 points!</p>
+        
+        <p><strong>Example 3:</strong> 8 combo hits, land in 10000 slot</p>
+        <p class="multiplier-math">10000 + (80% bonus) = 18,000 points!</p>
+      </div>
+      
+      <div class="multiplier-example">
+        <h4>🎮 Pro Tips</h4>
+        <p>• Build long combos before landing in high-value slots</p>
+        <p>• Hit rainbow pegs for permanent multiplier boosts</p>
+        <p>• Center slots have the highest values</p>
+        <p>• Use tilt controls to guide balls strategically</p>
+      </div>
+    </div>
+    
+    <button class="close-multiplier-btn" id="closeMultiplierBtn">Got It! 🚀</button>
+  </div>
+  
   <!-- Game Container -->
   <div class="game-container" id="gameContainer">
     <!-- Game Logo Header at top of screen -->
@@ -688,12 +837,14 @@
     const gameContainer = document.getElementById('gameContainer');
     const gameOverScreen = document.getElementById('gameOverScreen');
     const helpScreen = document.getElementById('helpScreen');
+    const multiplierPopup = document.getElementById('multiplierPopup');
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const startText = document.getElementById('startText');
     const gameLogo = document.getElementById('gameLogo');
     const helpBtn = document.getElementById('helpBtn');
     const closeHelpBtn = document.getElementById('closeHelpBtn');
+    const closeMultiplierBtn = document.getElementById('closeMultiplierBtn');
     const playAgainBtn = document.getElementById('playAgainBtn');
     
     // UI Elements
@@ -1687,6 +1838,25 @@
     helpScreen.addEventListener('click', (e) => {
       if (e.target === helpScreen) {
         helpScreen.classList.remove('visible');
+      }
+    });
+    
+    // Multiplier popup functionality
+    multiplierValue.addEventListener('click', () => {
+      if (gameState === 'playing') {
+        // Pause the game by stopping the animation loop temporarily
+        multiplierPopup.classList.add('visible');
+      }
+    });
+    
+    closeMultiplierBtn.addEventListener('click', () => {
+      multiplierPopup.classList.remove('visible');
+    });
+    
+    // Close multiplier popup when clicking outside content
+    multiplierPopup.addEventListener('click', (e) => {
+      if (e.target === multiplierPopup) {
+        multiplierPopup.classList.remove('visible');
       }
     });
     
