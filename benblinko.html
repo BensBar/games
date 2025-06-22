@@ -235,6 +235,17 @@
       100% { box-shadow: 0 0 20px #00ff8866; }
     }
     
+    @keyframes powerUpPulse {
+      0% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+      50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+    
+    @keyframes comboGlow {
+      0% { box-shadow: 0 0 20px #ff006e88; }
+      100% { box-shadow: 0 0 40px #ffff0088; }
+    }
+    
     /* Game Over Screen */
     .game-over {
       position: fixed;
@@ -503,13 +514,27 @@
     let particles = [];
     let slots = [];
     
-    // Game Constants
+    // Game Constants - BADASS EDITION
     const GRAVITY = 0.3;
     const BOUNCE = 0.8;
     const PEG_RADIUS = 8;
     const BALL_RADIUS = 12;
     const SLOT_VALUES = [100, 500, 1000, 5000, 10000, 5000, 1000, 500, 100];
     const SLOT_COLORS = ['#ff006e', '#00d4ff', '#00ff88', '#ffff00', '#ff6600', '#ffff00', '#00ff88', '#00d4ff', '#ff006e'];
+    
+    // BADASS NEW FEATURES
+    let comboCount = 0;
+    let maxCombo = 0;
+    let ballSpeed = 0;
+    let totalBounces = 0;
+    let fireworksActive = false;
+    let screenShakeIntensity = 0;
+    let soundEnabled = true;
+    
+    // Power-up system
+    let powerUpActive = false;
+    let powerUpType = 'normal'; // normal, explosive, magnetic, lightning
+    const powerUpChance = 0.15; // 15% chance for power-up ball
     
     // Load high score
     try {
@@ -583,25 +608,70 @@
       console.log(`Created ${slots.length} slots`);
     }
     
-    // Ball Class
+    // Ball Class - BADASS EDITION
     class Ball {
-      constructor(x, y) {
+      constructor(x, y, type = 'normal') {
         this.x = x;
-        this.y = y || 10; // Start at very top of digital island
-        this.vx = (Math.random() - 0.5) * 1; // Reduced initial velocity
+        this.y = y || 10;
+        this.vx = (Math.random() - 0.5) * 1;
         this.vy = 0;
         this.radius = BALL_RADIUS;
-        this.color = '#00d4ff';
         this.trail = [];
         this.glowPhase = 0;
-        this.sparkles = []; // Add sparkle effects
+        this.bounceCount = 0;
+        this.type = type;
+        this.age = 0;
+        this.explosionTriggered = false;
+        
+        // Set badass ball properties based on type
+        switch(type) {
+          case 'explosive':
+            this.color = '#ff4444';
+            this.explosionRadius = 80;
+            break;
+          case 'magnetic':
+            this.color = '#8844ff';
+            this.magneticForce = 3;
+            break;
+          case 'lightning':
+            this.color = '#ffff44';
+            this.speedMultiplier = 1.8;
+            break;
+          default:
+            this.color = '#00d4ff';
+        }
+        
+        this.sparkles = []; // Add sparkle effects for badass visuals
       }
       
       update() {
-        // Apply tilt if enabled (moved to handleDeviceOrientation for better responsiveness)
+        // BADASS PHYSICS UPDATE
+        this.age++;
+        this.bounceCount = totalBounces;
         
-        // Physics
-        this.vy += GRAVITY;
+        // Apply special ball physics
+        if (this.type === 'lightning') {
+          this.vy += GRAVITY * this.speedMultiplier;
+          this.vx *= this.speedMultiplier;
+        } else {
+          this.vy += GRAVITY;
+        }
+        
+        // Magnetic ball attraction to special pegs
+        if (this.type === 'magnetic') {
+          pegs.forEach(peg => {
+            if (peg.special) {
+              const dx = peg.x - this.x;
+              const dy = peg.y - this.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < 100) {
+                const force = this.magneticForce / distance;
+                this.vx += (dx / distance) * force * 0.1;
+                this.vy += (dy / distance) * force * 0.1;
+              }
+            }
+          });
+        }
         this.x += this.vx;
         this.y += this.vy;
         
@@ -653,17 +723,45 @@
             // Only track hit for visual effects and multiplier bonuses
             if (!peg.hit) {
               peg.hit = true;
-              peg.hitTime = Date.now(); // Record hit time for visual effects
+              peg.hitTime = Date.now();
+              comboCount++; // Increment combo counter
+              totalBounces++;
+              
+              // EXPLOSIVE BALL BADASS EFFECT
+              if (this.type === 'explosive' && !this.explosionTriggered) {
+                this.explosionTriggered = true;
+                // Activate all pegs within explosion radius
+                pegs.forEach(nearPeg => {
+                  const expDx = nearPeg.x - peg.x;
+                  const expDy = nearPeg.y - peg.y;
+                  const expDistance = Math.sqrt(expDx * expDx + expDy * expDy);
+                  if (expDistance < this.explosionRadius) {
+                    nearPeg.hit = true;
+                    nearPeg.hitTime = Date.now();
+                    if (nearPeg.special) {
+                      multiplier = Math.min(multiplier + 1, 10);
+                      ballsLeft++;
+                    }
+                  }
+                });
+                // MASSIVE EXPLOSION PARTICLES
+                createParticles(peg.x, peg.y, '#ff4444', 100);
+                createParticles(peg.x, peg.y, '#ffaa44', 50);
+                createParticles(peg.x, peg.y, '#ffffff', 30);
+                screenShakeIntensity = 15; // Screen shake effect
+                fireworksActive = true;
+                setTimeout(() => fireworksActive = false, 1000);
+              }
               
               // Special pegs double the final slot score and grant extra ball
               if (peg.special) {
-                multiplier = Math.min(multiplier + 1, 10); // Cap multiplier at 10x
-                ballsLeft++; // Grant extra ball for special pegs!
+                multiplier = Math.min(multiplier + 1, 10);
+                ballsLeft++;
                 createParticles(peg.x, peg.y, '#00ff88', 30);
                 console.log(`Special peg hit! Multiplier now ${multiplier}x, granted extra ball. Balls left: ${ballsLeft}`);
                 updateUI();
               } else {
-                createParticles(peg.x, peg.y, '#00d4ff', 10);
+                createParticles(peg.x, peg.y, this.color, 15);
               }
             }
             
@@ -894,22 +992,82 @@
       }
     }
     
-    // Update UI
+    // Update UI - BADASS EDITION
     function updateUI() {
       scoreValue.textContent = score.toLocaleString();
       highScoreValue.textContent = highScore.toLocaleString();
       ballsValue.textContent = ballsLeft;
       multiplierValue.textContent = `x${multiplier}`;
+      
+      // Update max combo
+      if (comboCount > maxCombo) maxCombo = comboCount;
+      
+      // Add badass combo indicator
+      let comboIndicator = document.getElementById('comboIndicator');
+      if (!comboIndicator) {
+        comboIndicator = document.createElement('div');
+        comboIndicator.id = 'comboIndicator';
+        comboIndicator.style.cssText = `
+          position: fixed;
+          top: 60px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(45deg, #ff006e, #ffff00);
+          padding: 8px 16px;
+          border-radius: 20px;
+          color: white;
+          font-weight: bold;
+          font-size: 0.9rem;
+          z-index: 1005;
+          box-shadow: 0 0 20px #ff006e88;
+          transition: all 0.3s ease;
+        `;
+        document.body.appendChild(comboIndicator);
+      }
+      
+      if (comboCount > 1) {
+        comboIndicator.textContent = `🔥 COMBO x${comboCount}`;
+        comboIndicator.style.display = 'block';
+        comboIndicator.style.transform = `translateX(-50%) scale(${Math.min(1.5, 1 + comboCount * 0.1)})`;
+      } else {
+        comboIndicator.style.display = 'none';
+      }
     }
     
-    // Drop Ball
+    // Drop Ball - BADASS EDITION
     function dropBall(x) {
       // Only allow one ball at a time
       if (ballsLeft > 0 && gameState === 'playing' && balls.length === 0) {
-        console.log(`Dropping ball at position ${x}, balls left: ${ballsLeft}`);
-        // Ensure ball starts within canvas bounds and at top of digital island
+        // Determine ball type - POWER-UP SYSTEM!
+        let ballType = 'normal';
+        const rand = Math.random();
+        if (rand < powerUpChance) {
+          const powerTypes = ['explosive', 'magnetic', 'lightning'];
+          ballType = powerTypes[Math.floor(Math.random() * powerTypes.length)];
+          
+          // Show power-up notification
+          const powerUpMsg = document.createElement('div');
+          powerUpMsg.innerHTML = `
+            <div style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); 
+                        background: linear-gradient(45deg, #ff4444, #ffff44); padding: 12px 20px; border-radius: 15px; 
+                        color: white; font-size: 1rem; z-index: 1006; font-weight: bold; text-align: center;
+                        box-shadow: 0 0 30px #ff444488;">
+              🚀 ${ballType.toUpperCase()} BALL! 🚀
+            </div>
+          `;
+          document.body.appendChild(powerUpMsg);
+          
+          setTimeout(() => {
+            if (powerUpMsg.parentNode) {
+              powerUpMsg.remove();
+            }
+          }, 2000);
+        }
+        
+        console.log(`Dropping ${ballType} ball at position ${x}, balls left: ${ballsLeft}`);
         const clampedX = Math.max(BALL_RADIUS, Math.min(canvas.width - BALL_RADIUS, x));
-        balls.push(new Ball(clampedX, 10)); // Start at very top of digital island
+        balls.push(new Ball(clampedX, 10, ballType));
+        comboCount = 0; // Reset combo for new ball
       } else if (balls.length > 0) {
         console.log(`Cannot drop ball: another ball is still active (${balls.length} balls active)`);
       } else {
@@ -985,16 +1143,34 @@
       });
     }
     
-    // Draw Game
+    // Draw Game - BADASS EDITION
     function draw() {
-      // Clear canvas with gradient background
+      // SCREEN SHAKE EFFECT
+      if (screenShakeIntensity > 0) {
+        const shakeX = (Math.random() - 0.5) * screenShakeIntensity;
+        const shakeY = (Math.random() - 0.5) * screenShakeIntensity;
+        ctx.save();
+        ctx.translate(shakeX, shakeY);
+        screenShakeIntensity *= 0.9; // Fade out shake
+        if (screenShakeIntensity < 0.1) screenShakeIntensity = 0;
+      }
+      
+      // Enhanced background with dynamic effects
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#1a1a3a');
-      gradient.addColorStop(1, '#0a0a1a');
+      if (fireworksActive) {
+        gradient.addColorStop(0, '#3a1a3a');
+        gradient.addColorStop(1, '#1a0a1a');
+      } else {
+        gradient.addColorStop(0, '#1a1a3a');
+        gradient.addColorStop(1, '#0a0a1a');
+      }
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      if (gameState !== 'playing') return;
+      if (gameState !== 'playing') {
+        if (screenShakeIntensity > 0) ctx.restore();
+        return;
+      }
       
       // Draw digital island ball drop area at top
       const dropZoneHeight = 60;
