@@ -1,4 +1,11 @@
-swap');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Georgia Bulldogs Game Countdown - Premium</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -7,7 +14,388 @@ swap');
         }
         
         body {
-            ="time-label">Days</div>
+            font-family: 'Oswald', sans-serif;
+            background: radial-gradient(ellipse at center, #ba0c2f 0%, #8b0000 35%, #1a0000 70%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .background-effects {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .stadium-lights {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: stadiumGlow 6s ease-in-out infinite alternate;
+        }
+        
+        @keyframes stadiumGlow {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: particleFloat 8s linear infinite;
+            opacity: 0.7;
+        }
+        
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .dawg-logo {
+            font-size: 100px;
+            margin-bottom: 20px;
+            text-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 40px rgba(255, 215, 0, 0.6),
+                0 0 60px rgba(255, 215, 0, 0.4);
+            animation: logoGlow 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            }
+            50% { 
+                transform: scale(1.1) rotate(5deg);
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            }
+        }
+        
+        .team-name {
+            font-family: 'Crimson Text', serif;
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            letter-spacing: 3px;
+            animation: textShimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .game-info {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 50px;
+            text-shadow: 
+                2px 2px 4px rgba(0,0,0,0.8),
+                0 0 20px rgba(255, 215, 0, 0.3);
+            position: relative;
+        }
+        
+        .vs-text {
+            color: #FFD700;
+            font-weight: 700;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6);
+            animation: vsGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes vsGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+        
+        .time-unit {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            border-radius: 20px;
+            padding: 40px 30px;
+            min-width: 140px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                0 0 30px rgba(186, 12, 47, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .time-unit::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #FFD700, #ba0c2f, #FFD700);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .time-unit:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.5),
+                0 0 50px rgba(255, 215, 0, 0.4);
+        }
+        
+        .time-number {
+            font-size: 56px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 15px;
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .time-label {
+            font-size: 18px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .game-details {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .date-time {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        .venue-tv {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .chant {
+            font-family: 'Crimson Text', serif;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 40px rgba(255, 215, 0, 0.6);
+            animation: chantGlow 4s ease-in-out infinite;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+        
+        @keyframes chantGlow {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            }
+            25% { 
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            }
+            50% { 
+                transform: scale(1.2);
+                filter: drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+            }
+            75% { 
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            }
+        }
+        
+        .paw-prints {
+            position: absolute;
+            font-size: 35px;
+            opacity: 0.4;
+            animation: pawFloat 20s linear infinite;
+            z-index: 5;
+        }
+        
+        @keyframes pawFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) translateX(150px) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .paw-1 { left: 5%; animation-delay: 0s; }
+        .paw-2 { left: 15%; animation-delay: 3s; }
+        .paw-3 { left: 70%; animation-delay: 6s; }
+        .paw-4 { left: 85%; animation-delay: 9s; }
+        .paw-5 { left: 40%; animation-delay: 12s; }
+        .paw-6 { left: 60%; animation-delay: 15s; }
+        
+        .click-effect {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+            opacity: 0;
+            animation: clickRipple 0.8s ease-out;
+            pointer-events: none;
+        }
+        
+        @keyframes clickRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .team-name { font-size: 42px; }
+            .game-info { font-size: 24px; }
+            .time-number { font-size: 42px; }
+            .time-unit { min-width: 110px; padding: 30px 20px; }
+            .countdown { gap: 20px; }
+            .chant { font-size: 36px; }
+            .dawg-logo { font-size: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effects">
+        <div class="stadium-lights"></div>
+        <div class="particle-system" id="particles"></div>
+    </div>
+    
+    <div class="paw-prints paw-1">🐾</div>
+    <div class="paw-prints paw-2">🐾</div>
+    <div class="paw-prints paw-3">🐾</div>
+    <div class="paw-prints paw-4">🐾</div>
+    <div class="paw-prints paw-5">🐾</div>
+    <div class="paw-prints paw-6">🐾</div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="dawg-logo">🐶</div>
+            <div class="team-name">GEORGIA BULLDOGS</div>
+            <div class="game-info">
+                <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
+            </div>
+        </div>
+        
+        <div class="countdown">
+            <div class="time-unit">
+                <div class="time-number" id="days">00</div>
+                <div class="time-label">Days</div>
             </div>
             <div class="time-unit">
                 <div class="time-number" id="hours">00</div>
@@ -15,3 +403,95 @@ swap');
             </div>
             <div class="time-unit">
                 <div class="time-number" id="minutes">00</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="time-unit">
+                <div class="time-number" id="seconds">00</div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
+        
+        <div class="game-details">
+            <div class="date-time">Saturday, August 30, 2025 • 3:30 PM ET</div>
+            <div class="venue-tv">🏟️ Sanford Stadium, Athens, GA</div>
+            <div class="venue-tv">📺 ESPN</div>
+            <div class="venue-tv">🎫 Season Opener</div>
+        </div>
+        
+        <div class="chant" id="chant">GO DAWGS!</div>
+    </div>
+    
+    <script>
+        const gameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
+        
+        function createParticles() {
+            const particleContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 8) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = gameDate - now;
+            
+            if (distance < 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                document.getElementById('chant').textContent = 'GAME TIME!';
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        function createClickEffect(e) {
+            const effect = document.createElement('div');
+            effect.className = 'click-effect';
+            effect.style.left = e.clientX - 50 + 'px';
+            effect.style.top = e.clientY - 50 + 'px';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                document.body.removeChild(effect);
+            }, 800);
+        }
+        
+        function triggerChant() {
+            const chant = document.getElementById('chant');
+            chant.style.animation = 'none';
+            chant.style.transform = 'scale(1.3)';
+            chant.style.filter = 'drop-shadow(0 0 50px rgba(255, 215, 0, 1))';
+            
+            setTimeout(() => {
+                chant.style.animation = 'chantGlow 4s ease-in-out infinite';
+                chant.style.transform = 'scale(1)';
+                chant.style.filter = '';
+            }, 300);
+        }
+        
+        createParticles();
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        
+        document.addEventListener('click', createClickEffect);
+        document.getElementById('chant').addEventListener('click', triggerChant);
+    </script>
+</body>
+</html>
