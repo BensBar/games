@@ -19,6 +19,10 @@
     <meta property="twitter:title" content="Georgia Bulldogs & Atlanta Falcons - Game Countdown">
     <meta property="twitter:description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Share the excitement!">
     <meta property="twitter:image" content="https://bensbar.github.io/games/img/countdown-preview.jpg">
+    
+    <!-- Three.js for 3D WebGL effects -->
+    <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
         
@@ -30,7 +34,7 @@
         
         body {
             font-family: 'Oswald', sans-serif;
-            background: linear-gradient(135deg, #ba0c2f 0%, #A71930 25%, #000000 50%, #A71930 75%, #ba0c2f 100%);
+            background: #000000;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -39,6 +43,24 @@
             color: white;
             overflow-x: hidden;
             position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #webgl-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        #webgl-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
         
         .background-effects {
@@ -48,7 +70,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            z-index: 1;
+            z-index: 2;
+            pointer-events: none;
         }
         
         .stadium-lights {
@@ -95,7 +118,7 @@
         .main-header {
             text-align: center;
             margin-bottom: 30px;
-            z-index: 10;
+            z-index: 100;
             position: relative;
         }
         
@@ -133,25 +156,33 @@
             flex-wrap: wrap;
             width: 100%;
             max-width: 1400px;
-            z-index: 10;
+            z-index: 100;
             position: relative;
         }
         
         .game-section {
-            background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
             border-radius: 25px;
             padding: 40px;
             backdrop-filter: blur(20px);
             border: 3px solid transparent;
             background-clip: padding-box;
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
+                0 20px 40px rgba(0,0,0,0.6),
                 inset 0 1px 0 rgba(255,255,255,0.1);
             position: relative;
             overflow: hidden;
             min-width: 500px;
             flex: 1;
             max-width: 600px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .game-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 30px 60px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.2);
         }
         
         .game-section::before {
@@ -257,6 +288,7 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
         
         .time-unit::before {
@@ -269,10 +301,17 @@
             background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
             opacity: 0;
             transition: opacity 0.3s ease;
+            transform: translateX(-100%);
         }
         
         .time-unit:hover::before {
             opacity: 1;
+            animation: shimmer 0.8s ease-out;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         .time-unit:hover {
@@ -659,6 +698,11 @@
     </style>
 </head>
 <body>
+    <!-- 3D WebGL Background -->
+    <div id="webgl-container">
+        <canvas id="webgl-canvas"></canvas>
+    </div>
+    
     <div class="background-effects">
         <div class="stadium-lights"></div>
         <div class="particle-system" id="particles"></div>
@@ -790,6 +834,889 @@
     </div>
     
     <script>
+        // Enhanced 3D WebGL Scene Setup
+        let scene, camera, renderer, composer;
+        let stadiumParticles = [];
+        let logoMeshes = {};
+        let audioAnalyser;
+        let frequencyData;
+        let isWebGLEnabled = false;
+        
+        // Initialize 3D WebGL Scene
+        function init3DScene() {
+            try {
+                // Check if Three.js is loaded
+                if (typeof THREE === 'undefined') {
+                    console.warn('Three.js not loaded, using CSS fallback');
+                    enhanceCSS3DFallback();
+                    return;
+                }
+                
+                const container = document.getElementById('webgl-container');
+                const canvas = document.getElementById('webgl-canvas');
+                
+                // Scene setup
+                scene = new THREE.Scene();
+                scene.fog = new THREE.Fog(0x000000, 100, 1000);
+                
+                // Camera setup with dynamic aspect ratio
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+                camera.position.set(0, 0, 500);
+                
+                // WebGL Renderer with advanced settings
+                renderer = new THREE.WebGLRenderer({ 
+                    canvas: canvas,
+                    antialias: true,
+                    alpha: true,
+                    powerPreference: "high-performance"
+                });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.setClearColor(0x000000, 0.0);
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 1.2;
+                
+                // Post-processing setup
+                setupPostProcessing();
+                
+                // Create 3D stadium environment
+                create3DStadium();
+                
+                // Create enhanced particle systems
+                createAdvancedParticles();
+                
+                // Create 3D team logos
+                create3DLogos();
+                
+                // Add dynamic lighting
+                setupDynamicLighting();
+                
+                // Audio context for reactive visuals
+                setupAudioReactivity();
+                
+                isWebGLEnabled = true;
+                
+                // Start render loop
+                animate3D();
+                
+                console.log('3D WebGL scene initialized successfully');
+            } catch (error) {
+                console.warn('WebGL not supported or failed to initialize:', error);
+                // Fallback to enhanced CSS animations
+                enhanceCSS3DFallback();
+            }
+        }
+        
+        function setupPostProcessing() {
+            // Basic post-processing without external dependencies
+            // We'll implement effects directly in the render loop
+            
+            // Custom shader material for enhanced effects
+            const enhancementShader = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 },
+                    teamColorA: { value: new THREE.Color(0xba0c2f) },
+                    teamColorB: { value: new THREE.Color(0xffd700) },
+                    intensity: { value: 0.3 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float time;
+                    uniform vec3 teamColorA;
+                    uniform vec3 teamColorB;
+                    uniform float intensity;
+                    varying vec2 vUv;
+                    
+                    void main() {
+                        // Dynamic team color effects
+                        float wave = sin(time * 2.0 + vUv.x * 10.0) * 0.5 + 0.5;
+                        vec3 teamMix = mix(teamColorA, teamColorB, wave);
+                        
+                        // Create glow effect
+                        float glow = 1.0 - length(vUv - 0.5) * 2.0;
+                        glow = pow(glow, 2.0) * intensity;
+                        
+                        gl_FragColor = vec4(teamMix * glow, glow * 0.5);
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending
+            });
+            
+            // Store reference for animation
+            window.enhancementShader = enhancementShader;
+        }
+        
+        function create3DStadium() {
+            // Stadium field geometry
+            const fieldGeometry = new THREE.PlaneGeometry(800, 400);
+            const fieldMaterial = new THREE.MeshLambertMaterial({ 
+                color: 0x2d5d2d,
+                transparent: true,
+                opacity: 0.3
+            });
+            const field = new THREE.Mesh(fieldGeometry, fieldMaterial);
+            field.rotation.x = -Math.PI / 2;
+            field.position.y = -200;
+            field.receiveShadow = true;
+            scene.add(field);
+            
+            // Stadium structure
+            const stadiumGroup = new THREE.Group();
+            
+            // Create stadium sections
+            for (let i = 0; i < 8; i++) {
+                const sectionGeometry = new THREE.BoxGeometry(100, 150, 20);
+                const sectionMaterial = new THREE.MeshPhongMaterial({ 
+                    color: 0x333333,
+                    transparent: true,
+                    opacity: 0.4
+                });
+                const section = new THREE.Mesh(sectionGeometry, sectionMaterial);
+                
+                const angle = (i / 8) * Math.PI * 2;
+                section.position.x = Math.cos(angle) * 600;
+                section.position.z = Math.sin(angle) * 600;
+                section.position.y = -50;
+                section.lookAt(0, -50, 0);
+                section.castShadow = true;
+                
+                stadiumGroup.add(section);
+            }
+            
+            scene.add(stadiumGroup);
+            window.stadiumGroup = stadiumGroup;
+        }
+        
+        function createAdvancedParticles() {
+            // Physics-based particle system
+            const particleCount = 2000;
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                
+                // Random positions
+                positions[i3] = (Math.random() - 0.5) * 2000;
+                positions[i3 + 1] = Math.random() * 1000 - 500;
+                positions[i3 + 2] = (Math.random() - 0.5) * 2000;
+                
+                // Random velocities
+                velocities[i3] = (Math.random() - 0.5) * 2;
+                velocities[i3 + 1] = Math.random() * 2 + 1;
+                velocities[i3 + 2] = (Math.random() - 0.5) * 2;
+                
+                // Team colors
+                const isGold = Math.random() > 0.5;
+                if (isGold) {
+                    colors[i3] = 1.0;     // R
+                    colors[i3 + 1] = 0.84; // G
+                    colors[i3 + 2] = 0.0;  // B
+                } else {
+                    colors[i3] = 0.73;     // R
+                    colors[i3 + 1] = 0.05; // G
+                    colors[i3 + 2] = 0.18; // B
+                }
+                
+                sizes[i] = Math.random() * 5 + 1;
+            }
+            
+            const particleGeometry = new THREE.BufferGeometry();
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const particleMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0.0 },
+                    audioLevel: { value: 0.0 }
+                },
+                vertexShader: `
+                    attribute float size;
+                    attribute vec3 velocity;
+                    uniform float time;
+                    uniform float audioLevel;
+                    varying vec3 vColor;
+                    
+                    void main() {
+                        vColor = color;
+                        
+                        vec3 pos = position;
+                        pos += velocity * time;
+                        
+                        // Audio reactivity
+                        pos.y += sin(time * 2.0 + pos.x * 0.01) * audioLevel * 20.0;
+                        
+                        // Reset particles when they go too high
+                        if (pos.y > 500.0) {
+                            pos.y = -500.0;
+                        }
+                        
+                        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                        gl_PointSize = size * (300.0 / -mvPosition.z) * (1.0 + audioLevel);
+                        gl_Position = projectionMatrix * mvPosition;
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vColor;
+                    
+                    void main() {
+                        float r = distance(gl_PointCoord, vec2(0.5, 0.5));
+                        if (r > 0.5) discard;
+                        
+                        float alpha = 1.0 - smoothstep(0.3, 0.5, r);
+                        gl_FragColor = vec4(vColor, alpha * 0.8);
+                    }
+                `,
+                transparent: true,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+            
+            window.particleSystem = {
+                mesh: particles,
+                material: particleMaterial,
+                geometry: particleGeometry
+            };
+        }
+        
+        function create3DLogos() {
+            // Create 3D team logos with realistic materials
+            const logoGroup = new THREE.Group();
+            
+            // Bulldogs logo (simplified 3D representation)
+            const bulldogsGeometry = new THREE.SphereGeometry(50, 32, 32);
+            const bulldogsMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xffd700,
+                metalness: 0.1,
+                roughness: 0.4,
+                clearcoat: 0.8,
+                clearcoatRoughness: 0.2
+            });
+            const bulldogsLogo = new THREE.Mesh(bulldogsGeometry, bulldogsMaterial);
+            bulldogsLogo.position.set(-300, 200, 0);
+            bulldogsLogo.castShadow = true;
+            logoGroup.add(bulldogsLogo);
+            
+            // Falcons logo
+            const falconsGeometry = new THREE.ConeGeometry(40, 80, 8);
+            const falconsMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xa71930,
+                metalness: 0.3,
+                roughness: 0.3,
+                clearcoat: 0.9,
+                clearcoatRoughness: 0.1
+            });
+            const falconsLogo = new THREE.Mesh(falconsGeometry, falconsMaterial);
+            falconsLogo.position.set(300, 200, 0);
+            falconsLogo.castShadow = true;
+            logoGroup.add(falconsLogo);
+            
+            scene.add(logoGroup);
+            
+            logoMeshes = {
+                bulldogs: bulldogsLogo,
+                falcons: falconsLogo,
+                group: logoGroup
+            };
+        }
+        
+        function setupDynamicLighting() {
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+            scene.add(ambientLight);
+            
+            // Stadium spot lights
+            const spotLight1 = new THREE.SpotLight(0xffd700, 1, 1000, Math.PI / 6, 0.5);
+            spotLight1.position.set(-400, 400, 200);
+            spotLight1.target.position.set(-300, 0, 0);
+            spotLight1.castShadow = true;
+            spotLight1.shadow.mapSize.width = 2048;
+            spotLight1.shadow.mapSize.height = 2048;
+            scene.add(spotLight1);
+            scene.add(spotLight1.target);
+            
+            const spotLight2 = new THREE.SpotLight(0xa71930, 1, 1000, Math.PI / 6, 0.5);
+            spotLight2.position.set(400, 400, 200);
+            spotLight2.target.position.set(300, 0, 0);
+            spotLight2.castShadow = true;
+            spotLight2.shadow.mapSize.width = 2048;
+            spotLight2.shadow.mapSize.height = 2048;
+            scene.add(spotLight2);
+            scene.add(spotLight2.target);
+            
+            // Dynamic point lights
+            const pointLight = new THREE.PointLight(0xffffff, 0.8, 800);
+            pointLight.position.set(0, 300, 0);
+            pointLight.castShadow = true;
+            scene.add(pointLight);
+            
+            window.dynamicLights = {
+                spot1: spotLight1,
+                spot2: spotLight2,
+                point: pointLight
+            };
+        }
+        
+        function setupAudioReactivity() {
+            try {
+                audioAnalyser = new (window.AudioContext || window.webkitAudioContext)();
+                const analyser = audioAnalyser.createAnalyser();
+                analyser.fftSize = 256;
+                frequencyData = new Uint8Array(analyser.frequencyBinCount);
+                
+                // Connect to microphone for ambient audio reactivity
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        const source = audioAnalyser.createMediaStreamSource(stream);
+                        source.connect(analyser);
+                        window.audioAnalyser = analyser;
+                    })
+                    .catch(() => {
+                        // Fallback to synthetic audio data
+                        console.log('Microphone access denied, using synthetic audio data');
+                    });
+            } catch (error) {
+                console.log('Audio context not available:', error);
+            }
+        }
+        
+        function animate3D() {
+            if (!isWebGLEnabled) return;
+            
+            requestAnimationFrame(animate3D);
+            
+            const time = Date.now() * 0.001;
+            
+            // Update particle system
+            if (window.particleSystem) {
+                window.particleSystem.material.uniforms.time.value = time;
+                
+                // Audio reactivity
+                let audioLevel = 0;
+                if (window.audioAnalyser && frequencyData) {
+                    window.audioAnalyser.getByteFrequencyData(frequencyData);
+                    audioLevel = frequencyData.reduce((a, b) => a + b) / frequencyData.length / 255;
+                } else {
+                    // Synthetic audio data based on countdown
+                    audioLevel = 0.3 + Math.sin(time * 2) * 0.2;
+                }
+                window.particleSystem.material.uniforms.audioLevel.value = audioLevel;
+            }
+            
+            // Animate 3D logos
+            if (logoMeshes.bulldogs) {
+                logoMeshes.bulldogs.rotation.y = time * 0.5;
+                logoMeshes.bulldogs.position.y = 200 + Math.sin(time * 2) * 20;
+            }
+            if (logoMeshes.falcons) {
+                logoMeshes.falcons.rotation.y = -time * 0.5;
+                logoMeshes.falcons.position.y = 200 + Math.cos(time * 2) * 20;
+            }
+            
+            // Dynamic lighting effects
+            if (window.dynamicLights) {
+                window.dynamicLights.point.intensity = 0.8 + Math.sin(time * 3) * 0.4;
+                window.dynamicLights.spot1.intensity = 1 + Math.sin(time * 2) * 0.3;
+                window.dynamicLights.spot2.intensity = 1 + Math.cos(time * 2.5) * 0.3;
+            }
+            
+            // Update team color shader
+            if (window.enhancementShader) {
+                window.enhancementShader.uniforms.time.value = time;
+            }
+            
+            // Camera movement
+            camera.position.x = Math.sin(time * 0.1) * 50;
+            camera.position.z = 500 + Math.cos(time * 0.1) * 100;
+            camera.lookAt(0, 0, 0);
+            
+            // Render scene
+            renderer.render(scene, camera);
+        }
+        
+        function enhanceCSS3DFallback() {
+            // Enhanced CSS animations as fallback
+            const style = document.createElement('style');
+            style.textContent = `
+                body {
+                    background: 
+                        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
+                        linear-gradient(135deg, #ba0c2f 0%, #A71930 25%, #000000 50%, #A71930 75%, #ba0c2f 100%);
+                    animation: backgroundPulse 8s ease-in-out infinite;
+                }
+                
+                @keyframes backgroundPulse {
+                    0%, 100% { 
+                        filter: brightness(1) contrast(1) saturate(1);
+                        background-size: 100% 100%, 100% 100%, 100% 100%;
+                    }
+                    50% { 
+                        filter: brightness(1.3) contrast(1.2) saturate(1.1);
+                        background-size: 120% 120%, 120% 120%, 100% 100%;
+                    }
+                }
+                
+                .team-logo {
+                    animation: logoFloat3D 3s ease-in-out infinite, logoRotate 8s linear infinite;
+                    transform-style: preserve-3d;
+                }
+                
+                @keyframes logoFloat3D {
+                    0%, 100% { 
+                        transform: scale(1) rotateY(0deg) translateY(0px);
+                        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+                    }
+                    50% { 
+                        transform: scale(1.1) rotateY(180deg) translateY(-10px);
+                        filter: drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+                    }
+                }
+                
+                @keyframes logoRotate {
+                    from { transform: rotateZ(0deg); }
+                    to { transform: rotateZ(360deg); }
+                }
+                
+                .time-unit {
+                    animation: timeUnitFloat 4s ease-in-out infinite;
+                    transform-style: preserve-3d;
+                }
+                
+                @keyframes timeUnitFloat {
+                    0%, 100% { 
+                        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px);
+                    }
+                    25% { 
+                        transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateZ(10px);
+                    }
+                    50% { 
+                        transform: perspective(1000px) rotateX(0deg) rotateY(10deg) translateZ(20px);
+                    }
+                    75% { 
+                        transform: perspective(1000px) rotateX(-5deg) rotateY(5deg) translateZ(10px);
+                    }
+                }
+                
+                .game-section::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+                    animation: scanline 3s linear infinite;
+                    pointer-events: none;
+                }
+                
+                @keyframes scanline {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
+                }
+                
+                .background-effects::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: 
+                        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 75% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
+                    animation: lightMove 15s ease-in-out infinite;
+                }
+                
+                @keyframes lightMove {
+                    0%, 100% { 
+                        background: 
+                            radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                            radial-gradient(circle at 75% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
+                    }
+                    50% { 
+                        background: 
+                            radial-gradient(circle at 75% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                            radial-gradient(circle at 25% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            console.log('Enhanced CSS 3D fallback activated');
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            if (!isWebGLEnabled) return;
+            
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        window.addEventListener('resize', onWindowResize);
+        
+        // Enhanced Mouse Interaction System
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        let mouseTimeout;
+        
+        // Advanced parallax and interaction effects
+        function initAdvancedInteractions() {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Touch events for mobile
+            document.addEventListener('touchstart', handleTouchStart, { passive: false });
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+            
+            // Add advanced hover effects to interactive elements
+            enhanceInteractiveElements();
+            
+            // Initialize parallax backgrounds
+            initParallaxEffects();
+        }
+        
+        function handleMouseMove(e) {
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+            
+            isMouseMoving = true;
+            clearTimeout(mouseTimeout);
+            mouseTimeout = setTimeout(() => {
+                isMouseMoving = false;
+            }, 100);
+            
+            // Apply parallax effects
+            applyParallaxEffects(mouseX, mouseY);
+            
+            // Create mouse trail effect
+            createMouseTrail(e.clientX, e.clientY);
+        }
+        
+        function handleMouseDown(e) {
+            createRippleEffect(e.clientX, e.clientY);
+            playAudioFeedback('click');
+        }
+        
+        function handleMouseUp(e) {
+            // Add subtle release effect
+        }
+        
+        function handleTouchStart(e) {
+            const touch = e.touches[0];
+            createRippleEffect(touch.clientX, touch.clientY);
+            
+            // Haptic feedback if supported
+            if (navigator.vibrate) {
+                navigator.vibrate(10);
+            }
+        }
+        
+        function handleTouchMove(e) {
+            const touch = e.touches[0];
+            mouseX = (touch.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(touch.clientY / window.innerHeight) * 2 + 1;
+            applyParallaxEffects(mouseX, mouseY);
+        }
+        
+        function handleTouchEnd(e) {
+            // Handle touch end
+        }
+        
+        function applyParallaxEffects(x, y) {
+            // Apply subtle parallax to game sections
+            const sections = document.querySelectorAll('.game-section');
+            sections.forEach((section, index) => {
+                const intensity = index === 0 ? 0.02 : -0.02;
+                const translateX = x * intensity * 50;
+                const translateY = y * intensity * 30;
+                section.style.transform = `translate(${translateX}px, ${translateY}px) perspective(1000px) rotateY(${x * 2}deg) rotateX(${y * 1}deg)`;
+            });
+            
+            // Apply parallax to floating icons
+            const icons = document.querySelectorAll('.floating-icons');
+            icons.forEach((icon, index) => {
+                const intensity = 0.05 + index * 0.01;
+                const translateX = x * intensity * 30;
+                const translateY = y * intensity * 20;
+                icon.style.transform = `translate(${translateX}px, ${translateY}px)`;
+            });
+            
+            // Update 3D camera if WebGL is enabled
+            if (isWebGLEnabled && camera) {
+                camera.position.x += (x * 100 - camera.position.x) * 0.05;
+                camera.position.y += (y * 50 - camera.position.y) * 0.05;
+            }
+        }
+        
+        function createMouseTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            trail.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: 6px;
+                height: 6px;
+                background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                animation: mouseTrailFade 0.8s ease-out forwards;
+                transform: translate(-50%, -50%);
+            `;
+            
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                if (trail.parentNode) {
+                    trail.parentNode.removeChild(trail);
+                }
+            }, 800);
+        }
+        
+        function createRippleEffect(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'mouse-ripple';
+            ripple.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                width: 20px;
+                height: 20px;
+                border: 2px solid rgba(255, 215, 0, 0.8);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9999;
+                animation: rippleExpand 0.6s ease-out forwards;
+                transform: translate(-50%, -50%);
+            `;
+            
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.parentNode.removeChild(ripple);
+                }
+            }, 600);
+        }
+        
+        function enhanceInteractiveElements() {
+            // Enhanced time unit interactions
+            const timeUnits = document.querySelectorAll('.time-unit');
+            timeUnits.forEach((unit, index) => {
+                unit.addEventListener('mouseenter', (e) => {
+                    unit.style.transform = 'translateY(-12px) scale(1.08) rotateY(5deg)';
+                    unit.style.boxShadow = `
+                        0 25px 50px rgba(0,0,0,0.5),
+                        0 0 40px rgba(255, 215, 0, 0.6),
+                        inset 0 1px 0 rgba(255,255,255,0.4)
+                    `;
+                    playAudioFeedback('hover');
+                });
+                
+                unit.addEventListener('mouseleave', (e) => {
+                    unit.style.transform = '';
+                    unit.style.boxShadow = '';
+                });
+                
+                unit.addEventListener('click', (e) => {
+                    // Add number flip animation
+                    const number = unit.querySelector('.time-number');
+                    number.style.transform = 'rotateY(360deg)';
+                    setTimeout(() => {
+                        number.style.transform = '';
+                    }, 600);
+                    playAudioFeedback('click');
+                });
+            });
+            
+            // Enhanced button interactions
+            const buttons = document.querySelectorAll('.copy-btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', (e) => {
+                    button.style.transform = 'translateY(-3px) scale(1.05)';
+                    playAudioFeedback('hover');
+                });
+                
+                button.addEventListener('mouseleave', (e) => {
+                    button.style.transform = '';
+                });
+            });
+            
+            // Enhanced team chant interactions
+            const chants = document.querySelectorAll('.team-chant');
+            chants.forEach(chant => {
+                chant.addEventListener('mouseenter', (e) => {
+                    chant.style.transform = 'scale(1.15) rotateZ(2deg)';
+                    chant.style.filter = 'drop-shadow(0 0 40px rgba(255, 215, 0, 1)) brightness(1.3)';
+                });
+                
+                chant.addEventListener('mouseleave', (e) => {
+                    chant.style.transform = '';
+                    chant.style.filter = '';
+                });
+            });
+        }
+        
+        function initParallaxEffects() {
+            // Create dynamic background layers
+            const backgroundLayers = document.createElement('div');
+            backgroundLayers.className = 'parallax-layers';
+            backgroundLayers.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 0;
+                pointer-events: none;
+            `;
+            
+            // Create multiple parallax layers
+            for (let i = 0; i < 5; i++) {
+                const layer = document.createElement('div');
+                layer.className = `parallax-layer layer-${i}`;
+                layer.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 120%;
+                    height: 120%;
+                    background: radial-gradient(circle at ${Math.random() * 100}% ${Math.random() * 100}%, 
+                        rgba(${i % 2 === 0 ? '255, 215, 0' : '186, 12, 47'}, ${0.1 - i * 0.02}) 0%, 
+                        transparent 60%);
+                    animation: layerFloat${i} ${8 + i * 2}s ease-in-out infinite alternate;
+                `;
+                backgroundLayers.appendChild(layer);
+            }
+            
+            document.body.insertBefore(backgroundLayers, document.body.firstChild);
+            
+            // Add layer animations
+            const layerStyles = document.createElement('style');
+            layerStyles.textContent = `
+                @keyframes layerFloat0 {
+                    0% { transform: translate(0%, 0%) rotate(0deg); }
+                    100% { transform: translate(5%, 3%) rotate(1deg); }
+                }
+                @keyframes layerFloat1 {
+                    0% { transform: translate(0%, 0%) rotate(0deg); }
+                    100% { transform: translate(-3%, 5%) rotate(-1deg); }
+                }
+                @keyframes layerFloat2 {
+                    0% { transform: translate(0%, 0%) rotate(0deg); }
+                    100% { transform: translate(4%, -2%) rotate(0.5deg); }
+                }
+                @keyframes layerFloat3 {
+                    0% { transform: translate(0%, 0%) rotate(0deg); }
+                    100% { transform: translate(-2%, 4%) rotate(-0.5deg); }
+                }
+                @keyframes layerFloat4 {
+                    0% { transform: translate(0%, 0%) rotate(0deg); }
+                    100% { transform: translate(3%, -3%) rotate(0.8deg); }
+                }
+                
+                @keyframes mouseTrailFade {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+                }
+                
+                @keyframes rippleExpand {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(4); }
+                }
+            `;
+            document.head.appendChild(layerStyles);
+        }
+        
+        // Enhanced Audio System
+        function playAudioFeedback(type) {
+            initAudioContext();
+            if (!audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch (type) {
+                case 'success':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'hover':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.05);
+                    gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.05);
+                    break;
+                case 'click':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'swoosh':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                case 'close':
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                    break;
+                case 'tick':
+                    // Subtle tick sound, limited to once per second to avoid spam
+                    const now = Date.now();
+                    if (now - lastTickTime < 1000) return;
+                    lastTickTime = now;
+                    
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.05);
+                    break;
+            }
+        }
+        
         // Game dates
         const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
         const falconsGameDate = new Date('2025-09-07T13:00:00-04:00').getTime();
@@ -973,76 +1900,141 @@
                 accent: '#FFD700'
             };
             
-            // Create dynamic gradient background
-            const gradient = ctx.createLinearGradient(0, 0, 3840, 2160);
+            // Create dynamic gradient background with animation
+            const time = Date.now() * 0.001;
+            const gradient = ctx.createRadialGradient(1920, 1080, 0, 1920, 1080, 2000);
             gradient.addColorStop(0, colors.primary);
-            gradient.addColorStop(0.3, colors.accent);
-            gradient.addColorStop(0.7, colors.accent);
+            gradient.addColorStop(0.3 + Math.sin(time) * 0.1, colors.accent);
+            gradient.addColorStop(0.7 + Math.cos(time * 1.5) * 0.1, colors.accent);
             gradient.addColorStop(1, colors.primary);
             
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 3840, 2160);
             
-            // Add stadium atmosphere effect
-            drawStadiumEffects(ctx, colors);
+            // Add animated stadium atmosphere effect
+            drawAdvancedStadiumEffects(ctx, colors, time);
             
-            // Draw team logo (large emoji)
-            ctx.font = 'bold 400px serif';
-            ctx.textAlign = 'center';
-            ctx.fillStyle = colors.secondary;
-            const emoji = team === 'bulldogs' ? '🐶' : '🦅';
-            ctx.fillText(emoji, 1920, 450);
+            // Draw enhanced team logo with glow
+            drawEnhancedLogo(ctx, team, colors, time, 1920, 450);
             
-            // Draw team name
-            ctx.font = 'bold 180px "Arial Black", Arial';
-            ctx.fillStyle = colors.secondary;
-            ctx.strokeStyle = colors.accent;
-            ctx.lineWidth = 8;
-            ctx.strokeText(teamName, 1920, 650);
-            ctx.fillText(teamName, 1920, 650);
+            // Draw team name with morphing effect
+            drawMorphingText(ctx, teamName, colors, time, 1920, 650, 180);
             
-            // Draw VS opponent
+            // Draw VS opponent with pulse effect
             ctx.font = 'bold 100px Arial';
-            ctx.fillStyle = '#FFFFFF';
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.9 + Math.sin(time * 3) * 0.1})`;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = colors.secondary;
+            ctx.shadowBlur = 20 + Math.sin(time * 2) * 10;
             ctx.fillText(`VS ${opponent}`, 1920, 780);
+            ctx.shadowBlur = 0;
             
-            // Draw countdown section
-            drawCountdownSection(ctx, countdown, colors, 1920, 1000);
+            // Draw enhanced countdown section
+            drawEnhancedCountdownSection(ctx, countdown, colors, time, 1920, 1000);
             
-            // Draw date and venue
+            // Draw date and venue with glow
             ctx.font = 'bold 80px Arial';
             ctx.fillStyle = colors.secondary;
+            ctx.shadowColor = colors.secondary;
+            ctx.shadowBlur = 15;
             ctx.fillText(date, 1920, 1500);
             
             ctx.font = '60px Arial';
             ctx.fillStyle = '#FFFFFF';
+            ctx.shadowBlur = 10;
             ctx.fillText(venue, 1920, 1600);
+            ctx.shadowBlur = 0;
             
-            // Add website credit
+            // Add website credit with pulse
             ctx.font = '50px Arial';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + Math.sin(time * 2) * 0.2})`;
             ctx.fillText('bensbar.github.io/games', 1920, 2000);
             
-            // Draw animated particles
-            drawParticleEffects(ctx, colors);
+            // Draw enhanced particle effects
+            drawAdvancedParticleEffects(ctx, colors, time);
         }
 
-        function drawStadiumEffects(ctx, colors) {
-            // Stadium lights effect
-            const radialGrad1 = ctx.createRadialGradient(576, 432, 0, 576, 432, 800);
-            radialGrad1.addColorStop(0, `${colors.secondary}66`);
-            radialGrad1.addColorStop(1, 'transparent');
-            ctx.fillStyle = radialGrad1;
-            ctx.fillRect(0, 0, 1152, 864);
+        function drawAdvancedStadiumEffects(ctx, colors, time) {
+            // Animated stadium lights effect
+            for (let i = 0; i < 8; i++) {
+                const angle = (i / 8) * Math.PI * 2 + time * 0.5;
+                const x = 1920 + Math.cos(angle) * 800;
+                const y = 1080 + Math.sin(angle) * 400;
+                const radius = 300 + Math.sin(time * 2 + i) * 100;
+                
+                const radialGrad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                radialGrad.addColorStop(0, `${colors.secondary}40`);
+                radialGrad.addColorStop(0.5, `${colors.primary}20`);
+                radialGrad.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = radialGrad;
+                ctx.fillRect(0, 0, 3840, 2160);
+            }
             
-            const radialGrad2 = ctx.createRadialGradient(3264, 432, 0, 3264, 432, 800);
-            radialGrad2.addColorStop(0, `${colors.primary}66`);
-            radialGrad2.addColorStop(1, 'transparent');
-            ctx.fillStyle = radialGrad2;
-            ctx.fillRect(2688, 0, 1152, 864);
+            // Dynamic scan lines
+            ctx.strokeStyle = `rgba(255, 255, 255, 0.1)`;
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 20; i++) {
+                const y = (time * 100 + i * 100) % 2160;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(3840, y);
+                ctx.stroke();
+            }
         }
 
-        function drawCountdownSection(ctx, countdown, colors, x, y) {
+        function drawEnhancedLogo(ctx, team, colors, time, x, y) {
+            // Draw logo with enhanced glow and animation
+            ctx.font = 'bold 400px serif';
+            ctx.textAlign = 'center';
+            
+            // Create multiple glow layers
+            const glowLayers = 5;
+            for (let i = glowLayers; i > 0; i--) {
+                ctx.shadowColor = colors.secondary;
+                ctx.shadowBlur = i * 20;
+                ctx.fillStyle = colors.secondary;
+                const emoji = team === 'bulldogs' ? '🐶' : '🦅';
+                const scale = 1 + Math.sin(time * 2) * 0.05;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(scale, scale);
+                ctx.fillText(emoji, 0, 0);
+                ctx.restore();
+            }
+            ctx.shadowBlur = 0;
+        }
+
+        function drawMorphingText(ctx, text, colors, time, x, y, fontSize) {
+            ctx.font = `bold ${fontSize}px "Arial Black", Arial`;
+            ctx.textAlign = 'center';
+            
+            // Create morphing effect by slightly varying character positions
+            const chars = text.split('');
+            let currentX = x - (ctx.measureText(text).width / 2);
+            
+            chars.forEach((char, index) => {
+                const charWidth = ctx.measureText(char).width;
+                const morphOffset = Math.sin(time * 3 + index * 0.5) * 3;
+                const colorShift = Math.sin(time * 2 + index * 0.3) * 0.2;
+                
+                // Shadow/stroke
+                ctx.strokeStyle = colors.accent;
+                ctx.lineWidth = 8;
+                ctx.strokeText(char, currentX + charWidth/2, y + morphOffset);
+                
+                // Fill with dynamic color
+                const r = parseInt(colors.secondary.slice(1, 3), 16);
+                const g = parseInt(colors.secondary.slice(3, 5), 16);
+                const b = parseInt(colors.secondary.slice(5, 7), 16);
+                ctx.fillStyle = `rgb(${Math.min(255, r + colorShift * 50)}, ${Math.min(255, g + colorShift * 30)}, ${Math.min(255, b + colorShift * 10)})`;
+                ctx.fillText(char, currentX + charWidth/2, y + morphOffset);
+                
+                currentX += charWidth;
+            });
+        }
+
+        function drawEnhancedCountdownSection(ctx, countdown, colors, time, x, y) {
             const sections = [
                 { label: 'DAYS', value: countdown.days },
                 { label: 'HOURS', value: countdown.hours },
@@ -1051,44 +2043,61 @@
             ];
             
             const sectionWidth = 300;
-            const totalWidth = sectionWidth * 4 + 60 * 3; // 4 sections + 3 gaps
+            const totalWidth = sectionWidth * 4 + 60 * 3;
             const startX = x - totalWidth / 2;
             
             sections.forEach((section, index) => {
                 const sectionX = startX + index * (sectionWidth + 60);
+                const pulse = Math.sin(time * 3 + index) * 0.1 + 1;
+                const glow = Math.sin(time * 2 + index * 0.5) * 20 + 30;
                 
-                // Draw section background
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                // Animated background
+                ctx.fillStyle = `rgba(0, 0, 0, ${0.7 + Math.sin(time + index) * 0.1})`;
                 ctx.fillRect(sectionX, y - 120, sectionWidth, 200);
                 
-                // Draw border
+                // Glowing border
                 ctx.strokeStyle = colors.secondary;
                 ctx.lineWidth = 6;
+                ctx.shadowColor = colors.secondary;
+                ctx.shadowBlur = glow;
                 ctx.strokeRect(sectionX, y - 120, sectionWidth, 200);
+                ctx.shadowBlur = 0;
                 
-                // Draw number
-                ctx.font = 'bold 120px Arial';
+                // Animated number
+                ctx.font = `bold ${120 * pulse}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.fillStyle = colors.secondary;
+                ctx.shadowColor = colors.secondary;
+                ctx.shadowBlur = 15;
                 ctx.fillText(section.value, sectionX + sectionWidth/2, y + 10);
                 
-                // Draw label
+                // Label
                 ctx.font = 'bold 40px Arial';
                 ctx.fillStyle = '#FFFFFF';
+                ctx.shadowBlur = 5;
                 ctx.fillText(section.label, sectionX + sectionWidth/2, y + 60);
+                ctx.shadowBlur = 0;
             });
         }
 
-        function drawParticleEffects(ctx, colors) {
-            // Add some particle effects
-            for (let i = 0; i < 50; i++) {
-                const x = Math.random() * 3840;
-                const y = Math.random() * 2160;
-                const radius = Math.random() * 8 + 4;
+        function drawAdvancedParticleEffects(ctx, colors, time) {
+            // Enhanced particle effects with motion
+            for (let i = 0; i < 100; i++) {
+                const x = (Math.sin(time * 0.5 + i * 0.1) * 1920 + 1920) % 3840;
+                const y = (Math.cos(time * 0.3 + i * 0.15) * 1080 + 1080) % 2160;
+                const radius = Math.sin(time * 2 + i) * 8 + 12;
+                const alpha = Math.sin(time + i * 0.2) * 0.5 + 0.5;
                 
                 ctx.beginPath();
                 ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = i % 2 === 0 ? `${colors.secondary}AA` : `${colors.primary}AA`;
+                
+                // Create gradient for each particle
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                const color = i % 2 === 0 ? colors.secondary : colors.primary;
+                gradient.addColorStop(0, `${color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
                 ctx.fill();
             }
         }
@@ -1168,56 +2177,6 @@
             }
         }
         
-        function playAudioFeedback(type) {
-            initAudioContext();
-            if (!audioContext) return;
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            switch (type) {
-                case 'success':
-                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.1);
-                    break;
-                case 'swoosh':
-                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.2);
-                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.2);
-                    break;
-                case 'close':
-                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
-                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.15);
-                    break;
-                case 'tick':
-                    // Subtle tick sound, limited to once per second to avoid spam
-                    const now = Date.now();
-                    if (now - lastTickTime < 1000) return;
-                    lastTickTime = now;
-                    
-                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
-                    gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.05);
-                    break;
-            }
-        }
-        
         function copyToClipboard(text, message) {
             navigator.clipboard.writeText(text).then(() => {
                 showCopyFeedback(message);
@@ -1294,10 +2253,21 @@
         document.head.appendChild(style);
         
         // Initialize
-        createParticles();
-        updateAllCountdowns();
-        setInterval(updateAllCountdowns, 1000);
-        handleUrlParams(); // Handle URL parameters
+        document.addEventListener('DOMContentLoaded', () => {
+            // Delay initialization to ensure Three.js loads
+            setTimeout(() => {
+                // Initialize 3D WebGL scene
+                init3DScene();
+                
+                // Initialize advanced interactions
+                initAdvancedInteractions();
+                
+                createParticles();
+                updateAllCountdowns();
+                setInterval(updateAllCountdowns, 1000);
+                handleUrlParams(); // Handle URL parameters
+            }, 500);
+        });
         
         // Event listeners
         document.addEventListener('click', createClickEffect);
