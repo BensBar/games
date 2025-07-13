@@ -2349,13 +2349,33 @@
             document.addEventListener('DOMContentLoaded', initializeApp);
         }
         
-        // Countdown failsafe - ensures countdown works regardless of other issues
-        setTimeout(() => {
-            // Game dates
+        // Event listeners
+        document.addEventListener('click', createClickEffect);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'KeyD') {
+                triggerChant('bulldogs');
+            } else if (e.code === 'KeyF') {
+                triggerChant('falcons');
+            } else if (e.code === 'Escape') {
+                closeCanvas();
+            } else if (e.code === 'KeyG') {
+                // Quick generate graphic for active team
+                const activeTeam = document.querySelector('.team-chant:hover') ? 
+                    (document.querySelector('.bulldogs .team-chant:hover') ? 'bulldogs' : 'falcons') : 'bulldogs';
+                generateGraphic(activeTeam);
+            }
+        });
+    </script>
+    
+    <script>
+        // Direct countdown initialization - placed at end to ensure DOM is ready
+        (function() {
             const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
             const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
             
-            function failsafeUpdateCountdown(gameDate, prefix) {
+            function directUpdateCountdown(gameDate, prefix) {
                 const now = new Date().getTime();
                 const distance = gameDate - now;
                 
@@ -2380,41 +2400,24 @@
                 return false;
             }
             
-            function failsafeUpdateAll() {
-                const bulldogsGameStarted = failsafeUpdateCountdown(bulldogsGameDate, 'bulldogs');
-                const falconsGameStarted = failsafeUpdateCountdown(falconsGameDate, 'falcons');
+            function directUpdateAll() {
+                const bulldogsGameStarted = directUpdateCountdown(bulldogsGameDate, 'bulldogs');
+                const falconsGameStarted = directUpdateCountdown(falconsGameDate, 'falcons');
                 
                 if (bulldogsGameStarted) {
-                    document.querySelector('.bulldogs .team-chant').textContent = 'GAME TIME!';
+                    const bulldogsChant = document.querySelector('.bulldogs .team-chant');
+                    if (bulldogsChant) bulldogsChant.textContent = 'GAME TIME!';
                 }
                 if (falconsGameStarted) {
-                    document.querySelector('.falcons .team-chant').textContent = 'GAME TIME!';
+                    const falconsChant = document.querySelector('.falcons .team-chant');
+                    if (falconsChant) falconsChant.textContent = 'GAME TIME!';
                 }
             }
             
-            // Start failsafe countdown
-            failsafeUpdateAll();
-            setInterval(failsafeUpdateAll, 1000);
-        }, 500);
-        
-        // Event listeners
-        document.addEventListener('click', createClickEffect);
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.code === 'KeyD') {
-                triggerChant('bulldogs');
-            } else if (e.code === 'KeyF') {
-                triggerChant('falcons');
-            } else if (e.code === 'Escape') {
-                closeCanvas();
-            } else if (e.code === 'KeyG') {
-                // Quick generate graphic for active team
-                const activeTeam = document.querySelector('.team-chant:hover') ? 
-                    (document.querySelector('.bulldogs .team-chant:hover') ? 'bulldogs' : 'falcons') : 'bulldogs';
-                generateGraphic(activeTeam);
-            }
-        });
+            // Start direct countdown immediately
+            directUpdateAll();
+            setInterval(directUpdateAll, 1000);
+        })();
     </script>
 </body>
 </html>
