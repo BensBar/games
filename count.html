@@ -1842,25 +1842,7 @@
             return false;
         }
         
-        function updateNumberWithAnimation(elementId, newValue) {
-            const element = document.getElementById(elementId);
-            const currentValue = element.textContent;
-            
-            if (currentValue !== newValue) {
-                element.classList.add('updating');
-                element.textContent = newValue;
-                
-                // Play subtle audio for seconds change
-                if (elementId.includes('seconds')) {
-                    playAudioFeedback('tick');
-                }
-                
-                setTimeout(() => {
-                    element.classList.remove('updating');
-                }, 300);
-            }
-        }
-        
+
         function updateAllCountdowns() {
             const bulldogsGameStarted = updateCountdown(bulldogsGameDate, 'bulldogs');
             const falconsGameStarted = updateCountdown(falconsGameDate, 'falcons');
