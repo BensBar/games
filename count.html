@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Georgia Bulldogs & Atlanta Falcons - Dual Game Countdown</title>
+    <meta name="description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Get game info, share countdowns, and stay updated with your favorite teams!">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bensbar.github.io/games/count.html">
+    <meta property="og:title" content="Georgia Bulldogs & Atlanta Falcons - Game Countdown">
+    <meta property="og:description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Share the excitement with enhanced sharing options!">
+    <meta property="og:image" content="https://bensbar.github.io/games/img/countdown-preview.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bensbar.github.io/games/count.html">
+    <meta property="twitter:title" content="Georgia Bulldogs & Atlanta Falcons - Game Countdown">
+    <meta property="twitter:description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Share the excitement!">
+    <meta property="twitter:image" content="https://bensbar.github.io/games/img/countdown-preview.jpg">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
         
@@ -295,6 +310,7 @@
             gap: 15px;
             justify-content: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
         .copy-btn {
@@ -311,6 +327,25 @@
             backdrop-filter: blur(10px);
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .copy-btn.share-btn {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.2), rgba(167, 25, 48, 0.1));
+            border: 2px solid rgba(167, 25, 48, 0.5);
+            color: #CC2340;
+        }
+        
+        .copy-btn.share-btn:hover {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.3), rgba(167, 25, 48, 0.2));
+            border-color: rgba(167, 25, 48, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(167, 25, 48, 0.3);
         }
         
         .copy-btn:hover {
@@ -454,6 +489,7 @@
             .copy-btn {
                 padding: 10px 15px;
                 font-size: 12px;
+                min-width: 100px;
             }
         }
     </style>
@@ -516,6 +552,13 @@
             <div class="action-buttons">
                 <button class="copy-btn" onclick="copyCountdown('bulldogs')">📋 Copy Countdown</button>
                 <button class="copy-btn" onclick="copyGameInfo('bulldogs')">📋 Copy Game Info</button>
+                <button class="copy-btn" onclick="copyQuickFormat('bulldogs')">⚡ Quick Copy</button>
+                <button class="copy-btn" onclick="copyEmojiFormat('bulldogs')">🎉 Emoji Format</button>
+                <button class="copy-btn" onclick="copyCalendarFormat('bulldogs')">📅 Calendar Format</button>
+                <button class="copy-btn share-btn" onclick="shareTwitter('bulldogs')">🐦 Twitter</button>
+                <button class="copy-btn share-btn" onclick="shareFacebook('bulldogs')">📘 Facebook</button>
+                <button class="copy-btn share-btn" onclick="shareDiscord('bulldogs')">💬 Discord</button>
+                <button class="copy-btn share-btn" onclick="shareWhatsApp('bulldogs')">📱 WhatsApp</button>
             </div>
             
             <div class="team-chant" onclick="triggerChant('bulldogs')">GO DAWGS!</div>
@@ -560,6 +603,13 @@
             <div class="action-buttons">
                 <button class="copy-btn" onclick="copyCountdown('falcons')">📋 Copy Countdown</button>
                 <button class="copy-btn" onclick="copyGameInfo('falcons')">📋 Copy Game Info</button>
+                <button class="copy-btn" onclick="copyQuickFormat('falcons')">⚡ Quick Copy</button>
+                <button class="copy-btn" onclick="copyEmojiFormat('falcons')">🎉 Emoji Format</button>
+                <button class="copy-btn" onclick="copyCalendarFormat('falcons')">📅 Calendar Format</button>
+                <button class="copy-btn share-btn" onclick="shareTwitter('falcons')">🐦 Twitter</button>
+                <button class="copy-btn share-btn" onclick="shareFacebook('falcons')">📘 Facebook</button>
+                <button class="copy-btn share-btn" onclick="shareDiscord('falcons')">💬 Discord</button>
+                <button class="copy-btn share-btn" onclick="shareWhatsApp('falcons')">📱 WhatsApp</button>
             </div>
             
             <div class="team-chant" onclick="triggerChant('falcons')">RISE UP!</div>
@@ -663,6 +713,142 @@ ${team === 'bulldogs' ? 'GO DAWGS! 🐶' : 'RISE UP! 🦅'}`;
 ${team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!'}`;
             
             copyToClipboard(text, `${teamName} game info copied!`);
+        }
+        
+        function copyQuickFormat(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const opponent = team === 'bulldogs' ? 'Marshall' : 'Tampa Bay';
+            
+            const text = `⏰ ${countdown.days}:${countdown.hours}:${countdown.minutes}:${countdown.seconds}
+🏈 ${teamName} vs ${opponent}`;
+            
+            copyToClipboard(text, `${teamName} quick format copied!`);
+        }
+        
+        function copyEmojiFormat(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
+            const teamName = team === 'bulldogs' ? 'BULLDOGS' : 'FALCONS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL' : 'BUCS';
+            const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
+            const tv = team === 'bulldogs' ? 'ESPN' : 'TBD';
+            const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
+            
+            const text = `${teamEmoji} ${teamName} vs ${opponent} 🏈
+⏰ ${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s until kickoff!
+📅 ${date} • 📍 ${venue}
+📺 ${tv} • 🎫 Season Opener
+🔥 ${chant} 🔥`;
+            
+            copyToClipboard(text, `${fullTeamName} emoji format copied!`);
+        }
+        
+        function copyCalendarFormat(team) {
+            const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const opponent = team === 'bulldogs' ? 'Marshall Thundering Herd' : 'Tampa Bay Buccaneers';
+            const date = team === 'bulldogs' ? 'Saturday, August 30, 2025 at 3:30 PM ET' : 'Sunday, September 7, 2025 at 1:00 PM ET';
+            const venue = team === 'bulldogs' ? 'Sanford Stadium, Athens, GA' : 'Mercedes-Benz Stadium, Atlanta, GA';
+            const tv = team === 'bulldogs' ? 'ESPN' : 'TBD';
+            
+            const text = `📅 ${fullTeamName} vs ${opponent}
+🗓️ ${date}
+📍 ${venue}
+📺 ${tv}
+🎫 Season Opener`;
+            
+            copyToClipboard(text, `${fullTeamName} calendar format copied!`);
+        }
+        
+        function shareTwitter(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const opponent = team === 'bulldogs' ? 'Marshall' : 'Tampa Bay';
+            const hashtags = team === 'bulldogs' ? '#GoDawgs #UGA #CFB' : '#RiseUp #Falcons #NFL';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            
+            const text = `🏈 ${teamName} vs ${opponent} - ${date}
+⏰ ${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s until kickoff!
+${hashtags}`;
+            
+            const url = window.location.href;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            
+            if (tryWebShare(text, url, `${teamName} vs ${opponent}`)) {
+                return;
+            }
+            
+            window.open(twitterUrl, '_blank', 'width=550,height=400');
+            showCopyFeedback(`${teamName} shared to Twitter!`);
+        }
+        
+        function shareFacebook(team) {
+            const url = window.location.href;
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+            
+            const teamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            
+            if (tryWebShare(`Check out this ${teamName} countdown!`, url, `${teamName} Game Countdown`)) {
+                return;
+            }
+            
+            window.open(facebookUrl, '_blank', 'width=555,height=400');
+            showCopyFeedback(`${teamName} shared to Facebook!`);
+        }
+        
+        function shareDiscord(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const opponent = team === 'bulldogs' ? 'Marshall' : 'Tampa Bay';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            
+            const text = `🏈 **${teamName} vs ${opponent}** - ${date}
+⏰ **${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s** until kickoff!
+🔗 ${window.location.href}`;
+            
+            if (tryWebShare(text, window.location.href, `${teamName} vs ${opponent}`)) {
+                return;
+            }
+            
+            copyToClipboard(text, `${teamName} Discord message copied!`);
+        }
+        
+        function shareWhatsApp(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const opponent = team === 'bulldogs' ? 'Marshall' : 'Tampa Bay';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            
+            const text = `🏈 ${teamName} vs ${opponent} - ${date}
+⏰ ${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s until kickoff!
+${window.location.href}`;
+            
+            if (tryWebShare(text, window.location.href, `${teamName} vs ${opponent}`)) {
+                return;
+            }
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+            showCopyFeedback(`${teamName} shared to WhatsApp!`);
+        }
+        
+        function tryWebShare(text, url, title) {
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url
+                }).then(() => {
+                    showCopyFeedback('Shared successfully!');
+                }).catch((error) => {
+                    console.log('Error sharing:', error);
+                    return false;
+                });
+                return true;
+            }
+            return false;
         }
         
         function copyToClipboard(text, message) {
