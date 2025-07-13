@@ -2318,24 +2318,36 @@
         `;
         document.head.appendChild(style);
         
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
+        // Initialize function
+        function initializeApp() {
             // Start countdown immediately
-            createParticles();
-            updateAllCountdowns();
-            setInterval(updateAllCountdowns, 1000);
+            try {
+                createParticles();
+                updateAllCountdowns();
+                setInterval(updateAllCountdowns, 1000);
+            } catch (error) {
+                console.error('Error initializing countdown:', error);
+            }
             
-            // Delay other initialization to ensure Three.js loads
+            // Initialize other features (with error handling)
             setTimeout(() => {
-                // Initialize 3D WebGL scene
-                init3DScene();
-                
-                // Initialize advanced interactions
-                initAdvancedInteractions();
-                
-                handleUrlParams(); // Handle URL parameters
+                try {
+                    // Initialize advanced interactions
+                    initAdvancedInteractions();
+                    handleUrlParams(); // Handle URL parameters
+                } catch (error) {
+                    console.error('Error initializing advanced features:', error);
+                }
             }, 500);
-        });
+        }
+        
+        // Initialize immediately without waiting for DOM events
+        initializeApp();
+        
+        // Also set up DOM event listeners as backup
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        }
         
         // Event listeners
         document.addEventListener('click', createClickEffect);
@@ -2355,6 +2367,57 @@
                 generateGraphic(activeTeam);
             }
         });
+    </script>
+    
+    <script>
+        // Direct countdown initialization - placed at end to ensure DOM is ready
+        (function() {
+            const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+            const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
+            
+            function directUpdateCountdown(gameDate, prefix) {
+                const now = new Date().getTime();
+                const distance = gameDate - now;
+                
+                if (distance < 0) {
+                    document.getElementById(`${prefix}-days`).textContent = '00';
+                    document.getElementById(`${prefix}-hours`).textContent = '00';
+                    document.getElementById(`${prefix}-minutes`).textContent = '00';
+                    document.getElementById(`${prefix}-seconds`).textContent = '00';
+                    return true;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById(`${prefix}-days`).textContent = days.toString().padStart(2, '0');
+                document.getElementById(`${prefix}-hours`).textContent = hours.toString().padStart(2, '0');
+                document.getElementById(`${prefix}-minutes`).textContent = minutes.toString().padStart(2, '0');
+                document.getElementById(`${prefix}-seconds`).textContent = seconds.toString().padStart(2, '0');
+                
+                return false;
+            }
+            
+            function directUpdateAll() {
+                const bulldogsGameStarted = directUpdateCountdown(bulldogsGameDate, 'bulldogs');
+                const falconsGameStarted = directUpdateCountdown(falconsGameDate, 'falcons');
+                
+                if (bulldogsGameStarted) {
+                    const bulldogsChant = document.querySelector('.bulldogs .team-chant');
+                    if (bulldogsChant) bulldogsChant.textContent = 'GAME TIME!';
+                }
+                if (falconsGameStarted) {
+                    const falconsChant = document.querySelector('.falcons .team-chant');
+                    if (falconsChant) falconsChant.textContent = 'GAME TIME!';
+                }
+            }
+            
+            // Start direct countdown immediately
+            directUpdateAll();
+            setInterval(directUpdateAll, 1000);
+        })();
     </script>
 </body>
 </html>
