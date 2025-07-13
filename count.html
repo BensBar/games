@@ -830,7 +830,7 @@
                 </div>
                 <div class="team-name">GEORGIA BULLDOGS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
+                    <span class="vs-text">VS</span> SOUTH CAROLINA GAMECOCKS
                 </div>
             </div>
             
@@ -854,10 +854,10 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Saturday, August 30, 2025 • 3:30 PM ET</div>
+                <div class="date-time">Saturday, September 13, 2025 • 3:30 PM ET</div>
                 <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
                 <div class="venue-info">📺 ESPN</div>
-                <div class="venue-info">🎫 Season Opener</div>
+                <div class="venue-info">🎫 SEC Conference Game</div>
             </div>
             
             <div class="action-buttons">
@@ -884,7 +884,7 @@
                 </div>
                 <div class="team-name">ATLANTA FALCONS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> TAMPA BAY BUCCANEERS
+                    <span class="vs-text">VS</span> NEW ORLEANS SAINTS
                 </div>
             </div>
             
@@ -908,10 +908,10 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Sunday, September 7, 2025 • 1:00 PM ET</div>
+                <div class="date-time">Sunday, September 14, 2025 • 1:00 PM ET</div>
                 <div class="venue-info">🏟️ Mercedes-Benz Stadium, Atlanta, GA</div>
-                <div class="venue-info">📺 TBD</div>
-                <div class="venue-info">🎫 Season Opener</div>
+                <div class="venue-info">📺 CBS</div>
+                <div class="venue-info">🎫 NFC South Divisional</div>
             </div>
             
             <div class="action-buttons">
@@ -1801,8 +1801,8 @@
         }
         
         // Game dates
-        const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
-        const falconsGameDate = new Date('2025-09-07T13:00:00-04:00').getTime();
+        const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+        const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
         
         function createParticles() {
             const particleContainer = document.getElementById('particles');
@@ -1834,34 +1834,15 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            // Enhanced update with animation
-            updateNumberWithAnimation(`${prefix}-days`, days.toString().padStart(2, '0'));
-            updateNumberWithAnimation(`${prefix}-hours`, hours.toString().padStart(2, '0'));
-            updateNumberWithAnimation(`${prefix}-minutes`, minutes.toString().padStart(2, '0'));
-            updateNumberWithAnimation(`${prefix}-seconds`, seconds.toString().padStart(2, '0'));
+            document.getElementById(`${prefix}-days`).textContent = days.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-hours`).textContent = hours.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-minutes`).textContent = minutes.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-seconds`).textContent = seconds.toString().padStart(2, '0');
             
             return false;
         }
         
-        function updateNumberWithAnimation(elementId, newValue) {
-            const element = document.getElementById(elementId);
-            const currentValue = element.textContent;
-            
-            if (currentValue !== newValue) {
-                element.classList.add('updating');
-                element.textContent = newValue;
-                
-                // Play subtle audio for seconds change
-                if (elementId.includes('seconds')) {
-                    playAudioFeedback('tick');
-                }
-                
-                setTimeout(() => {
-                    element.classList.remove('updating');
-                }, 300);
-            }
-        }
-        
+
         function updateAllCountdowns() {
             const bulldogsGameStarted = updateCountdown(bulldogsGameDate, 'bulldogs');
             const falconsGameStarted = updateCountdown(falconsGameDate, 'falcons');
@@ -1910,11 +1891,11 @@
             const countdown = getCurrentCountdown(team);
             const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'MARSHALL' : 'BUCS';
+            const opponent = team === 'bulldogs' ? 'SOUTH CAROLINA' : 'SAINTS';
             const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
-            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            const date = team === 'bulldogs' ? 'Sep 13' : 'Sep 14';
             const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
-            const tv = team === 'bulldogs' ? 'ESPN' : 'TBD';
+            const tv = team === 'bulldogs' ? 'ESPN' : 'CBS';
             const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
             
             const text = `${teamEmoji} ${teamName} vs ${opponent} 🏈
@@ -1970,8 +1951,8 @@
         function drawCountdownGraphic(ctx, team) {
             const countdown = getCurrentCountdown(team);
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'MARSHALL' : 'BUCS';
-            const date = team === 'bulldogs' ? 'SATURDAY, AUG 30' : 'SUNDAY, SEP 7';
+            const opponent = team === 'bulldogs' ? 'SOUTH CAROLINA' : 'SAINTS';
+            const date = team === 'bulldogs' ? 'SATURDAY, SEP 13' : 'SUNDAY, SEP 14';
             const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
             
             // Team colors
@@ -2339,7 +2320,12 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Delay initialization to ensure Three.js loads
+            // Start countdown immediately
+            createParticles();
+            updateAllCountdowns();
+            setInterval(updateAllCountdowns, 1000);
+            
+            // Delay other initialization to ensure Three.js loads
             setTimeout(() => {
                 // Initialize 3D WebGL scene
                 init3DScene();
@@ -2347,9 +2333,6 @@
                 // Initialize advanced interactions
                 initAdvancedInteractions();
                 
-                createParticles();
-                updateAllCountdowns();
-                setInterval(updateAllCountdowns, 1000);
                 handleUrlParams(); // Handle URL parameters
             }, 500);
         });

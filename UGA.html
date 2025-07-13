@@ -41,7 +41,7 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 15% 20%, rgba(255, 215, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 15% 20%, rgba(204, 0, 0, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 85% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 50% 80%, rgba(167, 25, 48, 0.3) 0%, transparent 60%);
             animation: stadiumGlow 8s ease-in-out infinite alternate;
@@ -61,7 +61,7 @@
             opacity: 0.7;
         }
         
-        .particle.gold { background: #FFD700; }
+        .particle.gold { background: #CC0000; }
         .particle.red { background: #A71930; }
         
         @keyframes particleFloat {
@@ -88,7 +88,7 @@
             font-family: 'Crimson Text', serif;
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #CC0000, #000000, #CC0000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -152,7 +152,7 @@
         }
         
         .bulldogs-section::before {
-            background: linear-gradient(45deg, #FFD700, #ba0c2f, #FFD700);
+            background: linear-gradient(45deg, #CC0000, #000000, #CC0000);
         }
         
         .falcons-section::before {
@@ -178,11 +178,11 @@
         @keyframes logoFloat {
             0%, 100% { 
                 transform: scale(1) rotate(0deg);
-                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+                filter: drop-shadow(0 0 20px rgba(204, 0, 0, 0.8));
             }
             50% { 
                 transform: scale(1.05) rotate(3deg);
-                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+                filter: drop-shadow(0 0 30px rgba(204, 0, 0, 1));
             }
         }
         
@@ -196,7 +196,7 @@
         }
         
         .bulldogs .team-name {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #CC0000, #000000, #CC0000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -217,7 +217,7 @@
         }
         
         .vs-text {
-            color: #FFD700;
+            color: #CC0000;
             font-weight: 600;
         }
         
@@ -231,7 +231,7 @@
         
         .time-unit {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-            border: 2px solid rgba(255, 215, 0, 0.4);
+            border: 2px solid rgba(204, 0, 0, 0.4);
             border-radius: 15px;
             padding: 20px 15px;
             min-width: 80px;
@@ -246,17 +246,17 @@
             transform: translateY(-5px);
             box-shadow: 
                 0 15px 35px rgba(0,0,0,0.4),
-                0 0 30px rgba(255, 215, 0, 0.3);
+                0 0 30px rgba(204, 0, 0, 0.3);
         }
         
         .time-number {
             font-size: 32px;
             font-weight: 700;
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background: linear-gradient(45deg, #CC0000, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 0 15px rgba(204, 0, 0, 0.5);
             margin-bottom: 8px;
         }
         
@@ -273,14 +273,14 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(204, 0, 0, 0.2);
         }
         
         .date-time {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 10px;
-            color: #FFD700;
+            color: #CC0000;
         }
         
         .venue-info {
@@ -301,7 +301,7 @@
         }
         
         .bulldogs .team-chant {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #CC0000, #000000, #CC0000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -317,17 +317,17 @@
         @keyframes chantPulse {
             0%, 100% { 
                 transform: scale(1);
-                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+                filter: drop-shadow(0 0 15px rgba(204, 0, 0, 0.6));
             }
             50% { 
                 transform: scale(1.05);
-                filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+                filter: drop-shadow(0 0 25px rgba(204, 0, 0, 0.8));
             }
         }
         
         .team-chant:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            filter: drop-shadow(0 0 30px rgba(204, 0, 0, 1));
         }
         
         .floating-icons {
@@ -414,7 +414,7 @@
                 <div class="team-logo">🐶</div>
                 <div class="team-name">GEORGIA BULLDOGS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
+                    <span class="vs-text">VS</span> SOUTH CAROLINA GAMECOCKS
                 </div>
             </div>
             
@@ -438,10 +438,10 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Saturday, August 30, 2025 • 3:30 PM ET</div>
+                <div class="date-time">Saturday, September 13, 2025 • 3:30 PM ET</div>
                 <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
                 <div class="venue-info">📺 ESPN</div>
-                <div class="venue-info">🎫 Season Opener</div>
+                <div class="venue-info">🎫 SEC Conference Game</div>
             </div>
             
             <div class="team-chant" onclick="triggerChant('bulldogs')">GO DAWGS!</div>
@@ -453,7 +453,7 @@
                 <div class="team-logo">🦅</div>
                 <div class="team-name">ATLANTA FALCONS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> TAMPA BAY BUCCANEERS
+                    <span class="vs-text">VS</span> NEW ORLEANS SAINTS
                 </div>
             </div>
             
@@ -477,10 +477,10 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Sunday, September 7, 2025 • 1:00 PM ET</div>
+                <div class="date-time">Sunday, September 14, 2025 • 1:00 PM ET</div>
                 <div class="venue-info">🏟️ Mercedes-Benz Stadium, Atlanta, GA</div>
-                <div class="venue-info">📺 TBD</div>
-                <div class="venue-info">🎫 Season Opener</div>
+                <div class="venue-info">📺 CBS</div>
+                <div class="venue-info">🎫 NFC South Divisional</div>
             </div>
             
             <div class="team-chant" onclick="triggerChant('falcons')">RISE UP!</div>
@@ -489,8 +489,8 @@
     
     <script>
         // Game dates
-        const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
-        const falconsGameDate = new Date('2025-09-07T13:00:00-04:00').getTime();
+        const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+        const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
         
         function createParticles() {
             const particleContainer = document.getElementById('particles');
@@ -561,7 +561,7 @@
             effect.style.position = 'absolute';
             effect.style.width = '80px';
             effect.style.height = '80px';
-            effect.style.border = '2px solid #FFD700';
+            effect.style.border = '2px solid #CC0000';
             effect.style.borderRadius = '50%';
             effect.style.left = e.clientX - 40 + 'px';
             effect.style.top = e.clientY - 40 + 'px';
