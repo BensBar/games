@@ -99,8 +99,8 @@
             opacity: 0.7;
         }
         
-        .particle.gold { background: #FFD700; }
-        .particle.red { background: #A71930; }
+        .particle.bulldogs { background: #FFD700; }
+        .particle.falcons { background: #A71930; }
         
         @keyframes particleFloat {
             0% { 
@@ -219,6 +219,36 @@
             font-size: 80px;
             margin-bottom: 15px;
             animation: logoFloat 3s ease-in-out infinite;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+        }
+        
+        .team-logo-svg {
+            width: 100px;
+            height: 100px;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        
+        .falcons .team-logo-svg {
+            filter: drop-shadow(0 0 20px rgba(167, 25, 48, 0.8));
+        }
+        
+        .team-logo-svg:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+        }
+        
+        .falcons .team-logo-svg:hover {
+            filter: drop-shadow(0 0 30px rgba(167, 25, 48, 1));
+        }
+        
+        .team-logo-fallback {
+            display: none;
+            font-size: 80px;
         }
         
         @keyframes logoFloat {
@@ -263,7 +293,7 @@
         }
         
         .vs-text {
-            color: #FFD700;
+            color: #A5ACAF; /* Falcons silver for better contrast */
             font-weight: 600;
         }
         
@@ -277,7 +307,6 @@
         
         .time-unit {
             background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-            border: 2px solid rgba(255, 215, 0, 0.4);
             border-radius: 15px;
             padding: 20px 15px;
             min-width: 80px;
@@ -289,6 +318,15 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
+        }
+        
+        /* Team-specific time unit styling */
+        .bulldogs .time-unit {
+            border: 2px solid rgba(255, 215, 0, 0.4);
+        }
+        
+        .falcons .time-unit {
+            border: 2px solid rgba(167, 25, 48, 0.4);
         }
         
         .time-unit::before {
@@ -318,21 +356,46 @@
             transform: translateY(-8px) scale(1.05);
             box-shadow: 
                 0 20px 40px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+        
+        .bulldogs .time-unit:hover {
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
                 0 0 30px rgba(255, 215, 0, 0.4),
                 inset 0 1px 0 rgba(255,255,255,0.3);
             border-color: rgba(255, 215, 0, 0.8);
         }
         
+        .falcons .time-unit:hover {
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
+                0 0 30px rgba(167, 25, 48, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            border-color: rgba(167, 25, 48, 0.8);
+        }
+        
         .time-number {
             font-size: 32px;
             font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            margin-bottom: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .bulldogs .time-number {
             background: linear-gradient(45deg, #FFD700, #FFA500);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .falcons .time-number {
+            background: linear-gradient(45deg, #A71930, #CC2340);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 15px rgba(167, 25, 48, 0.5);
         }
         
         .time-number.updating {
@@ -353,14 +416,28 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
+        }
+        
+        .bulldogs .game-details {
             border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .falcons .game-details {
+            border: 1px solid rgba(167, 25, 48, 0.2);
         }
         
         .date-time {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 10px;
+        }
+        
+        .bulldogs .date-time {
             color: #FFD700;
+        }
+        
+        .falcons .date-time {
+            color: #A71930;
         }
         
         .venue-info {
@@ -485,10 +562,32 @@
         .canvas-preview {
             max-width: 90vw;
             max-height: 70vh;
-            border: 3px solid #FFD700;
             border-radius: 15px;
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
             background: #000;
+        }
+        
+        .bulldogs-canvas .canvas-preview {
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        
+        .falcons-canvas .canvas-preview {
+            border: 3px solid #A71930;
+            box-shadow: 0 0 50px rgba(167, 25, 48, 0.5);
+        }
+        
+        .canvas-title {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .bulldogs-canvas .canvas-title {
+            color: #FFD700;
+        }
+        
+        .falcons-canvas .canvas-title {
+            color: #A71930;
         }
 
         .canvas-controls {
@@ -724,7 +823,11 @@
         <!-- Georgia Bulldogs Section -->
         <div class="game-section bulldogs-section bulldogs">
             <div class="team-header">
-                <div class="team-logo">🐶</div>
+                <div class="team-logo">
+                    <img src="img/bulldogs-logo.svg" alt="Georgia Bulldogs Logo" class="team-logo-svg" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="team-logo-fallback">🐶</div>
+                </div>
                 <div class="team-name">GEORGIA BULLDOGS</div>
                 <div class="opponent">
                     <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
@@ -774,7 +877,11 @@
         <!-- Atlanta Falcons Section -->
         <div class="game-section falcons-section falcons">
             <div class="team-header">
-                <div class="team-logo">🦅</div>
+                <div class="team-logo">
+                    <img src="img/falcons-logo.svg" alt="Atlanta Falcons Logo" class="team-logo-svg" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="team-logo-fallback">🦅</div>
+                </div>
                 <div class="team-name">ATLANTA FALCONS</div>
                 <div class="opponent">
                     <span class="vs-text">VS</span> TAMPA BAY BUCCANEERS
@@ -824,7 +931,7 @@
     
     <!-- 4K Canvas Container -->
     <div class="canvas-container" id="canvasContainer" role="dialog" aria-labelledby="canvasTitle" aria-modal="true">
-        <h2 id="canvasTitle" style="color: #FFD700; margin-bottom: 20px; font-size: 24px;">4K Countdown Graphic</h2>
+        <h2 id="canvasTitle" class="canvas-title">4K Countdown Graphic</h2>
         <canvas id="countdownCanvas" class="canvas-preview" aria-label="Generated 4K countdown graphic"></canvas>
         <div class="canvas-controls">
             <button class="canvas-btn" onclick="downloadGraphic()" aria-label="Download 4K graphic as PNG file">💾 Download 4K</button>
@@ -838,8 +945,9 @@
         let scene, camera, renderer, composer;
         let stadiumParticles = [];
         let logoMeshes = {};
-        let audioAnalyser;
-        let frequencyData;
+        // Enhanced Audio System
+        let audioContext;
+        let lastTickTime = 0;
         let isWebGLEnabled = false;
         
         // Initialize 3D WebGL Scene
@@ -1174,26 +1282,8 @@
         }
         
         function setupAudioReactivity() {
-            try {
-                audioAnalyser = new (window.AudioContext || window.webkitAudioContext)();
-                const analyser = audioAnalyser.createAnalyser();
-                analyser.fftSize = 256;
-                frequencyData = new Uint8Array(analyser.frequencyBinCount);
-                
-                // Connect to microphone for ambient audio reactivity
-                navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(stream => {
-                        const source = audioAnalyser.createMediaStreamSource(stream);
-                        source.connect(analyser);
-                        window.audioAnalyser = analyser;
-                    })
-                    .catch(() => {
-                        // Fallback to synthetic audio data
-                        console.log('Microphone access denied, using synthetic audio data');
-                    });
-            } catch (error) {
-                console.log('Audio context not available:', error);
-            }
+            // Removed microphone functionality - using synthetic audio data only
+            console.log('Using synthetic audio data for visual effects');
         }
         
         function animate3D() {
@@ -1207,15 +1297,8 @@
             if (window.particleSystem) {
                 window.particleSystem.material.uniforms.time.value = time;
                 
-                // Audio reactivity
-                let audioLevel = 0;
-                if (window.audioAnalyser && frequencyData) {
-                    window.audioAnalyser.getByteFrequencyData(frequencyData);
-                    audioLevel = frequencyData.reduce((a, b) => a + b) / frequencyData.length / 255;
-                } else {
-                    // Synthetic audio data based on countdown
-                    audioLevel = 0.3 + Math.sin(time * 2) * 0.2;
-                }
+                // Audio reactivity with synthetic data only
+                let audioLevel = 0.3 + Math.sin(time * 2) * 0.2;
                 window.particleSystem.material.uniforms.audioLevel.value = audioLevel;
             }
             
@@ -1726,7 +1809,7 @@
             
             for (let i = 0; i < 40; i++) {
                 const particle = document.createElement('div');
-                particle.className = i % 2 === 0 ? 'particle gold' : 'particle red';
+                particle.className = i % 2 === 0 ? 'particle bulldogs' : 'particle falcons';
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.animationDelay = Math.random() * 12 + 's';
                 particle.style.animationDuration = (Math.random() * 8 + 12) + 's';
@@ -1866,6 +1949,10 @@
             currentGraphicTeam = team;
             const canvas = document.getElementById('countdownCanvas');
             const ctx = canvas.getContext('2d');
+            const container = document.getElementById('canvasContainer');
+            
+            // Apply team-specific styling to canvas container
+            container.className = 'canvas-container active ' + team + '-canvas';
             
             // Set 4K resolution
             canvas.width = 3840;
@@ -1877,8 +1964,6 @@
             
             drawCountdownGraphic(ctx, team);
             
-            // Show canvas container
-            document.getElementById('canvasContainer').classList.add('active');
             playAudioFeedback('swoosh');
         }
 
@@ -1897,7 +1982,7 @@
             } : {
                 primary: '#A71930',
                 secondary: '#000000',
-                accent: '#FFD700'
+                accent: '#A5ACAF'
             };
             
             // Create dynamic gradient background with animation
