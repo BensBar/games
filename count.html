@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Counting Game 4K</title>
+    <title>Georgia Bulldogs & Atlanta Falcons - Dual Game Countdown</title>
+    <meta name="description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Get game info, share countdowns, and stay updated with your favorite teams!">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bensbar.github.io/games/count.html">
+    <meta property="og:title" content="Georgia Bulldogs & Atlanta Falcons - Game Countdown">
+    <meta property="og:description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Share the excitement with enhanced sharing options!">
+    <meta property="og:image" content="https://bensbar.github.io/games/img/countdown-preview.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bensbar.github.io/games/count.html">
+    <meta property="twitter:title" content="Georgia Bulldogs & Atlanta Falcons - Game Countdown">
+    <meta property="twitter:description" content="Live countdown to Georgia Bulldogs vs Marshall and Atlanta Falcons vs Tampa Bay games. Share the excitement!">
+    <meta property="twitter:image" content="https://bensbar.github.io/games/img/countdown-preview.jpg">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -14,650 +29,1294 @@
         }
         
         body {
-            font-family: 'Orbitron', monospace;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Oswald', sans-serif;
+            background: linear-gradient(135deg, #ba0c2f 0%, #A71930 25%, #000000 50%, #A71930 75%, #ba0c2f 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            overflow: hidden;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
             position: relative;
         }
         
-        /* Animated background */
-        body::before {
-            content: '';
+        .background-effects {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                #ff006e, #8338ec, #3a86ff, #06ffa5, #ffbe0b, #fb5607, #ff006e);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            opacity: 0.3;
-            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
         }
         
-        @keyframes gradientShift {
+        .stadium-lights {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(255, 215, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 85% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(167, 25, 48, 0.3) 0%, transparent 60%);
+            animation: stadiumGlow 8s ease-in-out infinite alternate;
+        }
+        
+        @keyframes stadiumGlow {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: particleFloat 12s linear infinite;
+            opacity: 0.7;
+        }
+        
+        .particle.gold { background: #FFD700; }
+        .particle.red { background: #A71930; }
+        
+        @keyframes particleFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) translateX(150px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .main-header {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .georgia-pride {
+            font-family: 'Crimson Text', serif;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            animation: textShimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes textShimmer {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
         }
         
-        .game-container {
-            background: rgba(255, 255, 255, 0.1);
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+        }
+        
+        .games-container {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1400px;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .game-section {
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+            border-radius: 25px;
+            padding: 40px;
             backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 60px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3),
-                        inset 0 0 30px rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            max-width: 800px;
-            width: 90%;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
             position: relative;
             overflow: hidden;
+            min-width: 500px;
+            flex: 1;
+            max-width: 600px;
         }
         
-        /* Glowing effect */
-        .game-container::after {
+        .game-section::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
-            border-radius: 30px;
-            opacity: 0.7;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 28px;
             z-index: -1;
-            animation: glow 3s ease-in-out infinite alternate;
+            animation: borderGlow 4s ease-in-out infinite;
         }
         
-        @keyframes glow {
-            from { filter: blur(20px); }
-            to { filter: blur(30px); }
+        .bulldogs-section::before {
+            background: linear-gradient(45deg, #FFD700, #ba0c2f, #FFD700);
         }
         
-        h1 {
-            font-size: clamp(3rem, 6vw, 5rem);
-            font-weight: 900;
+        .falcons-section::before {
+            background: linear-gradient(45deg, #A71930, #000000, #A71930);
+        }
+        
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        .team-header {
             text-align: center;
-            margin-bottom: 40px;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
+            margin-bottom: 30px;
+        }
+        
+        .team-logo {
+            font-size: 80px;
+            margin-bottom: 15px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            }
+            50% { 
+                transform: scale(1.05) rotate(3deg);
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            }
+        }
+        
+        .team-name {
+            font-family: 'Crimson Text', serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+        
+        .bulldogs .team-name {
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-            animation: pulse 2s ease-in-out infinite;
+            background-clip: text;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .falcons .team-name {
+            background: linear-gradient(45deg, #A71930, #CC2340, #A71930);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .score-display {
+        .opponent {
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .vs-text {
+            color: #FFD700;
+            font-weight: 600;
+        }
+        
+        .countdown {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 40px;
-            gap: 20px;
-        }
-        
-        .score-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px 30px;
-            border-radius: 20px;
-            text-align: center;
-            flex: 1;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .score-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .score-label {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 10px;
-        }
-        
-        .score-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-        
-        .numbers-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-        }
-        
-        .number {
-            aspect-ratio: 1;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .number::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
-            transform: translate(-50%, -50%);
-            transition: all 0.6s ease;
-        }
-        
-        .number:hover {
-            transform: scale(1.1) rotate(5deg);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2));
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
-        }
-        
-        .number:active::before {
-            width: 300%;
-            height: 300%;
-        }
-        
-        .controls {
-            display: flex;
             gap: 20px;
-            justify-content: center;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
         
-        button {
-            font-family: 'Orbitron', monospace;
-            font-size: 1.2rem;
-            font-weight: 700;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .time-unit {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px 15px;
+            min-width: 80px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 10px 25px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
         
-        button::before {
+        .time-unit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .time-unit:hover::before {
+            opacity: 1;
+        }
+        
+        .time-unit:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.4),
+                0 0 30px rgba(255, 215, 0, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            border-color: rgba(255, 215, 0, 0.8);
+        }
+        
+        .time-number {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            margin-bottom: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .time-number.updating {
+            transform: scale(1.2);
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        
+        .time-label {
+            font-size: 12px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .game-details {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .date-time {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .venue-info {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: #FFD700;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 160px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .copy-btn::before {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.6s ease;
         }
         
-        button:hover::before {
+        .copy-btn:hover::before {
             left: 100%;
         }
         
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
-        }
-        
-        .difficulty-selector {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-        
-        .difficulty-btn {
-            padding: 10px 25px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .difficulty-btn.active {
-            background: linear-gradient(135deg, #06ffa5, #3a86ff);
-            border-color: #06ffa5;
-        }
-        
-        .combo-display {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.5rem;
+        .copy-btn.graphic-btn {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            color: #FFD700;
             font-weight: 700;
-            color: #ffbe0b;
-            text-shadow: 0 0 20px rgba(255, 190, 11, 0.8);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .combo-display.active {
-            opacity: 1;
-            animation: comboFlash 0.5s ease;
-        }
-        
-        @keyframes comboFlash {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
-        
-        /* Particle effects */
-        .particle {
+
+        .copy-btn.graphic-btn::before {
+            content: '';
             position: absolute;
-            pointer-events: none;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .copy-btn.graphic-btn:hover::before {
+            left: 100%;
+        }
+
+        .copy-btn.graphic-btn:hover {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.2));
+            border-color: rgba(255, 215, 0, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .copy-btn.quick-btn {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.3), rgba(167, 25, 48, 0.1));
+            border: 2px solid rgba(167, 25, 48, 0.6);
+            color: #CC2340;
+            font-weight: 700;
+        }
+
+        .copy-btn.quick-btn:hover {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.4), rgba(167, 25, 48, 0.2));
+            border-color: rgba(167, 25, 48, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(167, 25, 48, 0.4);
+        }
+
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .canvas-container.active {
+            display: flex;
+        }
+
+        .canvas-preview {
+            max-width: 90vw;
+            max-height: 70vh;
+            border: 3px solid #FFD700;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            background: #000;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .canvas-btn {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px 25px;
+            color: #FFD700;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .canvas-btn:hover {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .canvas-btn.close-btn {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.2), rgba(167, 25, 48, 0.1));
+            border-color: rgba(167, 25, 48, 0.5);
+            color: #CC2340;
+        }
+
+        .canvas-btn.close-btn:hover {
+            background: linear-gradient(145deg, rgba(167, 25, 48, 0.3), rgba(167, 25, 48, 0.2));
+            border-color: rgba(167, 25, 48, 0.8);
+            box-shadow: 0 5px 15px rgba(167, 25, 48, 0.3);
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 20px 30px;
+            color: #FFD700;
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 1000;
             opacity: 0;
-            animation: particleFloat 2s ease-out forwards;
+            animation: copyFeedback 2s ease-in-out;
+            pointer-events: none;
         }
         
-        @keyframes particleFloat {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(0);
+        @keyframes copyFeedback {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+        
+        .team-chant {
+            font-family: 'Crimson Text', serif;
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: chantPulse 4s ease-in-out infinite;
+        }
+        
+        .bulldogs .team-chant {
+            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .falcons .team-chant {
+            background: linear-gradient(45deg, #A71930, #CC2340, #A71930);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        @keyframes chantPulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
             }
-            100% {
+            50% { 
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+            }
+        }
+        
+        .team-chant:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+        }
+        
+        .floating-icons {
+            position: absolute;
+            font-size: 25px;
+            opacity: 0.3;
+            animation: iconFloat 15s linear infinite;
+            z-index: 5;
+        }
+        
+        @keyframes iconFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
                 opacity: 0;
-                transform: translateY(-100px) scale(1);
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { 
+                transform: translateY(-100px) translateX(100px) rotate(360deg) scale(1);
+                opacity: 0;
             }
         }
         
-        /* Responsive for 4K */
-        @media (min-width: 2560px) {
-            .game-container {
-                padding: 80px;
-                max-width: 1200px;
+        .icon-1 { left: 8%; animation-delay: 0s; }
+        .icon-2 { left: 20%; animation-delay: 3s; }
+        .icon-3 { left: 35%; animation-delay: 6s; }
+        .icon-4 { left: 65%; animation-delay: 9s; }
+        .icon-5 { left: 80%; animation-delay: 12s; }
+        .icon-6 { left: 92%; animation-delay: 15s; }
+        
+        @media (max-width: 1200px) {
+            .games-container {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
             }
             
-            h1 {
-                font-size: 6rem;
-            }
-            
-            .number {
-                font-size: 3rem;
-            }
-            
-            .score-value {
-                font-size: 4rem;
-            }
-            
-            button {
-                font-size: 1.5rem;
-                padding: 20px 60px;
+            .game-section {
+                min-width: 400px;
+                max-width: 500px;
             }
         }
         
-        /* Success/Error animations */
-        @keyframes correctAnswer {
-            0% { background-color: rgba(6, 255, 165, 0.3); }
-            100% { background-color: transparent; }
-        }
-        
-        @keyframes wrongAnswer {
-            0% { background-color: rgba(255, 0, 110, 0.3); }
-            100% { background-color: transparent; }
-        }
-        
-        .correct-flash {
-            animation: correctAnswer 0.5s ease;
-        }
-        
-        .wrong-flash {
-            animation: wrongAnswer 0.5s ease;
+        @media (max-width: 768px) {
+            .georgia-pride { font-size: 36px; }
+            .subtitle { font-size: 18px; }
+            .game-section { 
+                min-width: 300px; 
+                padding: 30px 20px; 
+            }
+            .team-name { font-size: 28px; }
+            .time-number { font-size: 24px; }
+            .team-chant { font-size: 24px; }
+            .countdown { gap: 15px; }
+            .time-unit { 
+                min-width: 65px; 
+                padding: 15px 10px; 
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            .copy-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 140px;
+                width: 80%;
+                max-width: 200px;
+            }
+            .canvas-preview {
+                max-width: 95vw;
+                max-height: 60vh;
+            }
+            .canvas-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            .canvas-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 140px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="game-container" id="gameContainer">
-        <h1>ULTIMATE COUNT 4K</h1>
-        <div class="combo-display" id="comboDisplay">🔥 COMBO x<span id="comboCount">0</span></div>
-        
-        <div class="difficulty-selector">
-            <button class="difficulty-btn active" data-difficulty="easy">Easy</button>
-            <button class="difficulty-btn" data-difficulty="medium">Medium</button>
-            <button class="difficulty-btn" data-difficulty="hard">Hard</button>
-            <button class="difficulty-btn" data-difficulty="extreme">Extreme</button>
+    <div class="background-effects">
+        <div class="stadium-lights"></div>
+        <div class="particle-system" id="particles"></div>
+    </div>
+    
+    <div class="floating-icons icon-1">🐾</div>
+    <div class="floating-icons icon-2">🏈</div>
+    <div class="floating-icons icon-3">🦅</div>
+    <div class="floating-icons icon-4">🐶</div>
+    <div class="floating-icons icon-5">🏟️</div>
+    <div class="floating-icons icon-6">⚡</div>
+    
+    <div class="main-header">
+        <div class="georgia-pride">BULLDOGS & FALCONS</div>
+        <div class="subtitle">Georgia's Finest - College & Pro Football Countdown</div>
+    </div>
+    
+    <div class="games-container">
+        <!-- Georgia Bulldogs Section -->
+        <div class="game-section bulldogs-section bulldogs">
+            <div class="team-header">
+                <div class="team-logo">🐶</div>
+                <div class="team-name">GEORGIA BULLDOGS</div>
+                <div class="opponent">
+                    <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
+                </div>
+            </div>
+            
+            <div class="countdown bulldogs-countdown" role="timer" aria-label="Georgia Bulldogs game countdown">
+                <div class="time-unit">
+                    <div class="time-number" id="bulldogs-days" aria-label="Days remaining">00</div>
+                    <div class="time-label">Days</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="bulldogs-hours" aria-label="Hours remaining">00</div>
+                    <div class="time-label">Hours</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="bulldogs-minutes" aria-label="Minutes remaining">00</div>
+                    <div class="time-label">Minutes</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="bulldogs-seconds" aria-label="Seconds remaining">00</div>
+                    <div class="time-label">Seconds</div>
+                </div>
+            </div>
+            
+            <div class="game-details">
+                <div class="date-time">Saturday, August 30, 2025 • 3:30 PM ET</div>
+                <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
+                <div class="venue-info">📺 ESPN</div>
+                <div class="venue-info">🎫 Season Opener</div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="copy-btn graphic-btn" onclick="generateGraphic('bulldogs')" 
+                        aria-label="Generate and share 4K graphic for Georgia Bulldogs countdown">
+                    📸 Share Graphic
+                </button>
+                <button class="copy-btn quick-btn" onclick="copyEnhancedQuick('bulldogs')"
+                        aria-label="Copy enhanced quick share format for Georgia Bulldogs">
+                    ⚡ Quick Share
+                </button>
+            </div>
+            
+            <div class="team-chant" onclick="triggerChant('bulldogs')">GO DAWGS!</div>
         </div>
         
-        <div class="score-display">
-            <div class="score-item">
-                <div class="score-label">Score</div>
-                <div class="score-value" id="score">0</div>
+        <!-- Atlanta Falcons Section -->
+        <div class="game-section falcons-section falcons">
+            <div class="team-header">
+                <div class="team-logo">🦅</div>
+                <div class="team-name">ATLANTA FALCONS</div>
+                <div class="opponent">
+                    <span class="vs-text">VS</span> TAMPA BAY BUCCANEERS
+                </div>
             </div>
-            <div class="score-item">
-                <div class="score-label">High Score</div>
-                <div class="score-value" id="highScore">0</div>
+            
+            <div class="countdown falcons-countdown" role="timer" aria-label="Atlanta Falcons game countdown">
+                <div class="time-unit">
+                    <div class="time-number" id="falcons-days" aria-label="Days remaining">00</div>
+                    <div class="time-label">Days</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="falcons-hours" aria-label="Hours remaining">00</div>
+                    <div class="time-label">Hours</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="falcons-minutes" aria-label="Minutes remaining">00</div>
+                    <div class="time-label">Minutes</div>
+                </div>
+                <div class="time-unit">
+                    <div class="time-number" id="falcons-seconds" aria-label="Seconds remaining">00</div>
+                    <div class="time-label">Seconds</div>
+                </div>
             </div>
-            <div class="score-item">
-                <div class="score-label">Time Left</div>
-                <div class="score-value" id="timeLeft">60s</div>
+            
+            <div class="game-details">
+                <div class="date-time">Sunday, September 7, 2025 • 1:00 PM ET</div>
+                <div class="venue-info">🏟️ Mercedes-Benz Stadium, Atlanta, GA</div>
+                <div class="venue-info">📺 TBD</div>
+                <div class="venue-info">🎫 Season Opener</div>
             </div>
-        </div>
-        
-        <div class="numbers-grid" id="numbersGrid"></div>
-        
-        <div class="controls">
-            <button id="startBtn">Start Game</button>
-            <button id="resetBtn">Reset</button>
+            
+            <div class="action-buttons">
+                <button class="copy-btn graphic-btn" onclick="generateGraphic('falcons')"
+                        aria-label="Generate and share 4K graphic for Atlanta Falcons countdown">
+                    📸 Share Graphic
+                </button>
+                <button class="copy-btn quick-btn" onclick="copyEnhancedQuick('falcons')"
+                        aria-label="Copy enhanced quick share format for Atlanta Falcons">
+                    ⚡ Quick Share
+                </button>
+            </div>
+            
+            <div class="team-chant" onclick="triggerChant('falcons')">RISE UP!</div>
         </div>
     </div>
     
-    <audio id="correctSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZURE..." type="audio/wav">
-    </audio>
+    <!-- 4K Canvas Container -->
+    <div class="canvas-container" id="canvasContainer" role="dialog" aria-labelledby="canvasTitle" aria-modal="true">
+        <h2 id="canvasTitle" style="color: #FFD700; margin-bottom: 20px; font-size: 24px;">4K Countdown Graphic</h2>
+        <canvas id="countdownCanvas" class="canvas-preview" aria-label="Generated 4K countdown graphic"></canvas>
+        <div class="canvas-controls">
+            <button class="canvas-btn" onclick="downloadGraphic()" aria-label="Download 4K graphic as PNG file">💾 Download 4K</button>
+            <button class="canvas-btn" onclick="shareGraphic()" aria-label="Share 4K graphic">📤 Share</button>
+            <button class="canvas-btn close-btn" onclick="closeCanvas()" aria-label="Close graphic preview">✖ Close</button>
+        </div>
+    </div>
     
-    <audio id="wrongSound" preload="auto">
-        <source src="data:audio/wav;base64,UklGRmIGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAGAADrhYqFbV1feKGvrJJiLjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJH..." type="audio/wav">
-    </audio>
-
     <script>
-        class CountingGame {
-            constructor() {
-                this.score = 0;
-                this.highScore = localStorage.getItem('countingHighScore') || 0;
-                this.currentNumber = 1;
-                this.timeLeft = 60;
-                this.isPlaying = false;
-                this.difficulty = 'easy';
-                this.combo = 0;
-                this.maxCombo = 0;
-                this.timer = null;
-                
-                this.difficultySettings = {
-                    easy: { gridSize: 20, timeBonus: 2, scoreMultiplier: 1 },
-                    medium: { gridSize: 30, timeBonus: 1.5, scoreMultiplier: 1.5 },
-                    hard: { gridSize: 40, timeBonus: 1, scoreMultiplier: 2 },
-                    extreme: { gridSize: 50, timeBonus: 0.5, scoreMultiplier: 3 }
-                };
-                
-                this.initializeElements();
-                this.bindEvents();
-                this.updateDisplay();
-            }
+        // Game dates
+        const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
+        const falconsGameDate = new Date('2025-09-07T13:00:00-04:00').getTime();
+        
+        function createParticles() {
+            const particleContainer = document.getElementById('particles');
             
-            initializeElements() {
-                this.elements = {
-                    score: document.getElementById('score'),
-                    highScore: document.getElementById('highScore'),
-                    timeLeft: document.getElementById('timeLeft'),
-                    numbersGrid: document.getElementById('numbersGrid'),
-                    startBtn: document.getElementById('startBtn'),
-                    resetBtn: document.getElementById('resetBtn'),
-                    gameContainer: document.getElementById('gameContainer'),
-                    comboDisplay: document.getElementById('comboDisplay'),
-                    comboCount: document.getElementById('comboCount'),
-                    correctSound: document.getElementById('correctSound'),
-                    wrongSound: document.getElementById('wrongSound')
-                };
-                
-                this.elements.highScore.textContent = this.highScore;
-            }
-            
-            bindEvents() {
-                this.elements.startBtn.addEventListener('click', () => this.startGame());
-                this.elements.resetBtn.addEventListener('click', () => this.resetGame());
-                
-                document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        if (!this.isPlaying) {
-                            document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
-                            e.target.classList.add('active');
-                            this.difficulty = e.target.dataset.difficulty;
-                        }
-                    });
-                });
-            }
-            
-            startGame() {
-                if (this.isPlaying) return;
-                
-                this.isPlaying = true;
-                this.score = 0;
-                this.currentNumber = 1;
-                this.combo = 0;
-                this.timeLeft = 60;
-                
-                this.generateGrid();
-                this.updateDisplay();
-                this.startTimer();
-                
-                this.elements.startBtn.textContent = 'Playing...';
-                this.elements.startBtn.disabled = true;
-            }
-            
-            generateGrid() {
-                const { gridSize } = this.difficultySettings[this.difficulty];
-                const numbers = this.generateRandomNumbers(gridSize);
-                
-                this.elements.numbersGrid.innerHTML = '';
-                
-                numbers.forEach(num => {
-                    const numberDiv = document.createElement('div');
-                    numberDiv.className = 'number';
-                    numberDiv.textContent = num;
-                    numberDiv.addEventListener('click', () => this.handleNumberClick(num, numberDiv));
-                    this.elements.numbersGrid.appendChild(numberDiv);
-                });
-            }
-            
-            generateRandomNumbers(count) {
-                const numbers = [];
-                const targetNumbers = Array.from({ length: count }, (_, i) => i + 1);
-                
-                // Add the sequential numbers
-                numbers.push(...targetNumbers);
-                
-                // Add some random numbers to make it harder
-                const extraCount = Math.floor(count * 0.3);
-                for (let i = 0; i < extraCount; i++) {
-                    numbers.push(Math.floor(Math.random() * 100) + count + 1);
-                }
-                
-                // Shuffle the array
-                return numbers.sort(() => Math.random() - 0.5);
-            }
-            
-            handleNumberClick(number, element) {
-                if (!this.isPlaying) return;
-                
-                if (number === this.currentNumber) {
-                    // Correct number
-                    this.handleCorrectAnswer(element);
-                } else {
-                    // Wrong number
-                    this.handleWrongAnswer(element);
-                }
-            }
-            
-            handleCorrectAnswer(element) {
-                const { scoreMultiplier, timeBonus } = this.difficultySettings[this.difficulty];
-                
-                // Update score with combo multiplier
-                this.combo++;
-                const comboMultiplier = 1 + (this.combo * 0.1);
-                const points = Math.floor(10 * scoreMultiplier * comboMultiplier);
-                this.score += points;
-                
-                // Add time bonus
-                this.timeLeft += timeBonus;
-                
-                // Visual feedback
-                element.style.display = 'none';
-                this.elements.gameContainer.classList.add('correct-flash');
-                setTimeout(() => this.elements.gameContainer.classList.remove('correct-flash'), 500);
-                
-                // Create particle effect
-                this.createParticle(element, '✨');
-                
-                // Update combo display
-                if (this.combo > 1) {
-                    this.elements.comboDisplay.classList.add('active');
-                    this.elements.comboCount.textContent = this.combo;
-                }
-                
-                // Play sound (optional - you can add real sound files)
-                // this.elements.correctSound.play();
-                
-                this.currentNumber++;
-                
-                // Check if completed this grid
-                const remainingNumbers = document.querySelectorAll('.number:not([style*="display: none"])').length;
-                const targetCount = this.difficultySettings[this.difficulty].gridSize;
-                
-                if (this.currentNumber > targetCount) {
-                    this.generateGrid();
-                    this.currentNumber = 1;
-                    this.score += 50 * scoreMultiplier; // Bonus for completing a grid
-                }
-                
-                this.updateDisplay();
-            }
-            
-            handleWrongAnswer(element) {
-                // Reset combo
-                this.combo = 0;
-                this.elements.comboDisplay.classList.remove('active');
-                
-                // Visual feedback
-                this.elements.gameContainer.classList.add('wrong-flash');
-                setTimeout(() => this.elements.gameContainer.classList.remove('wrong-flash'), 500);
-                
-                // Time penalty
-                this.timeLeft = Math.max(0, this.timeLeft - 5);
-                
-                // Shake animation
-                element.style.animation = 'shake 0.5s';
-                setTimeout(() => element.style.animation = '', 500);
-                
-                // Play sound (optional)
-                // this.elements.wrongSound.play();
-                
-                this.updateDisplay();
-            }
-            
-            createParticle(element, emoji) {
+            for (let i = 0; i < 40; i++) {
                 const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.textContent = emoji;
-                particle.style.left = element.offsetLeft + element.offsetWidth / 2 + 'px';
-                particle.style.top = element.offsetTop + element.offsetHeight / 2 + 'px';
-                particle.style.fontSize = '2rem';
-                
-                this.elements.gameContainer.appendChild(particle);
-                
-                setTimeout(() => particle.remove(), 2000);
-            }
-            
-            startTimer() {
-                this.timer = setInterval(() => {
-                    this.timeLeft--;
-                    this.updateDisplay();
-                    
-                    if (this.timeLeft <= 0) {
-                        this.endGame();
-                    }
-                }, 1000);
-            }
-            
-            endGame() {
-                this.isPlaying = false;
-                clearInterval(this.timer);
-                
-                if (this.score > this.highScore) {
-                    this.highScore = this.score;
-                    localStorage.setItem('countingHighScore', this.highScore);
-                    this.showNewHighScore();
-                }
-                
-                this.elements.startBtn.textContent = 'Start Game';
-                this.elements.startBtn.disabled = false;
-                
-                // Show final score
-                alert(`Game Over!\nScore: ${this.score}\nHigh Score: ${this.highScore}`);
-            }
-            
-            showNewHighScore() {
-                // Create celebration effect
-                for (let i = 0; i < 20; i++) {
-                    setTimeout(() => {
-                        const particle = document.createElement('div');
-                        particle.className = 'particle';
-                        particle.textContent = ['🎉', '🎊', '⭐', '💫', '✨'][Math.floor(Math.random() * 5)];
-                        particle.style.left = Math.random() * window.innerWidth + 'px';
-                        particle.style.top = Math.random() * window.innerHeight + 'px';
-                        particle.style.fontSize = '3rem';
-                        document.body.appendChild(particle);
-                        setTimeout(() => particle.remove(), 2000);
-                    }, i * 100);
-                }
-            }
-            
-            resetGame() {
-                this.isPlaying = false;
-                clearInterval(this.timer);
-                this.score = 0;
-                this.currentNumber = 1;
-                this.timeLeft = 60;
-                this.combo = 0;
-                this.elements.comboDisplay.classList.remove('active');
-                this.elements.numbersGrid.innerHTML = '';
-                this.elements.startBtn.textContent = 'Start Game';
-                this.elements.startBtn.disabled = false;
-                this.updateDisplay();
-            }
-            
-            updateDisplay() {
-                this.elements.score.textContent = this.score;
-                this.elements.highScore.textContent = this.highScore;
-                this.elements.timeLeft.textContent = this.timeLeft + 's';
-                
-                // Change time color when low
-                if (this.timeLeft <= 10) {
-                    this.elements.timeLeft.style.color = '#ff006e';
-                } else {
-                    this.elements.timeLeft.style.color = '#fff';
-                }
+                particle.className = i % 2 === 0 ? 'particle gold' : 'particle red';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.animationDuration = (Math.random() * 8 + 12) + 's';
+                particleContainer.appendChild(particle);
             }
         }
         
-        // Add shake animation
+        function updateCountdown(gameDate, prefix) {
+            const now = new Date().getTime();
+            const distance = gameDate - now;
+            
+            if (distance < 0) {
+                document.getElementById(`${prefix}-days`).textContent = '00';
+                document.getElementById(`${prefix}-hours`).textContent = '00';
+                document.getElementById(`${prefix}-minutes`).textContent = '00';
+                document.getElementById(`${prefix}-seconds`).textContent = '00';
+                return true; // Game has started
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Enhanced update with animation
+            updateNumberWithAnimation(`${prefix}-days`, days.toString().padStart(2, '0'));
+            updateNumberWithAnimation(`${prefix}-hours`, hours.toString().padStart(2, '0'));
+            updateNumberWithAnimation(`${prefix}-minutes`, minutes.toString().padStart(2, '0'));
+            updateNumberWithAnimation(`${prefix}-seconds`, seconds.toString().padStart(2, '0'));
+            
+            return false;
+        }
+        
+        function updateNumberWithAnimation(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = element.textContent;
+            
+            if (currentValue !== newValue) {
+                element.classList.add('updating');
+                element.textContent = newValue;
+                
+                // Play subtle audio for seconds change
+                if (elementId.includes('seconds')) {
+                    playAudioFeedback('tick');
+                }
+                
+                setTimeout(() => {
+                    element.classList.remove('updating');
+                }, 300);
+            }
+        }
+        
+        function updateAllCountdowns() {
+            const bulldogsGameStarted = updateCountdown(bulldogsGameDate, 'bulldogs');
+            const falconsGameStarted = updateCountdown(falconsGameDate, 'falcons');
+            
+            if (bulldogsGameStarted) {
+                document.querySelector('.bulldogs .team-chant').textContent = 'GAME TIME!';
+            }
+            if (falconsGameStarted) {
+                document.querySelector('.falcons .team-chant').textContent = 'GAME TIME!';
+            }
+        }
+        
+        function getCurrentCountdown(team) {
+            const days = document.getElementById(`${team}-days`).textContent;
+            const hours = document.getElementById(`${team}-hours`).textContent;
+            const minutes = document.getElementById(`${team}-minutes`).textContent;
+            const seconds = document.getElementById(`${team}-seconds`).textContent;
+            
+            return { days, hours, minutes, seconds };
+        }
+        
+        // URL Parameter Detection
+        function getUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return {
+                format: urlParams.get('format'),
+                team: urlParams.get('team')
+            };
+        }
+
+        function handleUrlParams() {
+            const params = getUrlParams();
+            if (params.format && params.team) {
+                setTimeout(() => {
+                    if (params.format === 'graphic') {
+                        generateGraphic(params.team);
+                    } else if (params.format === 'quick') {
+                        copyEnhancedQuick(params.team);
+                    }
+                }, 1000); // Wait for page to load
+            }
+        }
+
+        // Enhanced Quick Share Function
+        function copyEnhancedQuick(team) {
+            const countdown = getCurrentCountdown(team);
+            const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
+            const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL' : 'BUCS';
+            const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 7';
+            const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
+            const tv = team === 'bulldogs' ? 'ESPN' : 'TBD';
+            const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
+            
+            const text = `${teamEmoji} ${teamName} vs ${opponent} 🏈
+⏰ ${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s until kickoff!
+📅 ${date} • 📍 ${venue}
+📺 ${tv} • 🎫 Season Opener
+🔥 ${chant} 🔥
+
+🔗 Share: ${window.location.origin}${window.location.pathname}?format=quick&team=${team}`;
+            
+            // Try Web Share API first
+            if (navigator.share) {
+                navigator.share({
+                    title: `${fullTeamName} Game Countdown`,
+                    text: text,
+                    url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
+                }).then(() => {
+                    showCopyFeedback('Shared successfully! 🎉');
+                    playAudioFeedback('success');
+                }).catch(() => {
+                    copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
+                });
+            } else {
+                copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
+            }
+        }
+
+        // 4K Canvas Generation
+        let currentGraphicTeam = '';
+        
+        function generateGraphic(team) {
+            currentGraphicTeam = team;
+            const canvas = document.getElementById('countdownCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set 4K resolution
+            canvas.width = 3840;
+            canvas.height = 2160;
+            
+            // Scale for preview display
+            canvas.style.width = '800px';
+            canvas.style.height = '450px';
+            
+            drawCountdownGraphic(ctx, team);
+            
+            // Show canvas container
+            document.getElementById('canvasContainer').classList.add('active');
+            playAudioFeedback('swoosh');
+        }
+
+        function drawCountdownGraphic(ctx, team) {
+            const countdown = getCurrentCountdown(team);
+            const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL' : 'BUCS';
+            const date = team === 'bulldogs' ? 'SATURDAY, AUG 30' : 'SUNDAY, SEP 7';
+            const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
+            
+            // Team colors
+            const colors = team === 'bulldogs' ? {
+                primary: '#BA0C2F',
+                secondary: '#FFD700',
+                accent: '#000000'
+            } : {
+                primary: '#A71930',
+                secondary: '#000000',
+                accent: '#FFD700'
+            };
+            
+            // Create dynamic gradient background
+            const gradient = ctx.createLinearGradient(0, 0, 3840, 2160);
+            gradient.addColorStop(0, colors.primary);
+            gradient.addColorStop(0.3, colors.accent);
+            gradient.addColorStop(0.7, colors.accent);
+            gradient.addColorStop(1, colors.primary);
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 3840, 2160);
+            
+            // Add stadium atmosphere effect
+            drawStadiumEffects(ctx, colors);
+            
+            // Draw team logo (large emoji)
+            ctx.font = 'bold 400px serif';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = colors.secondary;
+            const emoji = team === 'bulldogs' ? '🐶' : '🦅';
+            ctx.fillText(emoji, 1920, 450);
+            
+            // Draw team name
+            ctx.font = 'bold 180px "Arial Black", Arial';
+            ctx.fillStyle = colors.secondary;
+            ctx.strokeStyle = colors.accent;
+            ctx.lineWidth = 8;
+            ctx.strokeText(teamName, 1920, 650);
+            ctx.fillText(teamName, 1920, 650);
+            
+            // Draw VS opponent
+            ctx.font = 'bold 100px Arial';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(`VS ${opponent}`, 1920, 780);
+            
+            // Draw countdown section
+            drawCountdownSection(ctx, countdown, colors, 1920, 1000);
+            
+            // Draw date and venue
+            ctx.font = 'bold 80px Arial';
+            ctx.fillStyle = colors.secondary;
+            ctx.fillText(date, 1920, 1500);
+            
+            ctx.font = '60px Arial';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(venue, 1920, 1600);
+            
+            // Add website credit
+            ctx.font = '50px Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillText('bensbar.github.io/games', 1920, 2000);
+            
+            // Draw animated particles
+            drawParticleEffects(ctx, colors);
+        }
+
+        function drawStadiumEffects(ctx, colors) {
+            // Stadium lights effect
+            const radialGrad1 = ctx.createRadialGradient(576, 432, 0, 576, 432, 800);
+            radialGrad1.addColorStop(0, `${colors.secondary}66`);
+            radialGrad1.addColorStop(1, 'transparent');
+            ctx.fillStyle = radialGrad1;
+            ctx.fillRect(0, 0, 1152, 864);
+            
+            const radialGrad2 = ctx.createRadialGradient(3264, 432, 0, 3264, 432, 800);
+            radialGrad2.addColorStop(0, `${colors.primary}66`);
+            radialGrad2.addColorStop(1, 'transparent');
+            ctx.fillStyle = radialGrad2;
+            ctx.fillRect(2688, 0, 1152, 864);
+        }
+
+        function drawCountdownSection(ctx, countdown, colors, x, y) {
+            const sections = [
+                { label: 'DAYS', value: countdown.days },
+                { label: 'HOURS', value: countdown.hours },
+                { label: 'MINUTES', value: countdown.minutes },
+                { label: 'SECONDS', value: countdown.seconds }
+            ];
+            
+            const sectionWidth = 300;
+            const totalWidth = sectionWidth * 4 + 60 * 3; // 4 sections + 3 gaps
+            const startX = x - totalWidth / 2;
+            
+            sections.forEach((section, index) => {
+                const sectionX = startX + index * (sectionWidth + 60);
+                
+                // Draw section background
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(sectionX, y - 120, sectionWidth, 200);
+                
+                // Draw border
+                ctx.strokeStyle = colors.secondary;
+                ctx.lineWidth = 6;
+                ctx.strokeRect(sectionX, y - 120, sectionWidth, 200);
+                
+                // Draw number
+                ctx.font = 'bold 120px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = colors.secondary;
+                ctx.fillText(section.value, sectionX + sectionWidth/2, y + 10);
+                
+                // Draw label
+                ctx.font = 'bold 40px Arial';
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillText(section.label, sectionX + sectionWidth/2, y + 60);
+            });
+        }
+
+        function drawParticleEffects(ctx, colors) {
+            // Add some particle effects
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * 3840;
+                const y = Math.random() * 2160;
+                const radius = Math.random() * 8 + 4;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = i % 2 === 0 ? `${colors.secondary}AA` : `${colors.primary}AA`;
+                ctx.fill();
+            }
+        }
+
+        function downloadGraphic() {
+            const canvas = document.getElementById('countdownCanvas');
+            const link = document.createElement('a');
+            const teamName = currentGraphicTeam === 'bulldogs' ? 'Bulldogs' : 'Falcons';
+            
+            link.download = `${teamName}_Countdown_4K.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            showCopyFeedback('4K Graphic Downloaded! 💾');
+            playAudioFeedback('success');
+        }
+
+        function shareGraphic() {
+            const canvas = document.getElementById('countdownCanvas');
+            const teamName = currentGraphicTeam === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            
+            canvas.toBlob((blob) => {
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'countdown.png', { type: 'image/png' })] })) {
+                    const file = new File([blob], 'countdown.png', { type: 'image/png' });
+                    navigator.share({
+                        title: `${teamName} Game Countdown`,
+                        text: `Check out this ${teamName} countdown!`,
+                        files: [file],
+                        url: `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`
+                    }).then(() => {
+                        showCopyFeedback('Graphic shared successfully! 📤');
+                        playAudioFeedback('success');
+                    }).catch((error) => {
+                        console.log('Error sharing:', error);
+                        // Fallback to URL sharing
+                        shareGraphicUrl();
+                    });
+                } else {
+                    shareGraphicUrl();
+                }
+            }, 'image/png');
+        }
+
+        function shareGraphicUrl() {
+            const url = `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`;
+            const teamName = currentGraphicTeam === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const text = `🏈 Check out this amazing ${teamName} countdown graphic! 📸\n\n${url}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `${teamName} Game Countdown`,
+                    text: text,
+                    url: url
+                }).then(() => {
+                    showCopyFeedback('Graphic link shared! 🔗');
+                    playAudioFeedback('success');
+                }).catch(() => {
+                    copyToClipboard(text, 'Graphic link copied! 📋');
+                });
+            } else {
+                copyToClipboard(text, 'Graphic link copied! 📋');
+            }
+        }
+
+        function closeCanvas() {
+            document.getElementById('canvasContainer').classList.remove('active');
+            playAudioFeedback('close');
+        }
+
+        // Audio Feedback System
+        let audioContext;
+        let lastTickTime = 0;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playAudioFeedback(type) {
+            initAudioContext();
+            if (!audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            switch (type) {
+                case 'success':
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
+                case 'swoosh':
+                    oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                case 'close':
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                    break;
+                case 'tick':
+                    // Subtle tick sound, limited to once per second to avoid spam
+                    const now = Date.now();
+                    if (now - lastTickTime < 1000) return;
+                    lastTickTime = now;
+                    
+                    oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+                    gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.05);
+                    break;
+            }
+        }
+        
+        function copyToClipboard(text, message) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedback(message);
+            }).catch(() => {
+                // Fallback for browsers that don't support clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback(message);
+            });
+        }
+        
+        function showCopyFeedback(message) {
+            const feedback = document.createElement('div');
+            feedback.className = 'copy-feedback';
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 2000);
+        }
+        
+        function triggerChant(team) {
+            const chant = document.querySelector(`.${team} .team-chant`);
+            const originalTransform = chant.style.transform;
+            const originalFilter = chant.style.filter;
+            
+            chant.style.transform = 'scale(1.2)';
+            chant.style.filter = 'drop-shadow(0 0 40px rgba(255, 215, 0, 1))';
+            
+            setTimeout(() => {
+                chant.style.transform = originalTransform;
+                chant.style.filter = originalFilter;
+            }, 300);
+        }
+        
+        function createClickEffect(e) {
+            const effect = document.createElement('div');
+            effect.style.position = 'absolute';
+            effect.style.width = '80px';
+            effect.style.height = '80px';
+            effect.style.border = '2px solid #FFD700';
+            effect.style.borderRadius = '50%';
+            effect.style.left = e.clientX - 40 + 'px';
+            effect.style.top = e.clientY - 40 + 'px';
+            effect.style.opacity = '0';
+            effect.style.pointerEvents = 'none';
+            effect.style.animation = 'clickRipple 0.6s ease-out';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => {
+                document.body.removeChild(effect);
+            }, 600);
+        }
+        
+        // Add click ripple animation
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-10px); }
-                75% { transform: translateX(10px); }
+            @keyframes clickRipple {
+                0% {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(3);
+                    opacity: 0;
+                }
             }
         `;
         document.head.appendChild(style);
         
-        // Initialize game
-        const game = new CountingGame();
+        // Initialize
+        createParticles();
+        updateAllCountdowns();
+        setInterval(updateAllCountdowns, 1000);
+        handleUrlParams(); // Handle URL parameters
+        
+        // Event listeners
+        document.addEventListener('click', createClickEffect);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'KeyD') {
+                triggerChant('bulldogs');
+            } else if (e.code === 'KeyF') {
+                triggerChant('falcons');
+            } else if (e.code === 'Escape') {
+                closeCanvas();
+            } else if (e.code === 'KeyG') {
+                // Quick generate graphic for active team
+                const activeTeam = document.querySelector('.team-chant:hover') ? 
+                    (document.querySelector('.bulldogs .team-chant:hover') ? 'bulldogs' : 'falcons') : 'bulldogs';
+                generateGraphic(activeTeam);
+            }
+        });
     </script>
 </body>
 </html>
