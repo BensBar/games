@@ -99,7 +99,7 @@
             opacity: 0.7;
         }
         
-        .particle.bulldogs { background: #FFD700; }
+        .particle.bulldogs { background: #A5ACAF; }
         .particle.falcons { background: #A71930; }
         
         @keyframes particleFloat {
@@ -126,7 +126,7 @@
             font-family: 'Crimson Text', serif;
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #A5ACAF, #BA0C2F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -198,7 +198,7 @@
         }
         
         .bulldogs-section::before {
-            background: linear-gradient(45deg, #FFD700, #ba0c2f, #FFD700);
+            background: linear-gradient(45deg, #A5ACAF, #BA0C2F, #A5ACAF);
         }
         
         .falcons-section::before {
@@ -272,7 +272,7 @@
         }
         
         .bulldogs .team-name {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #A5ACAF, #BA0C2F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -322,7 +322,7 @@
         
         /* Team-specific time unit styling */
         .bulldogs .time-unit {
-            border: 2px solid rgba(255, 215, 0, 0.4);
+            border: 2px solid rgba(165, 172, 175, 0.4);
         }
         
         .falcons .time-unit {
@@ -362,9 +362,9 @@
         .bulldogs .time-unit:hover {
             box-shadow: 
                 0 20px 40px rgba(0,0,0,0.4),
-                0 0 30px rgba(255, 215, 0, 0.4),
+                0 0 30px rgba(165, 172, 175, 0.4),
                 inset 0 1px 0 rgba(255,255,255,0.3);
-            border-color: rgba(255, 215, 0, 0.8);
+            border-color: rgba(165, 172, 175, 0.8);
         }
         
         .falcons .time-unit:hover {
@@ -384,7 +384,7 @@
         }
         
         .bulldogs .time-number {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background: linear-gradient(45deg, #A5ACAF, #BA0C2F);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -419,7 +419,7 @@
         }
         
         .bulldogs .game-details {
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(165, 172, 175, 0.2);
         }
         
         .falcons .game-details {
@@ -433,7 +433,7 @@
         }
         
         .bulldogs .date-time {
-            color: #FFD700;
+            color: #A5ACAF;
         }
         
         .falcons .date-time {
@@ -682,7 +682,7 @@
         }
         
         .bulldogs .team-chant {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #A5ACAF, #BA0C2F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -854,7 +854,7 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Saturday, September 13, 2025 • 3:30 PM ET</div>
+                <div class="date-time">Friday, August 15, 2025 • 3:30 PM ET</div>
                 <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
                 <div class="venue-info">📺 ESPN</div>
                 <div class="venue-info">🎫 SEC Conference Game</div>
@@ -908,7 +908,7 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Sunday, September 14, 2025 • 1:00 PM ET</div>
+                <div class="date-time">Saturday, August 16, 2025 • 1:00 PM ET</div>
                 <div class="venue-info">🏟️ Mercedes-Benz Stadium, Atlanta, GA</div>
                 <div class="venue-info">📺 CBS</div>
                 <div class="venue-info">🎫 NFC South Divisional</div>
@@ -962,6 +962,12 @@
                 
                 const container = document.getElementById('webgl-container');
                 const canvas = document.getElementById('webgl-canvas');
+                
+                if (!container || !canvas) {
+                    console.warn('WebGL container elements not found');
+                    enhanceCSS3DFallback();
+                    return;
+                }
                 
                 // Scene setup
                 scene = new THREE.Scene();
@@ -1800,9 +1806,9 @@
             }
         }
         
-        // Game dates
-        const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
-        const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
+        // Game dates - Updated to August 2025 for better timeline
+        const bulldogsGameDate = new Date('2025-08-15T15:30:00-04:00').getTime();
+        const falconsGameDate = new Date('2025-08-16T13:00:00-04:00').getTime();
         
         function createParticles() {
             const particleContainer = document.getElementById('particles');
@@ -1821,11 +1827,31 @@
             const now = new Date().getTime();
             const distance = gameDate - now;
             
+            // Debug logging
+            console.log(`UpdateCountdown: ${prefix}, distance: ${distance}, now: ${now}, gameDate: ${gameDate}`);
+            
+            const daysElement = document.getElementById(`${prefix}-days`);
+            const hoursElement = document.getElementById(`${prefix}-hours`);
+            const minutesElement = document.getElementById(`${prefix}-minutes`);
+            const secondsElement = document.getElementById(`${prefix}-seconds`);
+            
+            // Check if elements exist
+            if (!daysElement || !hoursElement || !minutesElement || !secondsElement) {
+                console.error(`Elements not found for ${prefix}:`, {
+                    days: !!daysElement,
+                    hours: !!hoursElement,
+                    minutes: !!minutesElement,
+                    seconds: !!secondsElement
+                });
+                return false;
+            }
+            
             if (distance < 0) {
-                document.getElementById(`${prefix}-days`).textContent = '00';
-                document.getElementById(`${prefix}-hours`).textContent = '00';
-                document.getElementById(`${prefix}-minutes`).textContent = '00';
-                document.getElementById(`${prefix}-seconds`).textContent = '00';
+                daysElement.textContent = '00';
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+                console.log(`${prefix} game has started`);
                 return true; // Game has started
             }
             
@@ -1834,10 +1860,12 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            document.getElementById(`${prefix}-days`).textContent = days.toString().padStart(2, '0');
-            document.getElementById(`${prefix}-hours`).textContent = hours.toString().padStart(2, '0');
-            document.getElementById(`${prefix}-minutes`).textContent = minutes.toString().padStart(2, '0');
-            document.getElementById(`${prefix}-seconds`).textContent = seconds.toString().padStart(2, '0');
+            console.log(`${prefix} countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`);
+            
+            daysElement.textContent = days.toString().padStart(2, '0');
+            hoursElement.textContent = hours.toString().padStart(2, '0');
+            minutesElement.textContent = minutes.toString().padStart(2, '0');
+            secondsElement.textContent = seconds.toString().padStart(2, '0');
             
             return false;
         }
@@ -2320,22 +2348,42 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            // Start countdown immediately
+            console.log('DOMContentLoaded event fired');
+            // Start countdown immediately - this is the most important part
             createParticles();
+            console.log('About to call updateAllCountdowns');
             updateAllCountdowns();
+            console.log('Setting up interval');
             setInterval(updateAllCountdowns, 1000);
             
             // Delay other initialization to ensure Three.js loads
             setTimeout(() => {
-                // Initialize 3D WebGL scene
-                init3DScene();
-                
-                // Initialize advanced interactions
-                initAdvancedInteractions();
-                
-                handleUrlParams(); // Handle URL parameters
+                try {
+                    // Initialize 3D WebGL scene
+                    init3DScene();
+                    
+                    // Initialize advanced interactions
+                    initAdvancedInteractions();
+                    
+                    handleUrlParams(); // Handle URL parameters
+                } catch (error) {
+                    console.warn('Advanced features failed to initialize:', error);
+                    // Continue with basic countdown functionality
+                }
             }, 500);
         });
+        
+        // Fallback initialization in case DOMContentLoaded doesn't work
+        if (document.readyState === 'loading') {
+            console.log('Document is still loading');
+            // DOMContentLoaded has not fired yet
+        } else {
+            console.log('Document already loaded, initializing immediately');
+            // DOMContentLoaded has already fired
+            createParticles();
+            updateAllCountdowns();
+            setInterval(updateAllCountdowns, 1000);
+        }
         
         // Event listeners
         document.addEventListener('click', createClickEffect);
@@ -2357,4 +2405,70 @@
         });
     </script>
 </body>
+<script>
+// Emergency countdown fix - runs after everything else
+(function() {
+    'use strict';
+    
+    const bulldogsGameDate = new Date('2025-08-15T15:30:00-04:00').getTime();
+    const falconsGameDate = new Date('2025-08-16T13:00:00-04:00').getTime();
+    
+    function emergencyUpdateCountdown(gameDate, prefix) {
+        const now = new Date().getTime();
+        const distance = gameDate - now;
+        
+        const daysElement = document.getElementById(`${prefix}-days`);
+        const hoursElement = document.getElementById(`${prefix}-hours`);
+        const minutesElement = document.getElementById(`${prefix}-minutes`);
+        const secondsElement = document.getElementById(`${prefix}-seconds`);
+        
+        if (!daysElement || !hoursElement || !minutesElement || !secondsElement) {
+            return false;
+        }
+        
+        if (distance < 0) {
+            daysElement.textContent = '00';
+            hoursElement.textContent = '00';
+            minutesElement.textContent = '00';
+            secondsElement.textContent = '00';
+            return true;
+        }
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        daysElement.textContent = days.toString().padStart(2, '0');
+        hoursElement.textContent = hours.toString().padStart(2, '0');
+        minutesElement.textContent = minutes.toString().padStart(2, '0');
+        secondsElement.textContent = seconds.toString().padStart(2, '0');
+        
+        return false;
+    }
+    
+    function emergencyUpdateAll() {
+        const bulldogsGameStarted = emergencyUpdateCountdown(bulldogsGameDate, 'bulldogs');
+        const falconsGameStarted = emergencyUpdateCountdown(falconsGameDate, 'falcons');
+        
+        if (bulldogsGameStarted) {
+            const chant = document.querySelector('.bulldogs .team-chant');
+            if (chant) chant.textContent = 'GAME TIME!';
+        }
+        if (falconsGameStarted) {
+            const chant = document.querySelector('.falcons .team-chant');
+            if (chant) chant.textContent = 'GAME TIME!';
+        }
+    }
+    
+    // Start immediately
+    emergencyUpdateAll();
+    
+    // Run every second
+    setInterval(emergencyUpdateAll, 1000);
+    
+    // Also run after a delay to ensure DOM is ready
+    setTimeout(emergencyUpdateAll, 500);
+})();
+</script>
 </html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Countdown</title>
+</head>
+<body>
+    <div id="bulldogs-days">00</div>
+    <div id="bulldogs-hours">00</div>
+    <div id="bulldogs-minutes">00</div>
+    <div id="bulldogs-seconds">00</div>
+    
+    <div id="falcons-days">00</div>
+    <div id="falcons-hours">00</div>
+    <div id="falcons-minutes">00</div>
+    <div id="falcons-seconds">00</div>
+    
+    <script>
+        // Game dates
+        const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+        const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
+        
+        function updateCountdown(gameDate, prefix) {
+            const now = new Date().getTime();
+            const distance = gameDate - now;
+            
+            console.log(`${prefix} - Distance: ${distance}`);
+            
+            if (distance < 0) {
+                console.log(`${prefix} - Game has started`);
+                document.getElementById(`${prefix}-days`).textContent = '00';
+                document.getElementById(`${prefix}-hours`).textContent = '00';
+                document.getElementById(`${prefix}-minutes`).textContent = '00';
+                document.getElementById(`${prefix}-seconds`).textContent = '00';
+                return true;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            console.log(`${prefix} - ${days}d ${hours}h ${minutes}m ${seconds}s`);
+            
+            document.getElementById(`${prefix}-days`).textContent = days.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-hours`).textContent = hours.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-minutes`).textContent = minutes.toString().padStart(2, '0');
+            document.getElementById(`${prefix}-seconds`).textContent = seconds.toString().padStart(2, '0');
+            
+            return false;
+        }
+        
+        function updateAllCountdowns() {
+            updateCountdown(bulldogsGameDate, 'bulldogs');
+            updateCountdown(falconsGameDate, 'falcons');
+        }
+        
+        // Test immediate execution
+        console.log('Testing immediate execution...');
+        updateAllCountdowns();
+        
+        // Set up interval
+        setInterval(updateAllCountdowns, 1000);
+    </script>
+</body>
+</html>
