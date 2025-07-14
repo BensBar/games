@@ -898,7 +898,7 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Saturday, September 13, 2025 • 3:30 PM ET</div>
+                <div class="date-time">Saturday, September 6, 2025 • 3:30 PM ET</div>
                 <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
                 <div class="venue-info">📺 ESPN</div>
                 <div class="venue-info">🎫 SEC Conference Game</div>
@@ -1862,7 +1862,7 @@
         }
         
         // Game dates
-        const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+        const bulldogsGameDate = new Date('2025-09-06T15:30:00-04:00').getTime();
         const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
         
         function createParticles() {
@@ -1954,7 +1954,7 @@
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
             const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
             const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
-            const date = team === 'bulldogs' ? 'Sep 13' : 'Sep 14';
+            const date = team === 'bulldogs' ? 'Sep 6' : 'Sep 14';
             const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
             const tv = team === 'bulldogs' ? 'ESPN' : 'CBS';
             const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
@@ -1968,18 +1968,24 @@
 🔗 Share: ${window.location.origin}${window.location.pathname}?format=quick&team=${team}`;
             
             // Try Web Share API first
-            if (navigator.share) {
-                navigator.share({
-                    title: `${fullTeamName} Game Countdown`,
-                    text: text,
-                    url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
-                }).then(() => {
-                    showCopyFeedback('Shared successfully! 🎉');
-                    playAudioFeedback('success');
-                }).catch((error) => {
+            try {
+                if (navigator.share && typeof navigator.share === 'function') {
+                    navigator.share({
+                        title: `${fullTeamName} Game Countdown`,
+                        text: text,
+                        url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
+                    }).then(() => {
+                        showCopyFeedback('Shared successfully! 🎉');
+                        playAudioFeedback('success');
+                    }).catch((error) => {
+                        console.log('Web Share API failed:', error);
+                        copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
+                    });
+                } else {
                     copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
-                });
-            } else {
+                }
+            } catch (error) {
+                console.error('Error in copyEnhancedQuick:', error);
                 copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
             }
         }
@@ -2013,7 +2019,7 @@
             const countdown = getCurrentCountdown(team);
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
             const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
-            const date = team === 'bulldogs' ? 'SATURDAY, SEP 13' : 'SUNDAY, SEP 14';
+            const date = team === 'bulldogs' ? 'SATURDAY, SEP 6' : 'SUNDAY, SEP 14';
             const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
             
             // Team colors
@@ -2247,22 +2253,33 @@
             const teamName = currentGraphicTeam === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
             
             canvas.toBlob((blob) => {
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'countdown.png', { type: 'image/png' })] })) {
-                    const file = new File([blob], 'countdown.png', { type: 'image/png' });
-                    navigator.share({
-                        title: `${teamName} Game Countdown`,
-                        text: `Check out this ${teamName} countdown!`,
-                        files: [file],
-                        url: `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`
-                    }).then(() => {
-                        showCopyFeedback('Graphic shared successfully! 📤');
-                        playAudioFeedback('success');
-                    }).catch((error) => {
-                        console.log('Error sharing:', error);
-                        // Fallback to URL sharing
+                try {
+                    // Check if Web Share API with files is supported
+                    if (navigator.share && navigator.canShare && 
+                        typeof navigator.canShare === 'function' && 
+                        navigator.canShare({ files: [new File([blob], 'countdown.png', { type: 'image/png' })] })) {
+                        
+                        const file = new File([blob], 'countdown.png', { type: 'image/png' });
+                        navigator.share({
+                            title: `${teamName} Game Countdown`,
+                            text: `Check out this ${teamName} countdown!`,
+                            files: [file],
+                            url: `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`
+                        }).then(() => {
+                            showCopyFeedback('Graphic shared successfully! 📤');
+                            playAudioFeedback('success');
+                        }).catch((error) => {
+                            console.log('Error sharing graphic file:', error);
+                            // Fallback to URL sharing
+                            shareGraphicUrl();
+                        });
+                    } else {
+                        // Fallback to URL sharing for browsers that don't support file sharing
                         shareGraphicUrl();
-                    });
-                } else {
+                    }
+                } catch (error) {
+                    console.error('Error in shareGraphic:', error);
+                    // Fallback to URL sharing
                     shareGraphicUrl();
                 }
             }, 'image/png');
@@ -2512,7 +2529,7 @@
     <script>
         // Direct countdown initialization - placed at end to ensure DOM is ready
         (function() {
-            const bulldogsGameDate = new Date('2025-09-13T15:30:00-04:00').getTime();
+            const bulldogsGameDate = new Date('2025-09-06T15:30:00-04:00').getTime();
             const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
             
             function directUpdateCountdown(gameDate, prefix) {
