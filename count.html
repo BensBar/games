@@ -79,7 +79,7 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 15% 20%, rgba(255, 215, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 15% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 85% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 50% 80%, rgba(167, 25, 48, 0.3) 0%, transparent 60%);
             animation: stadiumGlow 8s ease-in-out infinite alternate;
@@ -126,7 +126,7 @@
             font-family: 'Crimson Text', serif;
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
+            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -198,7 +198,7 @@
         }
         
         .bulldogs-section::before {
-            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
+            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF, #000000);
         }
         
         .falcons-section::before {
@@ -230,7 +230,7 @@
             width: 100px;
             height: 100px;
             transition: all 0.3s ease;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
         }
         
         .falcons .team-logo-svg {
@@ -239,7 +239,7 @@
         
         .team-logo-svg:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            filter: drop-shadow(0 0 30px rgba(186, 12, 47, 1));
         }
         
         .falcons .team-logo-svg:hover {
@@ -254,11 +254,11 @@
         @keyframes logoFloat {
             0%, 100% { 
                 transform: scale(1) rotate(0deg);
-                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+                filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
             }
             50% { 
                 transform: scale(1.05) rotate(3deg);
-                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+                filter: drop-shadow(0 0 30px rgba(186, 12, 47, 1));
             }
         }
         
@@ -272,7 +272,7 @@
         }
         
         .bulldogs .team-name {
-            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
+            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -336,7 +336,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            background: linear-gradient(45deg, transparent, rgba(186, 12, 47, 0.1), transparent);
             opacity: 0;
             transition: opacity 0.3s ease;
             transform: translateX(-100%);
@@ -378,13 +378,13 @@
         .time-number {
             font-size: 32px;
             font-weight: 700;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            text-shadow: 0 0 15px rgba(186, 12, 47, 0.5);
             margin-bottom: 8px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .bulldogs .time-number {
-            background: linear-gradient(45deg, #BA0C2F, #A5ACAF);
+            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -400,7 +400,7 @@
         
         .time-number.updating {
             transform: scale(1.2);
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
         }
         
         .time-label {
@@ -419,7 +419,7 @@
         }
         
         .bulldogs .game-details {
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(186, 12, 47, 0.2);
         }
         
         .falcons .game-details {
@@ -456,11 +456,11 @@
         }
         
         .copy-btn {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
-            border: 2px solid rgba(255, 215, 0, 0.5);
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.5);
             border-radius: 12px;
             padding: 15px 25px;
-            color: #FFD700;
+            color: #BA0C2F;
             font-family: 'Oswald', sans-serif;
             font-size: 16px;
             font-weight: 600;
@@ -495,9 +495,9 @@
         }
         
         .copy-btn.graphic-btn {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.1));
-            border: 2px solid rgba(255, 215, 0, 0.6);
-            color: #FFD700;
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.6);
+            color: #BA0C2F;
             font-weight: 700;
             position: relative;
             overflow: hidden;
@@ -519,10 +519,10 @@
         }
 
         .copy-btn.graphic-btn:hover {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.4), rgba(255, 215, 0, 0.2));
-            border-color: rgba(255, 215, 0, 0.9);
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.4), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.9);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 8px 25px rgba(186, 12, 47, 0.4);
         }
 
         .copy-btn.quick-btn {
@@ -563,7 +563,7 @@
             max-width: 90vw;
             max-height: 70vh;
             border-radius: 15px;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 50px rgba(186, 12, 47, 0.5);
             background: #000;
         }
         
@@ -599,11 +599,11 @@
         }
 
         .canvas-btn {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
-            border: 2px solid rgba(255, 215, 0, 0.5);
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.5);
             border-radius: 12px;
             padding: 15px 25px;
-            color: #FFD700;
+            color: #BA0C2F;
             font-family: 'Oswald', sans-serif;
             font-size: 16px;
             font-weight: 600;
@@ -615,10 +615,10 @@
         }
 
         .canvas-btn:hover {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
-            border-color: rgba(255, 215, 0, 0.8);
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.8);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
         }
         
         /* Bulldogs-specific canvas button styling */
@@ -647,10 +647,10 @@
         }
         
         .copy-btn:hover {
-            background: linear-gradient(145deg, rgba(255, 215, 0, 0.3), rgba(255, 215, 0, 0.2));
-            border-color: rgba(255, 215, 0, 0.8);
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.8);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
         }
         
         .copy-btn:active {
@@ -688,10 +688,10 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
-            border: 2px solid #FFD700;
+            border: 2px solid #BA0C2F;
             border-radius: 15px;
             padding: 20px 30px;
-            color: #FFD700;
+            color: #BA0C2F;
             font-family: 'Oswald', sans-serif;
             font-size: 18px;
             font-weight: 600;
@@ -725,7 +725,7 @@
         }
         
         .bulldogs .team-chant {
-            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
+            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -741,17 +741,17 @@
         @keyframes chantPulse {
             0%, 100% { 
                 transform: scale(1);
-                filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+                filter: drop-shadow(0 0 15px rgba(186, 12, 47, 0.6));
             }
             50% { 
                 transform: scale(1.05);
-                filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8));
+                filter: drop-shadow(0 0 25px rgba(186, 12, 47, 0.8));
             }
         }
         
         .team-chant:hover {
             transform: scale(1.1);
-            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+            filter: drop-shadow(0 0 30px rgba(186, 12, 47, 1));
         }
         
         .floating-icons {
@@ -852,8 +852,8 @@
     
     <div class="floating-icons icon-1">🐾</div>
     <div class="floating-icons icon-2">🏈</div>
-    <div class="floating-icons icon-3">🦅</div>
-    <div class="floating-icons icon-4">🐶</div>
+    <div class="floating-icons icon-3">🐶</div>
+    <div class="floating-icons icon-4">🦅</div>
     <div class="floating-icons icon-5">🏟️</div>
     <div class="floating-icons icon-6">⚡</div>
     
@@ -1069,7 +1069,7 @@
                 uniforms: {
                     time: { value: 0.0 },
                     teamColorA: { value: new THREE.Color(0xba0c2f) },
-                    teamColorB: { value: new THREE.Color(0xffd700) },
+                    teamColorB: { value: new THREE.Color(0xc5282f) },
                     intensity: { value: 0.3 }
                 },
                 vertexShader: `
@@ -1171,12 +1171,12 @@
                 // Team colors
                 const isGold = Math.random() > 0.5;
                 if (isGold) {
-                    colors[i3] = 1.0;     // R
-                    colors[i3 + 1] = 0.84; // G
-                    colors[i3 + 2] = 0.0;  // B
-                } else {
                     colors[i3] = 0.73;     // R
                     colors[i3 + 1] = 0.05; // G
+                    colors[i3 + 2] = 0.18; // B
+                } else {
+                    colors[i3] = 0.77;     // R
+                    colors[i3 + 1] = 0.16; // G
                     colors[i3 + 2] = 0.18; // B
                 }
                 
@@ -1253,7 +1253,7 @@
             // Bulldogs logo (simplified 3D representation)
             const bulldogsGeometry = new THREE.SphereGeometry(50, 32, 32);
             const bulldogsMaterial = new THREE.MeshPhysicalMaterial({
-                color: 0xffd700,
+                color: 0xba0c2f,
                 metalness: 0.1,
                 roughness: 0.4,
                 clearcoat: 0.8,
@@ -1293,7 +1293,7 @@
             scene.add(ambientLight);
             
             // Stadium spot lights
-            const spotLight1 = new THREE.SpotLight(0xffd700, 1, 1000, Math.PI / 6, 0.5);
+            const spotLight1 = new THREE.SpotLight(0xba0c2f, 1, 1000, Math.PI / 6, 0.5);
             spotLight1.position.set(-400, 400, 200);
             spotLight1.target.position.set(-300, 0, 0);
             spotLight1.castShadow = true;
@@ -1382,7 +1382,7 @@
             style.textContent = `
                 body {
                     background: 
-                        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 30%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
                         radial-gradient(circle at 80% 70%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
                         linear-gradient(135deg, #ba0c2f 0%, #A71930 25%, #000000 50%, #A71930 75%, #ba0c2f 100%);
                     animation: backgroundPulse 8s ease-in-out infinite;
@@ -1407,11 +1407,11 @@
                 @keyframes logoFloat3D {
                     0%, 100% { 
                         transform: scale(1) rotateY(0deg) translateY(0px);
-                        filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+                        filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
                     }
                     50% { 
                         transform: scale(1.1) rotateY(180deg) translateY(-10px);
-                        filter: drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+                        filter: drop-shadow(0 0 40px rgba(186, 12, 47, 1));
                     }
                 }
                 
@@ -1447,7 +1447,7 @@
                     left: 0;
                     right: 0;
                     bottom: 0;
-                    background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+                    background: linear-gradient(45deg, transparent, rgba(186, 12, 47, 0.1), transparent);
                     animation: scanline 3s linear infinite;
                     pointer-events: none;
                 }
@@ -1465,7 +1465,7 @@
                     right: 0;
                     bottom: 0;
                     background: 
-                        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.1) 0%, transparent 50%),
                         radial-gradient(circle at 75% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
                     animation: lightMove 15s ease-in-out infinite;
                 }
@@ -1473,12 +1473,12 @@
                 @keyframes lightMove {
                     0%, 100% { 
                         background: 
-                            radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                            radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.1) 0%, transparent 50%),
                             radial-gradient(circle at 75% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
                     }
                     50% { 
                         background: 
-                            radial-gradient(circle at 75% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                            radial-gradient(circle at 75% 25%, rgba(186, 12, 47, 0.1) 0%, transparent 50%),
                             radial-gradient(circle at 25% 75%, rgba(186, 12, 47, 0.1) 0%, transparent 50%);
                     }
                 }
@@ -1604,7 +1604,7 @@
                 top: ${y}px;
                 width: 6px;
                 height: 6px;
-                background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+                background: radial-gradient(circle, rgba(186, 12, 47, 0.8) 0%, transparent 70%);
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9999;
@@ -1630,7 +1630,7 @@
                 top: ${y}px;
                 width: 20px;
                 height: 20px;
-                border: 2px solid rgba(255, 215, 0, 0.8);
+                border: 2px solid rgba(186, 12, 47, 0.8);
                 border-radius: 50%;
                 pointer-events: none;
                 z-index: 9999;
@@ -1655,7 +1655,7 @@
                     unit.style.transform = 'translateY(-12px) scale(1.08) rotateY(5deg)';
                     unit.style.boxShadow = `
                         0 25px 50px rgba(0,0,0,0.5),
-                        0 0 40px rgba(255, 215, 0, 0.6),
+                        0 0 40px rgba(186, 12, 47, 0.6),
                         inset 0 1px 0 rgba(255,255,255,0.4)
                     `;
                     playAudioFeedback('hover');
@@ -1695,7 +1695,7 @@
             chants.forEach(chant => {
                 chant.addEventListener('mouseenter', (e) => {
                     chant.style.transform = 'scale(1.15) rotateZ(2deg)';
-                    chant.style.filter = 'drop-shadow(0 0 40px rgba(255, 215, 0, 1)) brightness(1.3)';
+                    chant.style.filter = 'drop-shadow(0 0 40px rgba(186, 12, 47, 1)) brightness(1.3)';
                 });
                 
                 chant.addEventListener('mouseleave', (e) => {
