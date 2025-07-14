@@ -696,10 +696,11 @@
             font-size: 18px;
             font-weight: 600;
             text-align: center;
-            z-index: 1000;
+            z-index: 10001;
             opacity: 0;
-            animation: copyFeedback 2s ease-in-out;
-            pointer-events: none;
+            animation: copyFeedback 3s ease-in-out;
+            pointer-events: auto;
+            cursor: pointer;
         }
         
         .bulldogs .copy-feedback {
@@ -908,7 +909,7 @@
                         aria-label="Generate and share 4K graphic for Georgia Bulldogs countdown">
                     📸 Share Graphic
                 </button>
-                <button class="copy-btn quick-btn" onclick="copyEnhancedQuick('bulldogs')"
+                <button class="copy-btn quick-btn" onclick="testFunction()"
                         aria-label="Copy enhanced quick share format for Georgia Bulldogs">
                     ⚡ Quick Share
                 </button>
@@ -1840,6 +1841,23 @@
                     oscillator.start(audioContext.currentTime);
                     oscillator.stop(audioContext.currentTime + 0.05);
                     break;
+                case 'error':
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.08, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                    break;
+                default:
+                    // Default click sound
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.1);
+                    break;
             }
         }
         
@@ -1929,12 +1947,22 @@
             }
         }
 
+        // Test function
+        function testFunction() {
+            alert('Test function called');
+        }
+        
         // Enhanced Quick Share Function
         function copyEnhancedQuick(team) {
+            alert('copyEnhancedQuick called for team: ' + team);
+            console.log('copyEnhancedQuick called for team:', team);
+            
             const countdown = getCurrentCountdown(team);
+            console.log('countdown:', countdown);
+            
             const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'SOUTH CAROLINA' : 'SAINTS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
             const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
             const date = team === 'bulldogs' ? 'Sep 13' : 'Sep 14';
             const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
@@ -1949,19 +1977,25 @@
 
 🔗 Share: ${window.location.origin}${window.location.pathname}?format=quick&team=${team}`;
             
+            console.log('Generated text:', text);
+            
             // Try Web Share API first
             if (navigator.share) {
+                console.log('Using Web Share API');
                 navigator.share({
                     title: `${fullTeamName} Game Countdown`,
                     text: text,
                     url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
                 }).then(() => {
+                    console.log('Web Share API succeeded');
                     showCopyFeedback('Shared successfully! 🎉');
                     playAudioFeedback('success');
-                }).catch(() => {
+                }).catch((error) => {
+                    console.log('Web Share API failed:', error);
                     copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
                 });
             } else {
+                console.log('Web Share API not available, using clipboard');
                 copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
             }
         }
@@ -1994,7 +2028,7 @@
         function drawCountdownGraphic(ctx, team) {
             const countdown = getCurrentCountdown(team);
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'SOUTH CAROLINA' : 'SAINTS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
             const date = team === 'bulldogs' ? 'SATURDAY, SEP 13' : 'SUNDAY, SEP 14';
             const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
             
@@ -2287,29 +2321,114 @@
         }
         
         function copyToClipboard(text, message) {
-            navigator.clipboard.writeText(text).then(() => {
-                showCopyFeedback(message);
-            }).catch(() => {
+            console.log('copyToClipboard called with message:', message);
+            
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    console.log('Using modern clipboard API');
+                    navigator.clipboard.writeText(text).then(() => {
+                        console.log('Clipboard write successful');
+                        showCopyFeedback(message);
+                        playAudioFeedback('success');
+                    }).catch((error) => {
+                        console.error('Clipboard write failed:', error);
+                        fallbackCopyToClipboard(text, message);
+                    });
+                } else {
+                    console.log('Modern clipboard API not available');
+                    fallbackCopyToClipboard(text, message);
+                }
+            } catch (error) {
+                console.error('Copy to clipboard error:', error);
+                fallbackCopyToClipboard(text, message);
+            }
+        }
+        
+        function fallbackCopyToClipboard(text, message) {
+            console.log('fallbackCopyToClipboard called with message:', message);
+            
+            try {
                 // Fallback for browsers that don't support clipboard API
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
                 document.body.appendChild(textArea);
+                textArea.focus();
                 textArea.select();
-                document.execCommand('copy');
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    console.log('execCommand copy result:', successful);
+                    if (successful) {
+                        showCopyFeedback(message);
+                        playAudioFeedback('success');
+                    } else {
+                        showCopyFeedback('Copy failed - please try again');
+                        playAudioFeedback('error');
+                    }
+                } catch (err) {
+                    console.error('Fallback copy failed:', err);
+                    showCopyFeedback('Copy not supported in this browser');
+                    playAudioFeedback('error');
+                }
+                
                 document.body.removeChild(textArea);
-                showCopyFeedback(message);
-            });
+            } catch (error) {
+                console.error('Fallback copy error:', error);
+                showCopyFeedback('Copy failed - please try again');
+                playAudioFeedback('error');
+            }
         }
         
         function showCopyFeedback(message) {
+            console.log('showCopyFeedback called with message:', message);
+            
+            // Remove any existing feedback
+            const existingFeedback = document.querySelector('.copy-feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+            
             const feedback = document.createElement('div');
             feedback.className = 'copy-feedback';
             feedback.textContent = message;
-            document.body.appendChild(feedback);
+            feedback.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+                border: 2px solid #FFD700;
+                border-radius: 15px;
+                padding: 20px 30px;
+                color: #FFD700;
+                font-family: 'Oswald', sans-serif;
+                font-size: 18px;
+                font-weight: 600;
+                text-align: center;
+                z-index: 10001;
+                opacity: 1;
+                cursor: pointer;
+                pointer-events: auto;
+                animation: copyFeedback 3s ease-in-out;
+            `;
             
+            document.body.appendChild(feedback);
+            console.log('Feedback element added to DOM');
+            
+            // Add click handler to dismiss
+            feedback.addEventListener('click', () => {
+                feedback.remove();
+            });
+            
+            // Auto-remove after 3 seconds
             setTimeout(() => {
-                document.body.removeChild(feedback);
-            }, 2000);
+                if (feedback.parentNode) {
+                    feedback.remove();
+                }
+            }, 3000);
         }
         
         function triggerChant(team) {
