@@ -909,7 +909,7 @@
                         aria-label="Generate and share 4K graphic for Georgia Bulldogs countdown">
                     📸 Share Graphic
                 </button>
-                <button class="copy-btn quick-btn" onclick="testFunction()"
+                <button class="copy-btn quick-btn" onclick="copyEnhancedQuick('bulldogs')"
                         aria-label="Copy enhanced quick share format for Georgia Bulldogs">
                     ⚡ Quick Share
                 </button>
@@ -1947,19 +1947,9 @@
             }
         }
 
-        // Test function
-        function testFunction() {
-            alert('Test function called');
-        }
-        
         // Enhanced Quick Share Function
         function copyEnhancedQuick(team) {
-            alert('copyEnhancedQuick called for team: ' + team);
-            console.log('copyEnhancedQuick called for team:', team);
-            
             const countdown = getCurrentCountdown(team);
-            console.log('countdown:', countdown);
-            
             const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
             const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
@@ -1977,25 +1967,19 @@
 
 🔗 Share: ${window.location.origin}${window.location.pathname}?format=quick&team=${team}`;
             
-            console.log('Generated text:', text);
-            
             // Try Web Share API first
             if (navigator.share) {
-                console.log('Using Web Share API');
                 navigator.share({
                     title: `${fullTeamName} Game Countdown`,
                     text: text,
                     url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
                 }).then(() => {
-                    console.log('Web Share API succeeded');
                     showCopyFeedback('Shared successfully! 🎉');
                     playAudioFeedback('success');
                 }).catch((error) => {
-                    console.log('Web Share API failed:', error);
                     copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
                 });
             } else {
-                console.log('Web Share API not available, using clipboard');
                 copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
             }
         }
@@ -2311,9 +2295,6 @@
         }
 
         // Audio Feedback System
-        let audioContext;
-        let lastTickTime = 0;
-        
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -2321,13 +2302,9 @@
         }
         
         function copyToClipboard(text, message) {
-            console.log('copyToClipboard called with message:', message);
-            
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    console.log('Using modern clipboard API');
                     navigator.clipboard.writeText(text).then(() => {
-                        console.log('Clipboard write successful');
                         showCopyFeedback(message);
                         playAudioFeedback('success');
                     }).catch((error) => {
@@ -2335,7 +2312,6 @@
                         fallbackCopyToClipboard(text, message);
                     });
                 } else {
-                    console.log('Modern clipboard API not available');
                     fallbackCopyToClipboard(text, message);
                 }
             } catch (error) {
@@ -2345,8 +2321,6 @@
         }
         
         function fallbackCopyToClipboard(text, message) {
-            console.log('fallbackCopyToClipboard called with message:', message);
-            
             try {
                 // Fallback for browsers that don't support clipboard API
                 const textArea = document.createElement('textarea');
@@ -2360,7 +2334,6 @@
                 
                 try {
                     const successful = document.execCommand('copy');
-                    console.log('execCommand copy result:', successful);
                     if (successful) {
                         showCopyFeedback(message);
                         playAudioFeedback('success');
@@ -2383,8 +2356,6 @@
         }
         
         function showCopyFeedback(message) {
-            console.log('showCopyFeedback called with message:', message);
-            
             // Remove any existing feedback
             const existingFeedback = document.querySelector('.copy-feedback');
             if (existingFeedback) {
@@ -2416,7 +2387,6 @@
             `;
             
             document.body.appendChild(feedback);
-            console.log('Feedback element added to DOM');
             
             // Add click handler to dismiss
             feedback.addEventListener('click', () => {
