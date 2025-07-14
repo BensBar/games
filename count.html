@@ -99,7 +99,7 @@
             opacity: 0.7;
         }
         
-        .particle.bulldogs { background: #FFD700; }
+        .particle.bulldogs { background: #BA0C2F; }
         .particle.falcons { background: #A71930; }
         
         @keyframes particleFloat {
@@ -126,7 +126,7 @@
             font-family: 'Crimson Text', serif;
             font-size: 48px;
             font-weight: 700;
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -198,7 +198,7 @@
         }
         
         .bulldogs-section::before {
-            background: linear-gradient(45deg, #FFD700, #ba0c2f, #FFD700);
+            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
         }
         
         .falcons-section::before {
@@ -272,7 +272,7 @@
         }
         
         .bulldogs .team-name {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -322,7 +322,7 @@
         
         /* Team-specific time unit styling */
         .bulldogs .time-unit {
-            border: 2px solid rgba(255, 215, 0, 0.4);
+            border: 2px solid rgba(186, 12, 47, 0.4);
         }
         
         .falcons .time-unit {
@@ -362,9 +362,9 @@
         .bulldogs .time-unit:hover {
             box-shadow: 
                 0 20px 40px rgba(0,0,0,0.4),
-                0 0 30px rgba(255, 215, 0, 0.4),
+                0 0 30px rgba(186, 12, 47, 0.4),
                 inset 0 1px 0 rgba(255,255,255,0.3);
-            border-color: rgba(255, 215, 0, 0.8);
+            border-color: rgba(186, 12, 47, 0.8);
         }
         
         .falcons .time-unit:hover {
@@ -384,7 +384,7 @@
         }
         
         .bulldogs .time-number {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
+            background: linear-gradient(45deg, #BA0C2F, #A5ACAF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -433,7 +433,7 @@
         }
         
         .bulldogs .date-time {
-            color: #FFD700;
+            color: #BA0C2F;
         }
         
         .falcons .date-time {
@@ -568,8 +568,8 @@
         }
         
         .bulldogs-canvas .canvas-preview {
-            border: 3px solid #FFD700;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            border: 3px solid #BA0C2F;
+            box-shadow: 0 0 50px rgba(186, 12, 47, 0.5);
         }
         
         .falcons-canvas .canvas-preview {
@@ -583,7 +583,7 @@
         }
         
         .bulldogs-canvas .canvas-title {
-            color: #FFD700;
+            color: #BA0C2F;
         }
         
         .falcons-canvas .canvas-title {
@@ -620,6 +620,19 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
+        
+        /* Bulldogs-specific canvas button styling */
+        .bulldogs-canvas .canvas-btn {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.5);
+            color: #BA0C2F;
+        }
+        
+        .bulldogs-canvas .canvas-btn:hover {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.8);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
+        }
 
         .canvas-btn.close-btn {
             background: linear-gradient(145deg, rgba(167, 25, 48, 0.2), rgba(167, 25, 48, 0.1));
@@ -644,6 +657,31 @@
             transform: translateY(0);
         }
         
+        /* Bulldogs-specific copy button styling */
+        .bulldogs .copy-btn {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.5);
+            color: #BA0C2F;
+        }
+        
+        .bulldogs .copy-btn.graphic-btn {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.1));
+            border: 2px solid rgba(186, 12, 47, 0.6);
+            color: #BA0C2F;
+        }
+        
+        .bulldogs .copy-btn.graphic-btn:hover {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.4), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.9);
+            box-shadow: 0 8px 25px rgba(186, 12, 47, 0.4);
+        }
+        
+        .bulldogs .copy-btn:hover {
+            background: linear-gradient(145deg, rgba(186, 12, 47, 0.3), rgba(186, 12, 47, 0.2));
+            border-color: rgba(186, 12, 47, 0.8);
+            box-shadow: 0 5px 15px rgba(186, 12, 47, 0.3);
+        }
+        
         .copy-feedback {
             position: fixed;
             top: 50%;
@@ -664,6 +702,11 @@
             pointer-events: none;
         }
         
+        .bulldogs .copy-feedback {
+            border: 2px solid #BA0C2F;
+            color: #BA0C2F;
+        }
+        
         @keyframes copyFeedback {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
             20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -682,7 +725,7 @@
         }
         
         .bulldogs .team-chant {
-            background: linear-gradient(45deg, #FFD700, #FFA500, #FFD700);
+            background: linear-gradient(45deg, #BA0C2F, #A5ACAF, #000000);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -830,7 +873,7 @@
                 </div>
                 <div class="team-name">GEORGIA BULLDOGS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> SOUTH CAROLINA GAMECOCKS
+                    <span class="vs-text">VS</span> MARSHALL THUNDERING HERD
                 </div>
             </div>
             
@@ -1958,7 +2001,7 @@
             // Team colors
             const colors = team === 'bulldogs' ? {
                 primary: '#BA0C2F',
-                secondary: '#FFD700',
+                secondary: '#A5ACAF',
                 accent: '#000000'
             } : {
                 primary: '#A71930',
@@ -2274,8 +2317,10 @@
             const originalTransform = chant.style.transform;
             const originalFilter = chant.style.filter;
             
+            const shadowColor = team === 'bulldogs' ? 'rgba(186, 12, 47, 1)' : 'rgba(167, 25, 48, 1)';
+            
             chant.style.transform = 'scale(1.2)';
-            chant.style.filter = 'drop-shadow(0 0 40px rgba(255, 215, 0, 1))';
+            chant.style.filter = `drop-shadow(0 0 40px ${shadowColor})`;
             
             setTimeout(() => {
                 chant.style.transform = originalTransform;
@@ -2288,7 +2333,13 @@
             effect.style.position = 'absolute';
             effect.style.width = '80px';
             effect.style.height = '80px';
-            effect.style.border = '2px solid #FFD700';
+            
+            // Determine if we're in the bulldogs or falcons section
+            const target = e.target;
+            const bulldogsSection = target.closest('.bulldogs');
+            const borderColor = bulldogsSection ? '#BA0C2F' : '#FFD700';
+            
+            effect.style.border = `2px solid ${borderColor}`;
             effect.style.borderRadius = '50%';
             effect.style.left = e.clientX - 40 + 'px';
             effect.style.top = e.clientY - 40 + 'px';
