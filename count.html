@@ -279,7 +279,7 @@
         }
         
         .falcons .team-name {
-            background: linear-gradient(45deg, #A71930, #CC2340, #A71930);
+            background: linear-gradient(45deg, #FF4444, #FF6B6B, #FF4444);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -391,11 +391,11 @@
         }
         
         .falcons .time-number {
-            background: linear-gradient(45deg, #A71930, #CC2340);
+            background: linear-gradient(45deg, #FF4444, #FF6B6B);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 15px rgba(167, 25, 48, 0.5);
+            text-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
         }
         
         .time-number.updating {
@@ -437,7 +437,7 @@
         }
         
         .falcons .date-time {
-            color: #A71930;
+            color: #FF4444;
         }
         
         .venue-info {
@@ -526,17 +526,17 @@
         }
 
         .copy-btn.quick-btn {
-            background: linear-gradient(145deg, rgba(167, 25, 48, 0.3), rgba(167, 25, 48, 0.1));
-            border: 2px solid rgba(167, 25, 48, 0.6);
-            color: #CC2340;
+            background: linear-gradient(145deg, rgba(255, 68, 68, 0.3), rgba(255, 68, 68, 0.1));
+            border: 2px solid rgba(255, 68, 68, 0.6);
+            color: #FF4444;
             font-weight: 700;
         }
 
         .copy-btn.quick-btn:hover {
-            background: linear-gradient(145deg, rgba(167, 25, 48, 0.4), rgba(167, 25, 48, 0.2));
-            border-color: rgba(167, 25, 48, 0.9);
+            background: linear-gradient(145deg, rgba(255, 68, 68, 0.4), rgba(255, 68, 68, 0.2));
+            border-color: rgba(255, 68, 68, 0.9);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(167, 25, 48, 0.4);
+            box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
         }
 
         .canvas-container {
@@ -733,7 +733,7 @@
         }
         
         .falcons .team-chant {
-            background: linear-gradient(45deg, #A71930, #CC2340, #A71930);
+            background: linear-gradient(45deg, #FF4444, #FF6B6B, #FF4444);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -898,7 +898,7 @@
             </div>
             
             <div class="game-details">
-                <div class="date-time">Saturday, September 6, 2025 • 3:30 PM ET</div>
+                <div class="date-time">Saturday, August 30, 2025 • 3:30 PM ET</div>
                 <div class="venue-info">🏟️ Sanford Stadium, Athens, GA</div>
                 <div class="venue-info">📺 ESPN</div>
                 <div class="venue-info">🎫 SEC Conference Game</div>
@@ -1862,7 +1862,7 @@
         }
         
         // Game dates
-        const bulldogsGameDate = new Date('2025-09-06T15:30:00-04:00').getTime();
+        const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
         const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
         
         function createParticles() {
@@ -1954,7 +1954,7 @@
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
             const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
             const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
-            const date = team === 'bulldogs' ? 'Sep 6' : 'Sep 14';
+            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 14';
             const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
             const tv = team === 'bulldogs' ? 'ESPN' : 'CBS';
             const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
@@ -2020,7 +2020,7 @@
             const countdown = getCurrentCountdown(team);
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
             const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
-            const date = team === 'bulldogs' ? 'SATURDAY, SEP 6' : 'SUNDAY, SEP 14';
+            const date = team === 'bulldogs' ? 'SATURDAY, AUG 30' : 'SUNDAY, SEP 14';
             const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
             
             // Team colors
@@ -2624,7 +2624,7 @@
     <script>
         // Direct countdown initialization - placed at end to ensure DOM is ready
         (function() {
-            const bulldogsGameDate = new Date('2025-09-06T15:30:00-04:00').getTime();
+            const bulldogsGameDate = new Date('2025-08-30T15:30:00-04:00').getTime();
             const falconsGameDate = new Date('2025-09-14T13:00:00-04:00').getTime();
             
             function directUpdateCountdown(gameDate, prefix) {
