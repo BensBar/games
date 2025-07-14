@@ -24,7 +24,7 @@
     <script src="https://unpkg.com/three@0.144.0/build/three.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;600;700&family=Crimson+Text:wght@400;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
         
         * {
             margin: 0;
@@ -45,6 +45,34 @@
             position: relative;
             margin: 0;
             padding: 0;
+            /* 4K Optimizations */
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-feature-settings: "liga", "kern";
+        }
+        
+        /* 4K Ultra-High Resolution Media Queries */
+        @media screen and (min-width: 3840px) {
+            html {
+                font-size: 20px; /* Base font size increase for 4K */
+            }
+        }
+        
+        @media screen and (min-width: 2560px) {
+            html {
+                font-size: 18px; /* Base font size increase for 1440p+ */
+            }
+        }
+        
+        @media screen and (-webkit-min-device-pixel-ratio: 2),
+               screen and (min-resolution: 192dpi) {
+            /* High-DPI optimizations */
+            * {
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
         }
         
         #webgl-container {
@@ -74,6 +102,66 @@
             pointer-events: none;
         }
         
+        /* Enhanced 4K Background Patterns */
+        .background-effects::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            animation: backgroundPatternMove 20s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundPatternMove {
+            0%, 100% { 
+                background: 
+                    radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            }
+            33% { 
+                background: 
+                    radial-gradient(circle at 75% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 25% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
+            }
+            66% { 
+                background: 
+                    radial-gradient(circle at 50% 75%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 25%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            }
+        }
+        
+        .background-effects::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(186, 12, 47, 0.03) 40%, transparent 50%),
+                linear-gradient(-45deg, transparent 30%, rgba(167, 25, 48, 0.03) 40%, transparent 50%);
+            animation: backgroundTexture 15s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundTexture {
+            0%, 100% { 
+                transform: translateX(0) translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translateX(50px) translateY(30px) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
         .stadium-lights {
             position: absolute;
             width: 100%;
@@ -86,32 +174,85 @@
         }
         
         @keyframes stadiumGlow {
-            0% { opacity: 0.6; }
-            100% { opacity: 1; }
+            0% { 
+                opacity: 0.6;
+                filter: blur(2px);
+            }
+            50% { 
+                opacity: 0.8;
+                filter: blur(1px);
+            }
+            100% { 
+                opacity: 1;
+                filter: blur(0px);
+            }
         }
         
+        /* Enhanced Premium Particle System */
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
             border-radius: 50%;
             animation: particleFloat 12s linear infinite;
             opacity: 0.7;
+            filter: blur(0.5px);
+            box-shadow: 0 0 10px currentColor;
         }
         
-        .particle.bulldogs { background: #BA0C2F; }
-        .particle.falcons { background: #A71930; }
+        .particle.bulldogs { 
+            background: radial-gradient(circle, #BA0C2F 0%, #C5282F 50%, #BA0C2F 100%);
+            color: #BA0C2F;
+        }
+        
+        .particle.falcons { 
+            background: radial-gradient(circle, #A71930 0%, #000000 50%, #A71930 100%);
+            color: #A71930;
+        }
+        
+        /* Team-themed particle shapes */
+        .particle.paw {
+            width: 8px;
+            height: 8px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(45deg);
+        }
+        
+        .particle.wing {
+            width: 12px;
+            height: 4px;
+            border-radius: 50% 50% 50% 50% / 100% 100% 0% 0%;
+            transform: rotate(25deg);
+        }
+        
+        .particle.football {
+            width: 6px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #8B4513 0%, #A0522D 100%);
+        }
         
         @keyframes particleFloat {
             0% { 
-                transform: translateY(100vh) translateX(0) rotate(0deg);
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
                 opacity: 0;
+                filter: blur(2px);
             }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
+            10% { 
+                opacity: 1;
+                filter: blur(0px);
+            }
+            50% {
+                transform: translateY(50vh) translateX(75px) rotate(180deg) scale(1);
+                opacity: 0.8;
+                filter: blur(0px);
+            }
+            90% { 
+                opacity: 0.6;
+                filter: blur(1px);
+            }
             100% { 
-                transform: translateY(-100px) translateX(150px) rotate(360deg);
+                transform: translateY(-100px) translateX(150px) rotate(360deg) scale(0.3);
                 opacity: 0;
+                filter: blur(2px);
             }
         }
         
@@ -123,22 +264,60 @@
         }
         
         .georgia-pride {
-            font-family: 'Crimson Text', serif;
+            font-family: 'Orbitron', 'Crimson Text', serif;
             font-size: 48px;
-            font-weight: 700;
-            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF, #000000);
+            font-weight: 900;
+            background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-            letter-spacing: 3px;
+            text-shadow: 
+                0 0 10px rgba(186, 12, 47, 0.5),
+                0 0 20px rgba(255, 215, 0, 0.3),
+                0 0 30px rgba(165, 172, 175, 0.2);
+            letter-spacing: 4px;
             margin-bottom: 10px;
-            animation: textShimmer 4s ease-in-out infinite;
+            animation: premiumTextShimmer 6s ease-in-out infinite;
+            position: relative;
+            transform-style: preserve-3d;
         }
         
-        @keyframes textShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .georgia-pride::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: blur(2px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: premiumTextShimmer 6s ease-in-out infinite reverse;
+        }
+        
+        @keyframes premiumTextShimmer {
+            0%, 100% { 
+                background-position: 0% 50%;
+                transform: scale(1) rotateX(0deg);
+            }
+            25% { 
+                background-position: 100% 50%;
+                transform: scale(1.02) rotateX(2deg);
+            }
+            50% { 
+                background-position: 200% 50%;
+                transform: scale(1.05) rotateX(0deg);
+            }
+            75% { 
+                background-position: 300% 50%;
+                transform: scale(1.02) rotateX(-2deg);
+            }
         }
         
         .subtitle {
@@ -146,6 +325,23 @@
             font-weight: 400;
             color: rgba(255, 255, 255, 0.9);
             margin-bottom: 40px;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.3),
+                0 0 20px rgba(186, 12, 47, 0.2);
+            animation: subtitleGlow 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes subtitleGlow {
+            0% { 
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.3),
+                    0 0 20px rgba(186, 12, 47, 0.2);
+            }
+            100% { 
+                text-shadow: 
+                    0 0 15px rgba(255, 255, 255, 0.5),
+                    0 0 30px rgba(186, 12, 47, 0.4);
+            }
         }
         
         .games-container {
@@ -161,28 +357,57 @@
         }
         
         .game-section {
-            background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.65));
             border-radius: 25px;
             padding: 40px;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 3px solid transparent;
             background-clip: padding-box;
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,255,255,0.1);
+                0 25px 50px rgba(0,0,0,0.7),
+                0 15px 35px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.15),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
             position: relative;
             overflow: hidden;
             min-width: 500px;
             flex: 1;
             max-width: 600px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .game-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.05) 40%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(255, 255, 255, 0.05) 60%, 
+                transparent 70%);
+            animation: glassScanline 8s linear infinite;
+            pointer-events: none;
+            border-radius: 25px;
+        }
+        
+        @keyframes glassScanline {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
         }
         
         .game-section:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(5deg);
             box-shadow: 
-                0 30px 60px rgba(0,0,0,0.8),
-                inset 0 1px 0 rgba(255,255,255,0.2);
+                0 40px 80px rgba(0,0,0,0.9),
+                0 20px 50px rgba(0,0,0,0.7),
+                inset 0 1px 0 rgba(255,255,255,0.25),
+                inset 0 -1px 0 rgba(0,0,0,0.4);
         }
         
         .game-section::before {
@@ -194,20 +419,51 @@
             bottom: -3px;
             border-radius: 28px;
             z-index: -1;
-            animation: borderGlow 4s ease-in-out infinite;
+            animation: premiumBorderGlow 6s ease-in-out infinite;
+            filter: blur(1px);
         }
         
         .bulldogs-section::before {
-            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF, #000000);
+            background: linear-gradient(45deg, 
+                #BA0C2F 0%, 
+                #FFD700 25%, 
+                #C5282F 50%, 
+                #A5ACAF 75%, 
+                #000000 100%);
+            background-size: 400% 400%;
         }
         
         .falcons-section::before {
-            background: linear-gradient(45deg, #A71930, #000000, #A71930);
+            background: linear-gradient(45deg, 
+                #A71930 0%, 
+                #000000 25%, 
+                #A71930 50%, 
+                #FFFFFF 75%, 
+                #000000 100%);
+            background-size: 400% 400%;
         }
         
-        @keyframes borderGlow {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+        @keyframes premiumBorderGlow {
+            0%, 100% { 
+                opacity: 0.7;
+                background-position: 0% 50%;
+                filter: blur(1px);
+            }
+            25% { 
+                opacity: 0.9;
+                background-position: 100% 50%;
+                filter: blur(0px);
+            }
+            50% { 
+                opacity: 1;
+                background-position: 200% 50%;
+                filter: blur(0px);
+            }
+            75% { 
+                opacity: 0.9;
+                background-position: 300% 50%;
+                filter: blur(1px);
+            }
         }
         
         .team-header {
@@ -218,32 +474,46 @@
         .team-logo {
             font-size: 80px;
             margin-bottom: 15px;
-            animation: logoFloat 3s ease-in-out infinite;
+            animation: premiumLogoFloat 4s ease-in-out infinite;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 120px;
+            transform-style: preserve-3d;
         }
         
         .team-logo-svg {
             width: 100px;
             height: 100px;
-            transition: all 0.3s ease;
-            filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: 
+                drop-shadow(0 0 20px rgba(186, 12, 47, 0.8))
+                drop-shadow(0 0 40px rgba(186, 12, 47, 0.4))
+                drop-shadow(0 0 60px rgba(186, 12, 47, 0.2));
+            transform-style: preserve-3d;
         }
         
         .falcons .team-logo-svg {
-            filter: drop-shadow(0 0 20px rgba(167, 25, 48, 0.8));
+            filter: 
+                drop-shadow(0 0 20px rgba(167, 25, 48, 0.8))
+                drop-shadow(0 0 40px rgba(167, 25, 48, 0.4))
+                drop-shadow(0 0 60px rgba(167, 25, 48, 0.2));
         }
         
         .team-logo-svg:hover {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 30px rgba(186, 12, 47, 1));
+            transform: scale(1.15) perspective(1000px) rotateY(15deg) rotateX(5deg);
+            filter: 
+                drop-shadow(0 0 30px rgba(186, 12, 47, 1))
+                drop-shadow(0 0 60px rgba(186, 12, 47, 0.6))
+                drop-shadow(0 0 90px rgba(186, 12, 47, 0.3));
         }
         
         .falcons .team-logo-svg:hover {
-            filter: drop-shadow(0 0 30px rgba(167, 25, 48, 1));
+            filter: 
+                drop-shadow(0 0 30px rgba(167, 25, 48, 1))
+                drop-shadow(0 0 60px rgba(167, 25, 48, 0.6))
+                drop-shadow(0 0 90px rgba(167, 25, 48, 0.3));
         }
         
         .team-logo-fallback {
@@ -251,38 +521,107 @@
             font-size: 80px;
         }
         
-        @keyframes logoFloat {
+        @keyframes premiumLogoFloat {
             0%, 100% { 
-                transform: scale(1) rotate(0deg);
-                filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
+                transform: scale(1) rotate(0deg) perspective(1000px) rotateY(0deg);
+                filter: 
+                    drop-shadow(0 0 20px rgba(186, 12, 47, 0.8))
+                    drop-shadow(0 0 40px rgba(186, 12, 47, 0.4));
+            }
+            25% { 
+                transform: scale(1.05) rotate(2deg) perspective(1000px) rotateY(5deg);
+                filter: 
+                    drop-shadow(0 0 25px rgba(186, 12, 47, 0.9))
+                    drop-shadow(0 0 50px rgba(186, 12, 47, 0.5));
             }
             50% { 
-                transform: scale(1.05) rotate(3deg);
-                filter: drop-shadow(0 0 30px rgba(186, 12, 47, 1));
+                transform: scale(1.1) rotate(0deg) perspective(1000px) rotateY(10deg);
+                filter: 
+                    drop-shadow(0 0 30px rgba(186, 12, 47, 1))
+                    drop-shadow(0 0 60px rgba(186, 12, 47, 0.6));
+            }
+            75% { 
+                transform: scale(1.05) rotate(-2deg) perspective(1000px) rotateY(5deg);
+                filter: 
+                    drop-shadow(0 0 25px rgba(186, 12, 47, 0.9))
+                    drop-shadow(0 0 50px rgba(186, 12, 47, 0.5));
             }
         }
         
         .team-name {
-            font-family: 'Crimson Text', serif;
+            font-family: 'Orbitron', 'Crimson Text', serif;
             font-size: 36px;
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 10px;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            letter-spacing: 3px;
+            text-shadow: 
+                0 0 10px rgba(186, 12, 47, 0.5),
+                0 0 20px rgba(186, 12, 47, 0.3),
+                0 0 30px rgba(186, 12, 47, 0.1);
+            position: relative;
+            transform-style: preserve-3d;
         }
         
         .bulldogs .team-name {
-            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF);
+            background: linear-gradient(45deg, 
+                #BA0C2F 0%, 
+                #FFD700 25%, 
+                #C5282F 50%, 
+                #A5ACAF 75%, 
+                #BA0C2F 100%);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: bulldogsNameGlow 8s ease-in-out infinite;
         }
         
         .falcons .team-name {
-            background: linear-gradient(45deg, #FF4444, #FF6B6B, #FF4444);
+            background: linear-gradient(45deg, 
+                #A71930 0%, 
+                #FFFFFF 25%, 
+                #000000 50%, 
+                #A71930 75%, 
+                #FFFFFF 100%);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: falconsNameGlow 8s ease-in-out infinite;
+        }
+        
+        @keyframes bulldogsNameGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                text-shadow: 
+                    0 0 10px rgba(186, 12, 47, 0.5),
+                    0 0 20px rgba(255, 215, 0, 0.3),
+                    0 0 30px rgba(186, 12, 47, 0.1);
+            }
+            50% { 
+                background-position: 100% 50%;
+                text-shadow: 
+                    0 0 15px rgba(186, 12, 47, 0.7),
+                    0 0 30px rgba(255, 215, 0, 0.5),
+                    0 0 45px rgba(186, 12, 47, 0.2);
+            }
+        }
+        
+        @keyframes falconsNameGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                text-shadow: 
+                    0 0 10px rgba(167, 25, 48, 0.5),
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    0 0 30px rgba(167, 25, 48, 0.1);
+            }
+            50% { 
+                background-position: 100% 50%;
+                text-shadow: 
+                    0 0 15px rgba(167, 25, 48, 0.7),
+                    0 0 30px rgba(255, 255, 255, 0.5),
+                    0 0 45px rgba(167, 25, 48, 0.2);
+            }
         }
         
         .opponent {
@@ -306,27 +645,58 @@
         }
         
         .time-unit {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-            border-radius: 15px;
-            padding: 20px 15px;
-            min-width: 80px;
-            backdrop-filter: blur(15px);
+            background: linear-gradient(145deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.15) 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 20px;
+            padding: 25px 20px;
+            min-width: 90px;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             box-shadow: 
-                0 10px 25px rgba(0,0,0,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.2);
+                0 15px 35px rgba(0,0,0,0.4),
+                0 8px 20px rgba(0,0,0,0.3),
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -2px 0 rgba(0,0,0,0.2);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .time-unit::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 50%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 20px;
+            pointer-events: none;
         }
         
         /* Team-specific time unit styling */
         .bulldogs .time-unit {
-            border: 2px solid rgba(186, 12, 47, 0.4);
+            border: 2px solid rgba(186, 12, 47, 0.5);
+            background: linear-gradient(145deg, 
+                rgba(186, 12, 47, 0.15) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(186, 12, 47, 0.05) 100%);
         }
         
         .falcons .time-unit {
-            border: 2px solid rgba(167, 25, 48, 0.4);
+            border: 2px solid rgba(167, 25, 48, 0.5);
+            background: linear-gradient(145deg, 
+                rgba(167, 25, 48, 0.15) 0%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(167, 25, 48, 0.05) 100%);
         }
         
         .time-unit::before {
@@ -336,71 +706,133 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(186, 12, 47, 0.1), transparent);
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 70%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s ease;
             transform: translateX(-100%);
         }
         
         .time-unit:hover::before {
             opacity: 1;
-            animation: shimmer 0.8s ease-out;
+            animation: premiumShimmer 1s ease-out;
         }
         
-        @keyframes shimmer {
+        @keyframes premiumShimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
         
         .time-unit:hover {
-            transform: translateY(-8px) scale(1.05);
+            transform: translateY(-12px) scale(1.08) perspective(1000px) rotateX(5deg) rotateY(3deg);
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.3);
+                0 25px 50px rgba(0,0,0,0.5),
+                0 15px 30px rgba(0,0,0,0.3),
+                inset 0 3px 0 rgba(255,255,255,0.4),
+                inset 0 -3px 0 rgba(0,0,0,0.3);
         }
         
         .bulldogs .time-unit:hover {
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
-                0 0 30px rgba(186, 12, 47, 0.4),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            border-color: rgba(186, 12, 47, 0.8);
+                0 25px 50px rgba(0,0,0,0.5),
+                0 0 40px rgba(186, 12, 47, 0.5),
+                0 0 60px rgba(255, 215, 0, 0.3),
+                inset 0 3px 0 rgba(255,255,255,0.4),
+                inset 0 -3px 0 rgba(0,0,0,0.3);
+            border-color: rgba(186, 12, 47, 0.9);
         }
         
         .falcons .time-unit:hover {
             box-shadow: 
-                0 20px 40px rgba(0,0,0,0.4),
-                0 0 30px rgba(167, 25, 48, 0.4),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            border-color: rgba(167, 25, 48, 0.8);
+                0 25px 50px rgba(0,0,0,0.5),
+                0 0 40px rgba(167, 25, 48, 0.5),
+                0 0 60px rgba(255, 255, 255, 0.3),
+                inset 0 3px 0 rgba(255,255,255,0.4),
+                inset 0 -3px 0 rgba(0,0,0,0.3);
+            border-color: rgba(167, 25, 48, 0.9);
         }
         
         .time-number {
-            font-size: 32px;
-            font-weight: 700;
-            text-shadow: 0 0 15px rgba(186, 12, 47, 0.5);
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            font-weight: 800;
             margin-bottom: 8px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            text-shadow: 
+                0 0 10px rgba(255, 255, 255, 0.5),
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
         }
         
         .bulldogs .time-number {
-            background: linear-gradient(45deg, #BA0C2F, #C5282F, #A5ACAF);
+            background: linear-gradient(45deg, 
+                #BA0C2F 0%, 
+                #FFD700 25%, 
+                #C5282F 50%, 
+                #A5ACAF 75%, 
+                #BA0C2F 100%);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: bulldogsNumberGlow 6s ease-in-out infinite;
         }
         
         .falcons .time-number {
-            background: linear-gradient(45deg, #FF4444, #FF6B6B);
+            background: linear-gradient(45deg, 
+                #A71930 0%, 
+                #FFFFFF 25%, 
+                #000000 50%, 
+                #A71930 75%, 
+                #FFFFFF 100%);
+            background-size: 400% 400%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+            animation: falconsNumberGlow 6s ease-in-out infinite;
+        }
+        
+        @keyframes bulldogsNumberGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                text-shadow: 
+                    0 0 10px rgba(186, 12, 47, 0.5),
+                    0 0 20px rgba(255, 215, 0, 0.3),
+                    0 0 30px rgba(186, 12, 47, 0.1);
+            }
+            50% { 
+                background-position: 100% 50%;
+                text-shadow: 
+                    0 0 15px rgba(186, 12, 47, 0.7),
+                    0 0 30px rgba(255, 215, 0, 0.5),
+                    0 0 45px rgba(186, 12, 47, 0.2);
+            }
+        }
+        
+        @keyframes falconsNumberGlow {
+            0%, 100% { 
+                background-position: 0% 50%;
+                text-shadow: 
+                    0 0 10px rgba(167, 25, 48, 0.5),
+                    0 0 20px rgba(255, 255, 255, 0.3),
+                    0 0 30px rgba(167, 25, 48, 0.1);
+            }
+            50% { 
+                background-position: 100% 50%;
+                text-shadow: 
+                    0 0 15px rgba(167, 25, 48, 0.7),
+                    0 0 30px rgba(255, 255, 255, 0.5),
+                    0 0 45px rgba(167, 25, 48, 0.2);
+            }
         }
         
         .time-number.updating {
-            transform: scale(1.2);
-            filter: brightness(1.3) drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
+            transform: scale(1.3) perspective(1000px) rotateY(360deg);
+            filter: brightness(1.5) drop-shadow(0 0 30px rgba(186, 12, 47, 0.8));
         }
         
         .time-label {
@@ -763,6 +1195,121 @@
             z-index: 5;
         }
         
+        /* Enhanced Team-Specific Floating Animations */
+        .bulldogs-paw {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #BA0C2F 0%, #FFD700 50%, transparent 100%);
+            border-radius: 50% 50% 50% 0;
+            opacity: 0;
+            animation: pawFloat 12s linear infinite;
+            z-index: 5;
+        }
+        
+        .bulldogs-paw::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #BA0C2F;
+            border-radius: 50%;
+            top: -4px;
+            left: 2px;
+        }
+        
+        .bulldogs-paw::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #BA0C2F;
+            border-radius: 50%;
+            top: -2px;
+            right: 2px;
+        }
+        
+        .falcons-wing {
+            position: absolute;
+            width: 30px;
+            height: 8px;
+            background: linear-gradient(45deg, #A71930 0%, #FFFFFF 50%, #000000 100%);
+            border-radius: 50% 50% 50% 50% / 100% 100% 0% 0%;
+            opacity: 0;
+            animation: wingFloat 10s linear infinite;
+            z-index: 5;
+            transform-origin: center left;
+        }
+        
+        .falcons-wing::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 6px;
+            background: linear-gradient(45deg, #A71930 0%, #FFFFFF 100%);
+            border-radius: 50% 50% 50% 50% / 100% 100% 0% 0%;
+            top: -2px;
+            left: 5px;
+        }
+        
+        @keyframes pawFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            5% { 
+                opacity: 0.6;
+            }
+            10% { 
+                transform: translateY(90vh) translateX(20px) rotate(45deg) scale(0.8);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50vh) translateX(100px) rotate(180deg) scale(1.2);
+                opacity: 0.6;
+            }
+            90% { 
+                opacity: 0.3;
+            }
+            100% { 
+                transform: translateY(-50px) translateX(200px) rotate(360deg) scale(0.2);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes wingFloat {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg) scaleY(0.5);
+                opacity: 0;
+            }
+            5% { 
+                opacity: 0.7;
+            }
+            10% { 
+                transform: translateY(90vh) translateX(30px) rotate(15deg) scaleY(0.8);
+                opacity: 0.9;
+            }
+            25% {
+                transform: translateY(70vh) translateX(80px) rotate(30deg) scaleY(1.2);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(40vh) translateX(150px) rotate(45deg) scaleY(1.5);
+                opacity: 0.6;
+            }
+            75% {
+                transform: translateY(20vh) translateX(220px) rotate(60deg) scaleY(1.2);
+                opacity: 0.4;
+            }
+            90% { 
+                opacity: 0.2;
+            }
+            100% { 
+                transform: translateY(-30px) translateX(300px) rotate(90deg) scaleY(0.3);
+                opacity: 0;
+            }
+        }
+        
         @keyframes iconFloat {
             0% { 
                 transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
@@ -783,7 +1330,85 @@
         .icon-5 { left: 80%; animation-delay: 12s; }
         .icon-6 { left: 92%; animation-delay: 15s; }
         
-        @media (max-width: 1200px) {
+        /* 4K Ultra-High Resolution Optimizations */
+        @media screen and (min-width: 3840px) {
+            .georgia-pride {
+                font-size: 64px;
+                letter-spacing: 6px;
+            }
+            
+            .team-name {
+                font-size: 48px;
+                letter-spacing: 4px;
+            }
+            
+            .time-number {
+                font-size: 48px;
+            }
+            
+            .time-unit {
+                min-width: 120px;
+                padding: 35px 25px;
+            }
+            
+            .game-section {
+                min-width: 700px;
+                padding: 60px;
+            }
+            
+            .team-logo-svg {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .particle {
+                width: 8px;
+                height: 8px;
+            }
+            
+            .bulldogs-paw {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .falcons-wing {
+                width: 45px;
+                height: 12px;
+            }
+        }
+        
+        @media screen and (min-width: 2560px) and (max-width: 3839px) {
+            .georgia-pride {
+                font-size: 56px;
+                letter-spacing: 5px;
+            }
+            
+            .team-name {
+                font-size: 42px;
+                letter-spacing: 3px;
+            }
+            
+            .time-number {
+                font-size: 42px;
+            }
+            
+            .time-unit {
+                min-width: 100px;
+                padding: 30px 22px;
+            }
+            
+            .game-section {
+                min-width: 600px;
+                padding: 50px;
+            }
+            
+            .team-logo-svg {
+                width: 125px;
+                height: 125px;
+            }
+        }
+        
+        @media screen and (max-width: 1200px) {
             .games-container {
                 flex-direction: column;
                 gap: 40px;
@@ -794,28 +1419,55 @@
                 min-width: 400px;
                 max-width: 500px;
             }
+            
+            .bulldogs-paw, .falcons-wing {
+                display: none; /* Hide complex animations on smaller screens for performance */
+            }
         }
         
-        @media (max-width: 768px) {
-            .georgia-pride { font-size: 36px; }
-            .subtitle { font-size: 18px; }
+        @media screen and (max-width: 768px) {
+            .georgia-pride { 
+                font-size: 32px; 
+                letter-spacing: 2px;
+            }
+            
+            .subtitle { 
+                font-size: 18px; 
+            }
+            
             .game-section { 
                 min-width: 300px; 
                 padding: 30px 20px; 
             }
-            .team-name { font-size: 28px; }
-            .time-number { font-size: 24px; }
-            .team-chant { font-size: 24px; }
-            .countdown { gap: 15px; }
+            
+            .team-name { 
+                font-size: 24px; 
+                letter-spacing: 1px;
+            }
+            
+            .time-number { 
+                font-size: 28px; 
+            }
+            
+            .team-chant { 
+                font-size: 20px; 
+            }
+            
+            .countdown { 
+                gap: 15px; 
+            }
+            
             .time-unit { 
                 min-width: 65px; 
                 padding: 15px 10px; 
             }
+            
             .action-buttons {
                 flex-direction: column;
                 gap: 15px;
                 align-items: center;
             }
+            
             .copy-btn {
                 padding: 12px 20px;
                 font-size: 14px;
@@ -823,19 +1475,52 @@
                 width: 80%;
                 max-width: 200px;
             }
+            
             .canvas-preview {
                 max-width: 95vw;
                 max-height: 60vh;
             }
+            
             .canvas-controls {
                 flex-direction: column;
                 gap: 15px;
                 align-items: center;
             }
+            
             .canvas-btn {
                 padding: 12px 20px;
                 font-size: 14px;
                 min-width: 140px;
+            }
+            
+            /* Disable heavy animations on mobile for better performance */
+            .particle {
+                animation-duration: 20s;
+            }
+            
+            .georgia-pride::before {
+                display: none;
+            }
+        }
+        
+        /* High refresh rate display optimizations */
+        @media screen and (min-resolution: 120dpi) {
+            .time-number, .team-name, .georgia-pride {
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            
+            .particle {
+                will-change: transform, opacity;
+            }
+            
+            .time-unit {
+                will-change: transform, box-shadow;
+            }
+            
+            .game-section {
+                will-change: transform, box-shadow;
             }
         }
     </style>
@@ -858,8 +1543,20 @@
     <div class="floating-icons icon-5">🏟️</div>
     <div class="floating-icons icon-6">⚡</div>
     
+    <!-- Team-specific animated elements -->
+    <div class="bulldogs-paw" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="bulldogs-paw" style="left: 25%; animation-delay: 3s;"></div>
+    <div class="bulldogs-paw" style="left: 40%; animation-delay: 6s;"></div>
+    <div class="bulldogs-paw" style="left: 55%; animation-delay: 9s;"></div>
+    
+    <div class="falcons-wing" style="left: 15%; animation-delay: 1s;"></div>
+    <div class="falcons-wing" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="falcons-wing" style="left: 45%; animation-delay: 7s;"></div>
+    <div class="falcons-wing" style="left: 60%; animation-delay: 10s;"></div>
+    <div class="falcons-wing" style="left: 75%; animation-delay: 13s;"></div>
+    
     <div class="main-header">
-        <div class="georgia-pride">BULLDOGS & FALCONS</div>
+        <div class="georgia-pride" data-text="BULLDOGS & FALCONS">BULLDOGS & FALCONS</div>
         <div class="subtitle">Georgia's Finest - College & Pro Football Countdown</div>
     </div>
     
@@ -1868,9 +2565,25 @@
         function createParticles() {
             const particleContainer = document.getElementById('particles');
             
-            for (let i = 0; i < 40; i++) {
+            // Create enhanced particles with team themes
+            for (let i = 0; i < 60; i++) {
                 const particle = document.createElement('div');
-                particle.className = i % 2 === 0 ? 'particle bulldogs' : 'particle falcons';
+                const particleType = Math.random();
+                
+                if (particleType < 0.3) {
+                    // Bulldogs paw particles
+                    particle.className = 'particle bulldogs paw';
+                } else if (particleType < 0.6) {
+                    // Falcons wing particles
+                    particle.className = 'particle falcons wing';
+                } else if (particleType < 0.8) {
+                    // Football particles
+                    particle.className = 'particle football';
+                } else {
+                    // Regular team particles
+                    particle.className = i % 2 === 0 ? 'particle bulldogs' : 'particle falcons';
+                }
+                
                 particle.style.left = Math.random() * 100 + '%';
                 particle.style.animationDelay = Math.random() * 12 + 's';
                 particle.style.animationDuration = (Math.random() * 8 + 12) + 's';
