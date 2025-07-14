@@ -196,6 +196,7 @@
             opacity: 0.7;
             filter: blur(0.5px);
             box-shadow: 0 0 10px currentColor;
+            will-change: transform;
         }
         
         .particle.bulldogs { 
@@ -232,7 +233,7 @@
         
         @keyframes particleFloat {
             0% { 
-                transform: translateY(100vh) translateX(0) rotate(0deg) scale(0.5);
+                transform: translate3d(0, 100vh, 0) rotate(0deg) scale(0.5);
                 opacity: 0;
                 filter: blur(2px);
             }
@@ -241,7 +242,7 @@
                 filter: blur(0px);
             }
             50% {
-                transform: translateY(50vh) translateX(75px) rotate(180deg) scale(1);
+                transform: translate3d(75px, 50vh, 0) rotate(180deg) scale(1);
                 opacity: 0.8;
                 filter: blur(0px);
             }
@@ -250,7 +251,7 @@
                 filter: blur(1px);
             }
             100% { 
-                transform: translateY(-100px) translateX(150px) rotate(360deg) scale(0.3);
+                transform: translate3d(150px, -100px, 0) rotate(360deg) scale(0.3);
                 opacity: 0;
                 filter: blur(2px);
             }
@@ -268,7 +269,7 @@
             font-size: 48px;
             font-weight: 900;
             background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -291,7 +292,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -360,8 +361,8 @@
             background: linear-gradient(145deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.65));
             border-radius: 25px;
             padding: 40px;
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
             border: 3px solid transparent;
             background-clip: padding-box;
             box-shadow: 
@@ -376,6 +377,7 @@
             max-width: 600px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
+            will-change: transform;
         }
         
         .game-section::after {
@@ -430,7 +432,7 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #000000 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
         }
         
         .falcons-section::before {
@@ -440,7 +442,7 @@
                 #A71930 50%, 
                 #FFFFFF 75%, 
                 #000000 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
         }
         
         @keyframes premiumBorderGlow {
@@ -488,32 +490,28 @@
             height: 100px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             filter: 
-                drop-shadow(0 0 20px rgba(186, 12, 47, 0.8))
-                drop-shadow(0 0 40px rgba(186, 12, 47, 0.4))
-                drop-shadow(0 0 60px rgba(186, 12, 47, 0.2));
+                drop-shadow(0 0 15px rgba(186, 12, 47, 0.8))
+                drop-shadow(0 0 30px rgba(186, 12, 47, 0.4));
             transform-style: preserve-3d;
         }
         
         .falcons .team-logo-svg {
             filter: 
-                drop-shadow(0 0 20px rgba(167, 25, 48, 0.8))
-                drop-shadow(0 0 40px rgba(167, 25, 48, 0.4))
-                drop-shadow(0 0 60px rgba(167, 25, 48, 0.2));
+                drop-shadow(0 0 15px rgba(167, 25, 48, 0.8))
+                drop-shadow(0 0 30px rgba(167, 25, 48, 0.4));
         }
         
         .team-logo-svg:hover {
             transform: scale(1.15) perspective(1000px) rotateY(15deg) rotateX(5deg);
             filter: 
-                drop-shadow(0 0 30px rgba(186, 12, 47, 1))
-                drop-shadow(0 0 60px rgba(186, 12, 47, 0.6))
-                drop-shadow(0 0 90px rgba(186, 12, 47, 0.3));
+                drop-shadow(0 0 20px rgba(186, 12, 47, 1))
+                drop-shadow(0 0 40px rgba(186, 12, 47, 0.6));
         }
         
         .falcons .team-logo-svg:hover {
             filter: 
-                drop-shadow(0 0 30px rgba(167, 25, 48, 1))
-                drop-shadow(0 0 60px rgba(167, 25, 48, 0.6))
-                drop-shadow(0 0 90px rgba(167, 25, 48, 0.3));
+                drop-shadow(0 0 20px rgba(167, 25, 48, 1))
+                drop-shadow(0 0 40px rgba(167, 25, 48, 0.6));
         }
         
         .team-logo-fallback {
@@ -569,7 +567,7 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #BA0C2F 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -583,7 +581,7 @@
                 #000000 50%, 
                 #A71930 75%, 
                 #FFFFFF 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -652,8 +650,8 @@
             border-radius: 20px;
             padding: 25px 20px;
             min-width: 90px;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
             box-shadow: 
                 0 15px 35px rgba(0,0,0,0.4),
                 0 8px 20px rgba(0,0,0,0.3),
@@ -665,6 +663,7 @@
             cursor: pointer;
             transform-style: preserve-3d;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            will-change: transform;
         }
         
         .time-unit::after {
@@ -775,7 +774,7 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #BA0C2F 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -789,7 +788,7 @@
                 #000000 50%, 
                 #A71930 75%, 
                 #FFFFFF 100%);
-            background-size: 400% 400%;
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1625,7 +1624,7 @@
                 </div>
                 <div class="team-name">ATLANTA FALCONS</div>
                 <div class="opponent">
-                    <span class="vs-text">VS</span> NEW ORLEANS SAINTS
+                    <span class="vs-text">VS</span> TAMPA BAY BUCCANEERS
                 </div>
             </div>
             
@@ -2566,7 +2565,7 @@
             const particleContainer = document.getElementById('particles');
             
             // Create enhanced particles with team themes
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 25; i++) {
                 const particle = document.createElement('div');
                 const particleType = Math.random();
                 
@@ -2665,7 +2664,7 @@
             const countdown = getCurrentCountdown(team);
             const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'TAMPA BAY BUCCANEERS';
             const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
             const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 14';
             const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
@@ -2732,7 +2731,7 @@
         async function drawCountdownGraphicWithSVG(ctx, team) {
             const countdown = getCurrentCountdown(team);
             const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'NEW ORLEANS SAINTS';
+            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'TAMPA BAY BUCCANEERS';
             const date = team === 'bulldogs' ? 'SATURDAY, AUG 30' : 'SUNDAY, SEP 14';
             const venue = team === 'bulldogs' ? 'SANFORD STADIUM' : 'MERCEDES-BENZ STADIUM';
             
@@ -3023,7 +3022,7 @@
 
         function drawAdvancedParticleEffects(ctx, colors, time) {
             // Enhanced particle effects with motion
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 50; i++) {
                 const x = (Math.sin(time * 0.5 + i * 0.1) * 1920 + 1920) % 3840;
                 const y = (Math.cos(time * 0.3 + i * 0.15) * 1080 + 1080) % 2160;
                 const radius = Math.sin(time * 2 + i) * 8 + 12;
