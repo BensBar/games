@@ -3,19 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Football Break Horse Race</title>
+  <title>Mascot Racing Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🏇 Football Break Horse Race</h1>
-  <div id="track">
-    <div class="horse" id="horse1">🐎 Horse 1</div>
-    <div class="horse" id="horse2">🐎 Horse 2</div>
-    <div class="horse" id="horse3">🐎 Horse 3</div>
-    <div class="horse" id="horse4">🐎 Horse 4</div>
-    <div class="horse" id="horse5">🐎 Horse 5</div>
+  <h1>🏆 Mascot Racing Game</h1>
+  
+  <div id="controls">
+    <div id="duration-selector">
+      <label for="raceDuration">Race Duration:</label>
+      <select id="raceDuration">
+        <option value="30">30 seconds</option>
+        <option value="45" selected>45 seconds</option>
+        <option value="60">60 seconds</option>
+      </select>
+    </div>
+    <button id="startBtn">Start Race</button>
   </div>
-  <button id="startBtn">Start Race</button>
+
+  <div id="countdown"></div>
+  
+  <div id="track">
+    <div class="start-line">
+      <div class="line"></div>
+      <div class="label">START</div>
+    </div>
+    
+    <div class="racing-lanes">
+      <div class="mascot" id="mascot1">
+        <img src="images/mascot1.png" alt="Freddy Falcon" />
+        <span class="name">Freddy Falcon</span>
+      </div>
+      <div class="mascot" id="mascot2">
+        <img src="images/mascot2.png" alt="Billy the Buffalo" />
+        <span class="name">Billy the Buffalo</span>
+      </div>
+      <div class="mascot" id="mascot3">
+        <img src="images/mascot3.png" alt="TBD Mascot" />
+        <span class="name">TBD Mascot</span>
+      </div>
+      <div class="mascot" id="mascot4">
+        <img src="images/mascot4.png" alt="Hairy Dawg" />
+        <span class="name">Hairy Dawg</span>
+      </div>
+      <div class="mascot" id="mascot5">
+        <img src="images/mascot5.png" alt="Blooper" />
+        <span class="name">Blooper</span>
+      </div>
+    </div>
+    
+    <div class="finish-line">
+      <div class="line checkered"></div>
+      <div class="label">FINISH</div>
+    </div>
+  </div>
+
   <div id="winner"></div>
 
   <script src="script.js"></script>
