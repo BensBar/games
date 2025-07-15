@@ -1,47 +1,305 @@
+/* Mascot Racing Game - Red/Black/Silver/Grey/White Color Scheme */
 body {
-  font-family: sans-serif;
+  font-family: 'Arial', sans-serif;
   text-align: center;
-  background: #1a1a1a;
-  color: #fff;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #ffffff;
   margin: 0;
   padding: 20px;
+  min-height: 100vh;
+}
+
+h1 {
+  color: #dc2626;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+}
+
+#duration-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#duration-selector label {
+  color: #c0c0c0;
+  font-weight: bold;
+}
+
+#raceDuration {
+  padding: 8px 12px;
+  border: 2px solid #dc2626;
+  border-radius: 5px;
+  background: #2d2d2d;
+  color: #ffffff;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+#raceDuration:hover {
+  background: #3d3d3d;
+}
+
+button#startBtn {
+  padding: 12px 24px;
+  font-size: 1.1em;
+  background: linear-gradient(45deg, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button#startBtn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #b91c1c, #dc2626);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
+}
+
+button#startBtn:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+#countdown {
+  font-size: 4em;
+  font-weight: bold;
+  color: #dc2626;
+  margin: 20px 0;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 #track {
-  margin-top: 20px;
+  margin: 30px auto;
   position: relative;
-  width: 90%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 95%;
+  max-width: 1000px;
+  background: linear-gradient(90deg, #2d2d2d 0%, #1a1a1a 50%, #2d2d2d 100%);
+  border: 3px solid #c0c0c0;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.horse {
+.start-line {
+  position: absolute;
+  left: 10px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.start-line .line {
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #dc2626, #b91c1c);
+  border-radius: 2px;
+}
+
+.start-line .label {
+  position: absolute;
+  bottom: -25px;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.finish-line {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.finish-line .line {
+  width: 8px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffffff,
+    #ffffff 5px,
+    #000000 5px,
+    #000000 10px
+  );
+  border-radius: 4px;
+}
+
+.finish-line .label {
+  position: absolute;
+  bottom: -25px;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.racing-lanes {
   position: relative;
-  background: #444;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 6px;
-  transition: left 0.1s ease-out;
-  text-align: left;
-  width: fit-content;
-  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0 40px;
+}
+
+.mascot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), rgba(255, 255, 255, 0.05));
+  border: 2px solid rgba(192, 192, 192, 0.3);
+  border-radius: 8px;
+  padding: 5px 10px;
+  transition: left 0.15s ease-out;
+  overflow: hidden;
+}
+
+.mascot:nth-child(odd) {
+  background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), rgba(185, 28, 28, 0.05));
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.mascot img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px;
+}
+
+.mascot .name {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mascot.racing {
+  animation: racingGlow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes racingGlow {
+  from {
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+  }
 }
 
 #winner {
   margin-top: 30px;
-  font-size: 1.5em;
+  font-size: 2em;
   font-weight: bold;
-  color: #0f0;
+  color: #dc2626;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button#startBtn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.winner-animation {
+  animation: celebrateWinner 1s ease-in-out infinite;
+}
+
+@keyframes celebrateWinner {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2em;
+  }
+  
+  #controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  #countdown {
+    font-size: 3em;
+    min-height: 60px;
+  }
+  
+  .mascot {
+    height: 50px;
+  }
+  
+  .mascot img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .mascot .name {
+    font-size: 1em;
+  }
+  
+  #winner {
+    font-size: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  .mascot {
+    height: 45px;
+  }
+  
+  .mascot img {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .mascot .name {
+    font-size: 0.9em;
+  }
 }
