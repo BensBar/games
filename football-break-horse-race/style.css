@@ -233,6 +233,43 @@ button#startBtn:disabled {
   border-top-color: rgba(220, 38, 38, 0.4);
 }
 
+/* CSS Sprite Classes for Mascots */
+.mascot-sprite {
+  width: 50px;
+  height: 50px;
+  background-image: url('images/mascots.png');
+  background-repeat: no-repeat;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px;
+  display: inline-block;
+  /* Try vertical arrangement - 1536px wide, 1024px tall - maybe 5 rows */
+  background-size: 75px 250px; /* Scale to fit vertically */
+}
+
+/* Assuming sprites are arranged vertically - each sprite would be 250/5 = 50px tall */
+.sprite-hairy-dawg {
+  background-position: 0 0;
+}
+
+.sprite-freddy-falcon {
+  background-position: 0 -50px;
+}
+
+.sprite-blooper {
+  background-position: 0 -100px;
+}
+
+.sprite-billy-buffalo {
+  background-position: 0 -150px;
+}
+
+.sprite-t-rac {
+  background-position: 0 -200px;
+}
+
+/* Fallback for older browsers or if sprites fail */
 .mascot img {
   width: 50px;
   height: 50px;
@@ -308,9 +345,30 @@ button#startBtn:disabled {
     height: 50px;
   }
   
-  .mascot img {
+  .mascot-sprite {
     width: 40px;
     height: 40px;
+    background-size: 60px 200px; /* Adjust sprite size for mobile */
+  }
+  
+  .sprite-hairy-dawg {
+    background-position: 0 0;
+  }
+
+  .sprite-freddy-falcon {
+    background-position: 0 -40px;
+  }
+
+  .sprite-blooper {
+    background-position: 0 -80px;
+  }
+
+  .sprite-billy-buffalo {
+    background-position: 0 -120px;
+  }
+
+  .sprite-t-rac {
+    background-position: 0 -160px;
   }
   
   .mascot .name {
@@ -335,9 +393,30 @@ button#startBtn:disabled {
     height: 45px;
   }
   
-  .mascot img {
+  .mascot-sprite {
     width: 35px;
     height: 35px;
+    background-size: 52.5px 175px; /* Adjust sprite size for small mobile */
+  }
+  
+  .sprite-hairy-dawg {
+    background-position: 0 0;
+  }
+
+  .sprite-freddy-falcon {
+    background-position: 0 -35px;
+  }
+
+  .sprite-blooper {
+    background-position: 0 -70px;
+  }
+
+  .sprite-billy-buffalo {
+    background-position: 0 -105px;
+  }
+
+  .sprite-t-rac {
+    background-position: 0 -140px;
   }
   
   .mascot .name {
