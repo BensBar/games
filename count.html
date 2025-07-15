@@ -111,29 +111,23 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
-            animation: backgroundPatternMove 20s ease-in-out infinite;
+                radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
+            animation: backgroundPatternMove 30s ease-in-out infinite;
         }
         
         @keyframes backgroundPatternMove {
             0%, 100% { 
                 background: 
-                    radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+                    radial-gradient(circle at 25% 25%, rgba(186, 12, 47, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(167, 25, 48, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
             }
-            33% { 
+            50% { 
                 background: 
-                    radial-gradient(circle at 75% 25%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 25% 75%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
-            }
-            66% { 
-                background: 
-                    radial-gradient(circle at 50% 75%, rgba(186, 12, 47, 0.15) 0%, transparent 50%),
-                    radial-gradient(circle at 50% 25%, rgba(167, 25, 48, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 25%, rgba(186, 12, 47, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 25% 75%, rgba(167, 25, 48, 0.08) 0%, transparent 50%),
                     radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
             }
         }
@@ -146,9 +140,9 @@
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(45deg, transparent 30%, rgba(186, 12, 47, 0.03) 40%, transparent 50%),
-                linear-gradient(-45deg, transparent 30%, rgba(167, 25, 48, 0.03) 40%, transparent 50%);
-            animation: backgroundTexture 15s ease-in-out infinite;
+                linear-gradient(45deg, transparent 30%, rgba(186, 12, 47, 0.02) 40%, transparent 50%),
+                linear-gradient(-45deg, transparent 30%, rgba(167, 25, 48, 0.02) 40%, transparent 50%);
+            animation: backgroundTexture 20s ease-in-out infinite;
         }
         
         @keyframes backgroundTexture {
@@ -157,8 +151,8 @@
                 opacity: 1;
             }
             50% { 
-                transform: translateX(50px) translateY(30px) scale(1.1);
-                opacity: 0.8;
+                transform: translateX(20px) translateY(15px) scale(1.02);
+                opacity: 0.9;
             }
         }
         
@@ -167,24 +161,21 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 15% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
-                radial-gradient(circle at 85% 20%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(167, 25, 48, 0.3) 0%, transparent 60%);
-            animation: stadiumGlow 8s ease-in-out infinite alternate;
+                radial-gradient(circle at 15% 20%, rgba(186, 12, 47, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 85% 20%, rgba(186, 12, 47, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(167, 25, 48, 0.15) 0%, transparent 60%);
+            animation: stadiumGlow 12s ease-in-out infinite alternate;
         }
         
         @keyframes stadiumGlow {
             0% { 
-                opacity: 0.6;
-                filter: blur(2px);
+                opacity: 0.4;
             }
             50% { 
-                opacity: 0.8;
-                filter: blur(1px);
+                opacity: 0.6;
             }
             100% { 
-                opacity: 1;
-                filter: blur(0px);
+                opacity: 0.8;
             }
         }
         
@@ -192,10 +183,8 @@
         .particle {
             position: absolute;
             border-radius: 50%;
-            animation: particleFloat 12s linear infinite;
-            opacity: 0.7;
-            filter: blur(0.5px);
-            box-shadow: 0 0 10px currentColor;
+            animation: particleFloat 8s linear infinite;
+            opacity: 0.5;
             will-change: transform;
         }
         
@@ -235,25 +224,20 @@
             0% { 
                 transform: translate3d(0, 100vh, 0) rotate(0deg) scale(0.5);
                 opacity: 0;
-                filter: blur(2px);
             }
             10% { 
                 opacity: 1;
-                filter: blur(0px);
             }
             50% {
-                transform: translate3d(75px, 50vh, 0) rotate(180deg) scale(1);
-                opacity: 0.8;
-                filter: blur(0px);
+                transform: translate3d(30px, 50vh, 0) rotate(90deg) scale(1);
+                opacity: 0.6;
             }
             90% { 
-                opacity: 0.6;
-                filter: blur(1px);
+                opacity: 0.4;
             }
             100% { 
-                transform: translate3d(150px, -100px, 0) rotate(360deg) scale(0.3);
+                transform: translate3d(60px, -50px, 0) rotate(180deg) scale(0.3);
                 opacity: 0;
-                filter: blur(2px);
             }
         }
         
@@ -269,7 +253,7 @@
             font-size: 48px;
             font-weight: 900;
             background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -279,9 +263,8 @@
                 0 0 30px rgba(165, 172, 175, 0.2);
             letter-spacing: 4px;
             margin-bottom: 10px;
-            animation: premiumTextShimmer 6s ease-in-out infinite;
+            animation: premiumTextShimmer 8s ease-in-out infinite;
             position: relative;
-            transform-style: preserve-3d;
         }
         
         .georgia-pride::before {
@@ -292,32 +275,24 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(45deg, #BA0C2F 0%, #C5282F 25%, #FFD700 50%, #A5ACAF 75%, #000000 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: blur(2px);
-            opacity: 0.5;
+            filter: blur(1px);
+            opacity: 0.3;
             z-index: -1;
-            animation: premiumTextShimmer 6s ease-in-out infinite reverse;
+            animation: premiumTextShimmer 8s ease-in-out infinite reverse;
         }
         
         @keyframes premiumTextShimmer {
             0%, 100% { 
                 background-position: 0% 50%;
-                transform: scale(1) rotateX(0deg);
-            }
-            25% { 
-                background-position: 100% 50%;
-                transform: scale(1.02) rotateX(2deg);
+                transform: scale(1);
             }
             50% { 
-                background-position: 200% 50%;
-                transform: scale(1.05) rotateX(0deg);
-            }
-            75% { 
-                background-position: 300% 50%;
-                transform: scale(1.02) rotateX(-2deg);
+                background-position: 100% 50%;
+                transform: scale(1.02);
             }
         }
         
@@ -404,12 +379,12 @@
         }
         
         .game-section:hover {
-            transform: translateY(-8px) scale(1.02) perspective(1000px) rotateX(5deg);
+            transform: translateY(-5px) scale(1.02);
             box-shadow: 
-                0 40px 80px rgba(0,0,0,0.9),
-                0 20px 50px rgba(0,0,0,0.7),
-                inset 0 1px 0 rgba(255,255,255,0.25),
-                inset 0 -1px 0 rgba(0,0,0,0.4);
+                0 20px 40px rgba(0,0,0,0.7),
+                0 10px 25px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
         }
         
         .game-section::before {
@@ -432,7 +407,7 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #000000 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
         }
         
         .falcons-section::before {
@@ -442,29 +417,17 @@
                 #A71930 50%, 
                 #FFFFFF 75%, 
                 #000000 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
         }
         
         @keyframes premiumBorderGlow {
             0%, 100% { 
-                opacity: 0.7;
+                opacity: 0.5;
                 background-position: 0% 50%;
-                filter: blur(1px);
-            }
-            25% { 
-                opacity: 0.9;
-                background-position: 100% 50%;
-                filter: blur(0px);
             }
             50% { 
-                opacity: 1;
-                background-position: 200% 50%;
-                filter: blur(0px);
-            }
-            75% { 
-                opacity: 0.9;
-                background-position: 300% 50%;
-                filter: blur(1px);
+                opacity: 0.8;
+                background-position: 100% 50%;
             }
         }
         
@@ -476,13 +439,12 @@
         .team-logo {
             font-size: 80px;
             margin-bottom: 15px;
-            animation: premiumLogoFloat 4s ease-in-out infinite;
+            animation: premiumLogoFloat 6s ease-in-out infinite;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 120px;
-            transform-style: preserve-3d;
         }
         
         .team-logo-svg {
@@ -502,7 +464,7 @@
         }
         
         .team-logo-svg:hover {
-            transform: scale(1.15) perspective(1000px) rotateY(15deg) rotateX(5deg);
+            transform: scale(1.1);
             filter: 
                 drop-shadow(0 0 20px rgba(186, 12, 47, 1))
                 drop-shadow(0 0 40px rgba(186, 12, 47, 0.6));
@@ -521,28 +483,16 @@
         
         @keyframes premiumLogoFloat {
             0%, 100% { 
-                transform: scale(1) rotate(0deg) perspective(1000px) rotateY(0deg);
+                transform: scale(1) translateY(0px);
+                filter: 
+                    drop-shadow(0 0 15px rgba(186, 12, 47, 0.6))
+                    drop-shadow(0 0 30px rgba(186, 12, 47, 0.3));
+            }
+            50% { 
+                transform: scale(1.05) translateY(-5px);
                 filter: 
                     drop-shadow(0 0 20px rgba(186, 12, 47, 0.8))
                     drop-shadow(0 0 40px rgba(186, 12, 47, 0.4));
-            }
-            25% { 
-                transform: scale(1.05) rotate(2deg) perspective(1000px) rotateY(5deg);
-                filter: 
-                    drop-shadow(0 0 25px rgba(186, 12, 47, 0.9))
-                    drop-shadow(0 0 50px rgba(186, 12, 47, 0.5));
-            }
-            50% { 
-                transform: scale(1.1) rotate(0deg) perspective(1000px) rotateY(10deg);
-                filter: 
-                    drop-shadow(0 0 30px rgba(186, 12, 47, 1))
-                    drop-shadow(0 0 60px rgba(186, 12, 47, 0.6));
-            }
-            75% { 
-                transform: scale(1.05) rotate(-2deg) perspective(1000px) rotateY(5deg);
-                filter: 
-                    drop-shadow(0 0 25px rgba(186, 12, 47, 0.9))
-                    drop-shadow(0 0 50px rgba(186, 12, 47, 0.5));
             }
         }
         
@@ -557,7 +507,6 @@
                 0 0 20px rgba(186, 12, 47, 0.3),
                 0 0 30px rgba(186, 12, 47, 0.1);
             position: relative;
-            transform-style: preserve-3d;
         }
         
         .bulldogs .team-name {
@@ -567,11 +516,11 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #BA0C2F 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: bulldogsNameGlow 8s ease-in-out infinite;
+            animation: bulldogsNameGlow 10s ease-in-out infinite;
         }
         
         .falcons .team-name {
@@ -581,11 +530,11 @@
                 #000000 50%, 
                 #A71930 75%, 
                 #FFFFFF 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: falconsNameGlow 8s ease-in-out infinite;
+            animation: falconsNameGlow 10s ease-in-out infinite;
         }
         
         @keyframes bulldogsNameGlow {
@@ -725,12 +674,12 @@
         }
         
         .time-unit:hover {
-            transform: translateY(-12px) scale(1.08) perspective(1000px) rotateX(5deg) rotateY(3deg);
+            transform: translateY(-8px) scale(1.05);
             box-shadow: 
-                0 25px 50px rgba(0,0,0,0.5),
-                0 15px 30px rgba(0,0,0,0.3),
-                inset 0 3px 0 rgba(255,255,255,0.4),
-                inset 0 -3px 0 rgba(0,0,0,0.3);
+                0 15px 30px rgba(0,0,0,0.4),
+                0 8px 20px rgba(0,0,0,0.2),
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -2px 0 rgba(0,0,0,0.2);
         }
         
         .bulldogs .time-unit:hover {
@@ -764,7 +713,6 @@
                 0 0 10px rgba(255, 255, 255, 0.5),
                 0 0 20px rgba(255, 255, 255, 0.3),
                 0 0 30px rgba(255, 255, 255, 0.1);
-            transform-style: preserve-3d;
         }
         
         .bulldogs .time-number {
@@ -774,11 +722,11 @@
                 #C5282F 50%, 
                 #A5ACAF 75%, 
                 #BA0C2F 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: bulldogsNumberGlow 6s ease-in-out infinite;
+            animation: bulldogsNumberGlow 8s ease-in-out infinite;
         }
         
         .falcons .time-number {
@@ -788,11 +736,11 @@
                 #000000 50%, 
                 #A71930 75%, 
                 #FFFFFF 100%);
-            background-size: 200% 200%;
+            background-size: 120% 120%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: falconsNumberGlow 6s ease-in-out infinite;
+            animation: falconsNumberGlow 8s ease-in-out infinite;
         }
         
         @keyframes bulldogsNumberGlow {
@@ -830,8 +778,8 @@
         }
         
         .time-number.updating {
-            transform: scale(1.3) perspective(1000px) rotateY(360deg);
-            filter: brightness(1.5) drop-shadow(0 0 30px rgba(186, 12, 47, 0.8));
+            transform: scale(1.1) rotateY(180deg);
+            filter: brightness(1.2);
         }
         
         .time-label {
@@ -1845,8 +1793,8 @@
         }
         
         function createAdvancedParticles() {
-            // Physics-based particle system
-            const particleCount = 2000;
+            // Physics-based particle system - optimized for performance
+            const particleCount = 500; // Reduced from 2000 to 500
             const positions = new Float32Array(particleCount * 3);
             const velocities = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
@@ -1856,14 +1804,14 @@
                 const i3 = i * 3;
                 
                 // Random positions
-                positions[i3] = (Math.random() - 0.5) * 2000;
-                positions[i3 + 1] = Math.random() * 1000 - 500;
-                positions[i3 + 2] = (Math.random() - 0.5) * 2000;
+                positions[i3] = (Math.random() - 0.5) * 1000; // Reduced spread
+                positions[i3 + 1] = Math.random() * 500 - 250;
+                positions[i3 + 2] = (Math.random() - 0.5) * 1000;
                 
-                // Random velocities
-                velocities[i3] = (Math.random() - 0.5) * 2;
-                velocities[i3 + 1] = Math.random() * 2 + 1;
-                velocities[i3 + 2] = (Math.random() - 0.5) * 2;
+                // Random velocities - reduced intensity
+                velocities[i3] = (Math.random() - 0.5) * 1;
+                velocities[i3 + 1] = Math.random() * 1 + 0.5;
+                velocities[i3 + 2] = (Math.random() - 0.5) * 1;
                 
                 // Team colors
                 const isGold = Math.random() > 0.5;
@@ -1877,7 +1825,7 @@
                     colors[i3 + 2] = 0.18; // B
                 }
                 
-                sizes[i] = Math.random() * 5 + 1;
+                sizes[i] = Math.random() * 3 + 1; // Reduced size
             }
             
             const particleGeometry = new THREE.BufferGeometry();
@@ -2052,11 +2000,11 @@
                 logoMeshes.falcons.position.y = 200 + Math.cos(time * 2) * 20;
             }
             
-            // Dynamic lighting effects
+            // Dynamic lighting effects - reduced intensity
             if (window.dynamicLights) {
-                window.dynamicLights.point.intensity = 0.8 + Math.sin(time * 3) * 0.4;
-                window.dynamicLights.spot1.intensity = 1 + Math.sin(time * 2) * 0.3;
-                window.dynamicLights.spot2.intensity = 1 + Math.cos(time * 2.5) * 0.3;
+                window.dynamicLights.point.intensity = 0.6 + Math.sin(time * 1.5) * 0.2;
+                window.dynamicLights.spot1.intensity = 0.8 + Math.sin(time * 1) * 0.15;
+                window.dynamicLights.spot2.intensity = 0.8 + Math.cos(time * 1.2) * 0.15;
             }
             
             // Update team color shader
@@ -2064,9 +2012,9 @@
                 window.enhancementShader.uniforms.time.value = time;
             }
             
-            // Camera movement
-            camera.position.x = Math.sin(time * 0.1) * 50;
-            camera.position.z = 500 + Math.cos(time * 0.1) * 100;
+            // Camera movement - reduced intensity
+            camera.position.x = Math.sin(time * 0.05) * 25;
+            camera.position.z = 500 + Math.cos(time * 0.05) * 50;
             camera.lookAt(0, 0, 0);
             
             // Render scene
@@ -2079,10 +2027,10 @@
             style.textContent = `
                 body {
                     background: 
-                        radial-gradient(circle at 20% 30%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 70%, rgba(186, 12, 47, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 30%, rgba(186, 12, 47, 0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(186, 12, 47, 0.2) 0%, transparent 50%),
                         linear-gradient(135deg, #ba0c2f 0%, #A71930 25%, #000000 50%, #A71930 75%, #ba0c2f 100%);
-                    animation: backgroundPulse 8s ease-in-out infinite;
+                    animation: backgroundPulse 12s ease-in-out infinite;
                 }
                 
                 @keyframes backgroundPulse {
@@ -2091,49 +2039,36 @@
                         background-size: 100% 100%, 100% 100%, 100% 100%;
                     }
                     50% { 
-                        filter: brightness(1.3) contrast(1.2) saturate(1.1);
-                        background-size: 120% 120%, 120% 120%, 100% 100%;
+                        filter: brightness(1.1) contrast(1.05) saturate(1.02);
+                        background-size: 105% 105%, 105% 105%, 100% 100%;
                     }
                 }
                 
                 .team-logo {
-                    animation: logoFloat3D 3s ease-in-out infinite, logoRotate 8s linear infinite;
-                    transform-style: preserve-3d;
+                    animation: logoFloat3D 4s ease-in-out infinite;
                 }
                 
                 @keyframes logoFloat3D {
                     0%, 100% { 
-                        transform: scale(1) rotateY(0deg) translateY(0px);
-                        filter: drop-shadow(0 0 20px rgba(186, 12, 47, 0.8));
+                        transform: scale(1) translateY(0px);
+                        filter: drop-shadow(0 0 15px rgba(186, 12, 47, 0.6));
                     }
                     50% { 
-                        transform: scale(1.1) rotateY(180deg) translateY(-10px);
-                        filter: drop-shadow(0 0 40px rgba(186, 12, 47, 1));
+                        transform: scale(1.05) translateY(-5px);
+                        filter: drop-shadow(0 0 25px rgba(186, 12, 47, 0.8));
                     }
-                }
-                
-                @keyframes logoRotate {
-                    from { transform: rotateZ(0deg); }
-                    to { transform: rotateZ(360deg); }
                 }
                 
                 .time-unit {
-                    animation: timeUnitFloat 4s ease-in-out infinite;
-                    transform-style: preserve-3d;
+                    animation: timeUnitFloat 6s ease-in-out infinite;
                 }
                 
                 @keyframes timeUnitFloat {
                     0%, 100% { 
-                        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px);
-                    }
-                    25% { 
-                        transform: perspective(1000px) rotateX(5deg) rotateY(5deg) translateZ(10px);
+                        transform: translateY(0px);
                     }
                     50% { 
-                        transform: perspective(1000px) rotateX(0deg) rotateY(10deg) translateZ(20px);
-                    }
-                    75% { 
-                        transform: perspective(1000px) rotateX(-5deg) rotateY(5deg) translateZ(10px);
+                        transform: translateY(-2px);
                     }
                 }
                 
@@ -2267,28 +2202,28 @@
         }
         
         function applyParallaxEffects(x, y) {
-            // Apply subtle parallax to game sections
+            // Apply subtle parallax to game sections - reduced intensity
             const sections = document.querySelectorAll('.game-section');
             sections.forEach((section, index) => {
-                const intensity = index === 0 ? 0.02 : -0.02;
-                const translateX = x * intensity * 50;
-                const translateY = y * intensity * 30;
-                section.style.transform = `translate(${translateX}px, ${translateY}px) perspective(1000px) rotateY(${x * 2}deg) rotateX(${y * 1}deg)`;
+                const intensity = index === 0 ? 0.01 : -0.01;
+                const translateX = x * intensity * 20;
+                const translateY = y * intensity * 15;
+                section.style.transform = `translate(${translateX}px, ${translateY}px)`;
             });
             
-            // Apply parallax to floating icons
+            // Apply parallax to floating icons - reduced intensity
             const icons = document.querySelectorAll('.floating-icons');
             icons.forEach((icon, index) => {
-                const intensity = 0.05 + index * 0.01;
-                const translateX = x * intensity * 30;
-                const translateY = y * intensity * 20;
+                const intensity = 0.02 + index * 0.005;
+                const translateX = x * intensity * 15;
+                const translateY = y * intensity * 10;
                 icon.style.transform = `translate(${translateX}px, ${translateY}px)`;
             });
             
-            // Update 3D camera if WebGL is enabled
+            // Update 3D camera if WebGL is enabled - reduced intensity
             if (isWebGLEnabled && camera) {
-                camera.position.x += (x * 100 - camera.position.x) * 0.05;
-                camera.position.y += (y * 50 - camera.position.y) * 0.05;
+                camera.position.x += (x * 25 - camera.position.x) * 0.02;
+                camera.position.y += (y * 15 - camera.position.y) * 0.02;
             }
         }
         
@@ -2345,15 +2280,15 @@
         }
         
         function enhanceInteractiveElements() {
-            // Enhanced time unit interactions
+            // Enhanced time unit interactions - optimized
             const timeUnits = document.querySelectorAll('.time-unit');
             timeUnits.forEach((unit, index) => {
                 unit.addEventListener('mouseenter', (e) => {
-                    unit.style.transform = 'translateY(-12px) scale(1.08) rotateY(5deg)';
+                    unit.style.transform = 'translateY(-8px) scale(1.05)';
                     unit.style.boxShadow = `
-                        0 25px 50px rgba(0,0,0,0.5),
-                        0 0 40px rgba(186, 12, 47, 0.6),
-                        inset 0 1px 0 rgba(255,255,255,0.4)
+                        0 15px 30px rgba(0,0,0,0.4),
+                        0 0 20px rgba(186, 12, 47, 0.4),
+                        inset 0 1px 0 rgba(255,255,255,0.3)
                     `;
                     playAudioFeedback('hover');
                 });
@@ -2364,21 +2299,21 @@
                 });
                 
                 unit.addEventListener('click', (e) => {
-                    // Add number flip animation
+                    // Add number flip animation - simplified
                     const number = unit.querySelector('.time-number');
-                    number.style.transform = 'rotateY(360deg)';
+                    number.style.transform = 'rotateY(180deg)';
                     setTimeout(() => {
                         number.style.transform = '';
-                    }, 600);
+                    }, 300);
                     playAudioFeedback('click');
                 });
             });
             
-            // Enhanced button interactions
+            // Enhanced button interactions - optimized
             const buttons = document.querySelectorAll('.copy-btn');
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', (e) => {
-                    button.style.transform = 'translateY(-3px) scale(1.05)';
+                    button.style.transform = 'translateY(-2px) scale(1.03)';
                     playAudioFeedback('hover');
                 });
                 
@@ -2387,12 +2322,12 @@
                 });
             });
             
-            // Enhanced team chant interactions
+            // Enhanced team chant interactions - optimized
             const chants = document.querySelectorAll('.team-chant');
             chants.forEach(chant => {
                 chant.addEventListener('mouseenter', (e) => {
-                    chant.style.transform = 'scale(1.15) rotateZ(2deg)';
-                    chant.style.filter = 'drop-shadow(0 0 40px rgba(186, 12, 47, 1)) brightness(1.3)';
+                    chant.style.transform = 'scale(1.1)';
+                    chant.style.filter = 'drop-shadow(0 0 20px rgba(186, 12, 47, 0.8)) brightness(1.2)';
                 });
                 
                 chant.addEventListener('mouseleave', (e) => {
@@ -2564,8 +2499,8 @@
         function createParticles() {
             const particleContainer = document.getElementById('particles');
             
-            // Create enhanced particles with team themes
-            for (let i = 0; i < 25; i++) {
+            // Create enhanced particles with team themes - reduced from 25 to 10 for performance
+            for (let i = 0; i < 10; i++) {
                 const particle = document.createElement('div');
                 const particleType = Math.random();
                 
@@ -2584,8 +2519,8 @@
                 }
                 
                 particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 12 + 's';
-                particle.style.animationDuration = (Math.random() * 8 + 12) + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 8) + 's';
                 particleContainer.appendChild(particle);
             }
         }
