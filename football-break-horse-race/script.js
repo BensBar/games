@@ -1,9 +1,9 @@
 const mascots = [
-  { element: document.getElementById('mascot1'), name: 'Freddy Falcon', team: 'Falcons' },
-  { element: document.getElementById('mascot2'), name: 'Billy the Buffalo', team: 'Bills' },
-  { element: document.getElementById('mascot3'), name: 'TBD Mascot', team: 'Titans' },
-  { element: document.getElementById('mascot4'), name: 'Hairy Dawg', team: 'Dawgs' },
-  { element: document.getElementById('mascot5'), name: 'Blooper', team: 'Braves' }
+  { element: document.getElementById('mascot1'), name: 'Hairy Dawg', team: 'Dawgs' },
+  { element: document.getElementById('mascot2'), name: 'Freddy Falcon', team: 'Falcons' },
+  { element: document.getElementById('mascot3'), name: 'Blooper', team: 'Braves' },
+  { element: document.getElementById('mascot4'), name: 'Billy Buffalo', team: 'Bills' },
+  { element: document.getElementById('mascot5'), name: 'T-Rac', team: 'Titans' }
 ];
 
 const startBtn = document.getElementById('startBtn');
