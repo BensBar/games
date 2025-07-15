@@ -187,32 +187,9 @@ function announceWinner(winner) {
   saveWinner(winner);
 }
 
-// Add image loading fallback
-function setupImageFallbacks() {
-  mascots.forEach((mascot, index) => {
-    const img = mascot.element.querySelector('img');
-    img.onerror = function() {
-      console.warn(`Failed to load mascot${index + 1}.png, using fallback`);
-      this.style.display = 'none';
-      
-      // Create fallback emoji
-      const fallbackEmoji = document.createElement('span');
-      fallbackEmoji.style.fontSize = '40px';
-      fallbackEmoji.style.marginRight = '10px';
-      
-      // Use different emojis for each mascot
-      const emojis = ['🦅', '🦬', '⚡', '🐕', '⚾'];
-      fallbackEmoji.textContent = emojis[index];
-      
-      this.parentNode.insertBefore(fallbackEmoji, this);
-    };
-  });
-}
-
 // Initialize the game
 document.addEventListener('DOMContentLoaded', () => {
   initializeMascots();
-  setupImageFallbacks();
   resetRace();
   displayLastWinners();
   
