@@ -1,0 +1,47 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #1a1a1a;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+#track {
+  margin-top: 20px;
+  position: relative;
+  width: 90%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.horse {
+  position: relative;
+  background: #444;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  transition: left 0.1s ease-out;
+  text-align: left;
+  width: fit-content;
+  color: #fff;
+}
+
+#winner {
+  margin-top: 30px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #0f0;
+}
+
+button#startBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
