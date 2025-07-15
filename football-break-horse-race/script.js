@@ -1,18 +1,81 @@
-const mascots = [
-  { element: document.getElementById('mascot1'), name: 'Hairy Dawg', team: 'Dawgs' },
-  { element: document.getElementById('mascot2'), name: 'Freddy Falcon', team: 'Falcons' },
-  { element: document.getElementById('mascot3'), name: 'Blooper', team: 'Braves' },
-  { element: document.getElementById('mascot4'), name: 'Billy Buffalo', team: 'Bills' },
-  { element: document.getElementById('mascot5'), name: 'T-Rac', team: 'Titans' }
-];
-
-const startBtn = document.getElementById('startBtn');
-const winnerDiv = document.getElementById('winner');
-const countdownDiv = document.getElementById('countdown');
-const raceDurationSelect = document.getElementById('raceDuration');
+let mascots = [];
+let startBtn;
+let winnerDiv;
+let countdownDiv;
+let raceDurationSelect;
 
 let raceActive = false;
 let raceIntervals = [];
+
+function initializeMascots() {
+  mascots = [
+    { element: document.getElementById('mascot1'), name: 'Hairy Dawg', team: 'Dawgs' },
+    { element: document.getElementById('mascot2'), name: 'Freddy Falcon', team: 'Falcons' },
+    { element: document.getElementById('mascot3'), name: 'Blooper', team: 'Braves' },
+    { element: document.getElementById('mascot4'), name: 'Billy Buffalo', team: 'Bills' },
+    { element: document.getElementById('mascot5'), name: 'T-Rac', team: 'Titans' }
+  ];
+  
+  startBtn = document.getElementById('startBtn');
+  winnerDiv = document.getElementById('winner');
+  countdownDiv = document.getElementById('countdown');
+  raceDurationSelect = document.getElementById('raceDuration');
+}
+
+// Last 5 Winners functionality
+function loadLastWinners() {
+  try {
+    const winners = localStorage.getItem('mascot-racing-winners');
+    return winners ? JSON.parse(winners) : [];
+  } catch (error) {
+    console.warn('Failed to load winners from localStorage:', error);
+    return [];
+  }
+}
+
+function saveWinner(winner) {
+  try {
+    const winners = loadLastWinners();
+    const newWinner = {
+      name: winner.name,
+      team: winner.team,
+      timestamp: Date.now(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    
+    // Add to front of array and keep only last 5
+    winners.unshift(newWinner);
+    winners.splice(5);
+    
+    localStorage.setItem('mascot-racing-winners', JSON.stringify(winners));
+    displayLastWinners();
+  } catch (error) {
+    console.warn('Failed to save winner to localStorage:', error);
+  }
+}
+
+function displayLastWinners() {
+  const winners = loadLastWinners();
+  const winnersList = document.getElementById('winners-list');
+  
+  if (winners.length === 0) {
+    winnersList.innerHTML = '<div class="no-winners">No races completed yet</div>';
+    return;
+  }
+  
+  winnersList.innerHTML = winners.map((winner, index) => `
+    <div class="winner-item">
+      <div class="winner-info">
+        <div class="winner-rank">${index + 1}</div>
+        <div>
+          <div class="winner-name">${winner.name}</div>
+          <div class="winner-team">Team: ${winner.team}</div>
+        </div>
+      </div>
+      <div class="winner-time">${winner.time}</div>
+    </div>
+  `).join('');
+}
 
 function resetRace() {
   mascots.forEach(mascot => {
@@ -119,6 +182,9 @@ function announceWinner(winner) {
     </div>
   `;
   winnerDiv.classList.add('winner-animation');
+  
+  // Save the winner to localStorage
+  saveWinner(winner);
 }
 
 // Add image loading fallback
@@ -145,11 +211,14 @@ function setupImageFallbacks() {
 
 // Initialize the game
 document.addEventListener('DOMContentLoaded', () => {
+  initializeMascots();
   setupImageFallbacks();
   resetRace();
+  displayLastWinners();
+  
+  // Set up event listeners
+  startBtn.addEventListener('click', startRace);
 });
-
-startBtn.addEventListener('click', startRace);
 
 // Handle window resize to recalculate finish position
 window.addEventListener('resize', () => {
