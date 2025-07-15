@@ -1,0 +1,15 @@
+# macOS system files
+.DS_Store
+
+# Node/npm (if you ever add tooling)
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# VS Code settings (optional)
+.vscode/
+
+# OS-generated files
+Thumbs.db
+ehthumbs.db
+Icon?
