@@ -215,6 +215,24 @@ button#startBtn:disabled {
   margin: 0 25px;
 }
 
+.mascot-lane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.stationary-name {
+  position: absolute;
+  top: -25px;
+  left: 10px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.1em;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+
 .mascot {
   position: relative;
   display: flex;
@@ -262,11 +280,11 @@ button#startBtn:disabled {
 }
 
 .sprite-billy-buffalo {
-  background-position: -120px 0;
+  background-position: -110px 0;
 }
 
 .sprite-t-rac {
-  background-position: -170px 0;
+  background-position: -160px 0;
 }
 
 /* Fallback for older browsers or if sprites fail */
@@ -364,15 +382,20 @@ button#startBtn:disabled {
   }
 
   .sprite-billy-buffalo {
-    background-position: -96px 0;
+    background-position: -88px 0;
   }
 
   .sprite-t-rac {
-    background-position: -136px 0;
+    background-position: -128px 0;
   }
   
   .mascot .name {
     font-size: 1em;
+  }
+  
+  .stationary-name {
+    font-size: 0.9em;
+    top: -20px;
   }
   
   #winner {
@@ -412,15 +435,20 @@ button#startBtn:disabled {
   }
 
   .sprite-billy-buffalo {
-    background-position: -84px 0;
+    background-position: -77px 0;
   }
 
   .sprite-t-rac {
-    background-position: -119px 0;
+    background-position: -112px 0;
   }
   
   .mascot .name {
     font-size: 0.9em;
+  }
+  
+  .stationary-name {
+    font-size: 0.8em;
+    top: -18px;
   }
 }
 
