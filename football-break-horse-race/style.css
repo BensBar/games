@@ -244,29 +244,29 @@ button#startBtn:disabled {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px;
   display: inline-block;
-  /* Try vertical arrangement - 1536px wide, 1024px tall - maybe 5 rows */
-  background-size: 75px 250px; /* Scale to fit vertically */
+  /* Horizontal arrangement - 5 sprites side by side */
+  background-size: 250px 50px; /* Scale to fit horizontally */
 }
 
-/* Assuming sprites are arranged vertically - each sprite would be 250/5 = 50px tall */
+/* Sprites arranged horizontally - each sprite is 50px wide */
 .sprite-hairy-dawg {
   background-position: 0 0;
 }
 
 .sprite-freddy-falcon {
-  background-position: 0 -50px;
+  background-position: -50px 0;
 }
 
 .sprite-blooper {
-  background-position: 0 -100px;
+  background-position: -100px 0;
 }
 
 .sprite-billy-buffalo {
-  background-position: 0 -150px;
+  background-position: -150px 0;
 }
 
 .sprite-t-rac {
-  background-position: 0 -200px;
+  background-position: -200px 0;
 }
 
 /* Fallback for older browsers or if sprites fail */
@@ -348,7 +348,7 @@ button#startBtn:disabled {
   .mascot-sprite {
     width: 40px;
     height: 40px;
-    background-size: 60px 200px; /* Adjust sprite size for mobile */
+    background-size: 200px 40px; /* Adjust sprite size for mobile - horizontal */
   }
   
   .sprite-hairy-dawg {
@@ -356,19 +356,19 @@ button#startBtn:disabled {
   }
 
   .sprite-freddy-falcon {
-    background-position: 0 -40px;
+    background-position: -40px 0;
   }
 
   .sprite-blooper {
-    background-position: 0 -80px;
+    background-position: -80px 0;
   }
 
   .sprite-billy-buffalo {
-    background-position: 0 -120px;
+    background-position: -120px 0;
   }
 
   .sprite-t-rac {
-    background-position: 0 -160px;
+    background-position: -160px 0;
   }
   
   .mascot .name {
@@ -396,7 +396,7 @@ button#startBtn:disabled {
   .mascot-sprite {
     width: 35px;
     height: 35px;
-    background-size: 52.5px 175px; /* Adjust sprite size for small mobile */
+    background-size: 175px 35px; /* Adjust sprite size for small mobile - horizontal */
   }
   
   .sprite-hairy-dawg {
@@ -404,19 +404,19 @@ button#startBtn:disabled {
   }
 
   .sprite-freddy-falcon {
-    background-position: 0 -35px;
+    background-position: -35px 0;
   }
 
   .sprite-blooper {
-    background-position: 0 -70px;
+    background-position: -70px 0;
   }
 
   .sprite-billy-buffalo {
-    background-position: 0 -105px;
+    background-position: -105px 0;
   }
 
   .sprite-t-rac {
-    background-position: 0 -140px;
+    background-position: -140px 0;
   }
   
   .mascot .name {
