@@ -1,0 +1,27 @@
+.mascot-sprite {
+    width: 50px; /* Width of one sprite */
+    height: 50px; /* Height of one sprite */
+    background-image: url('images/mascots.png');
+    background-repeat: no-repeat;
+    background-size: 250px 50px; /* Adjust for horizontal arrangement */
+}
+
+.sprite-hairy-dawg {
+    background-position: 0 0;
+}
+
+.sprite-freddy-falcon {
+    background-position: -50px 0;
+}
+
+.sprite-blooper {
+    background-position: -100px 0;
+}
+
+.sprite-billy-buffalo {
+    background-position: -150px 0;
+}
+
+.sprite-t-rac {
+    background-position: -200px 0;
+}
