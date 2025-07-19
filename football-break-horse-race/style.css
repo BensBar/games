@@ -280,11 +280,11 @@ button#startBtn:disabled {
 }
 
 .sprite-billy-buffalo {
-  background-position: -155px 0;
+  background-position: -140px 0;
 }
 
 .sprite-t-rac {
-  background-position: -205px 0;
+  background-position: -190px 0;
 }
 
 /* Fallback for older browsers or if sprites fail */
@@ -382,11 +382,11 @@ button#startBtn:disabled {
   }
 
   .sprite-billy-buffalo {
-    background-position: -125px 0;
+    background-position: -110px 0;
   }
 
   .sprite-t-rac {
-    background-position: -165px 0;
+    background-position: -150px 0;
   }
   
   .mascot .name {
@@ -435,11 +435,11 @@ button#startBtn:disabled {
   }
 
   .sprite-billy-buffalo {
-    background-position: -110px 0;
+    background-position: -95px 0;
   }
 
   .sprite-t-rac {
-    background-position: -145px 0;
+    background-position: -130px 0;
   }
   
   .mascot .name {
