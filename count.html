@@ -59,6 +59,34 @@
                 display: none !important;
             }
             
+            /* Enhanced mobile touch targets */
+            .copy-btn {
+                padding: 20px 35px;
+                min-height: 56px;
+                min-width: 200px;
+                font-size: 18px;
+                border-radius: 16px;
+                margin: 8px 4px;
+            }
+            
+            .canvas-btn {
+                padding: 18px 30px;
+                min-height: 52px;
+                min-width: 160px;
+                font-size: 17px;
+                margin: 6px 3px;
+            }
+            
+            /* Enhanced touch feedback */
+            .copy-btn:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+            
+            .copy-btn:hover {
+                transform: translateY(-1px) scale(1.02);
+            }
+            
             /* Reduce backdrop blur for mobile performance */
             .game-section {
                 backdrop-filter: blur(5px) saturate(180%);
@@ -124,6 +152,13 @@
                     background-position: 100% 50%;
                     transform: scale(1.02);
                 }
+            }
+            
+            /* Improved action buttons layout for mobile */
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
             }
         }
         
@@ -935,13 +970,13 @@
             background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
             border: 2px solid rgba(186, 12, 47, 0.5);
             border-radius: 12px;
-            padding: 15px 25px;
+            padding: 18px 30px;
             color: #BA0C2F;
             font-family: 'Oswald', sans-serif;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -949,10 +984,14 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            min-width: 160px;
+            min-width: 180px;
+            min-height: 48px;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .copy-btn::before {
@@ -1078,16 +1117,21 @@
             background: linear-gradient(145deg, rgba(186, 12, 47, 0.2), rgba(186, 12, 47, 0.1));
             border: 2px solid rgba(186, 12, 47, 0.5);
             border-radius: 12px;
-            padding: 15px 25px;
+            padding: 18px 30px;
             color: #BA0C2F;
             font-family: 'Oswald', sans-serif;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             backdrop-filter: blur(10px);
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-height: 48px;
+            min-width: 140px;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .canvas-btn:hover {
@@ -2189,7 +2233,8 @@
                 .team-logo {
                     ${isMobile ? 
                         'animation: simpleMobileLogoFloat 4s ease-in-out infinite;' : 
-                    animation: logoFloat3D 4s ease-in-out infinite;
+                        'animation: logoFloat3D 4s ease-in-out infinite;'
+                    }
                 }
                 
                 ${isMobile ? `
@@ -2224,7 +2269,8 @@
                 .time-unit {
                     ${isMobile ? 
                         'animation: simpleMobileTimeFloat 4s ease-in-out infinite;' : 
-                    animation: timeUnitFloat 6s ease-in-out infinite;
+                        'animation: timeUnitFloat 6s ease-in-out infinite;'
+                    }
                 }
                 
                 ${isMobile ? `
@@ -2363,9 +2409,21 @@
             const touch = e.touches[0];
             createRippleEffect(touch.clientX, touch.clientY);
             
-            // Haptic feedback if supported
+            // Enhanced haptic feedback if supported
             if (navigator.vibrate) {
-                navigator.vibrate(10);
+                const target = e.target;
+                if (target.classList.contains('copy-btn') || target.classList.contains('canvas-btn')) {
+                    navigator.vibrate(15);
+                } else {
+                    navigator.vibrate(10);
+                }
+            }
+            
+            // Add visual touch feedback
+            const target = e.target;
+            if (target.classList.contains('copy-btn') || target.classList.contains('canvas-btn')) {
+                target.style.transform = 'scale(0.98)';
+                target.style.transition = 'transform 0.1s ease';
             }
         }
         
@@ -2377,7 +2435,12 @@
         }
         
         function handleTouchEnd(e) {
-            // Handle touch end
+            // Reset visual touch feedback
+            const target = e.target;
+            if (target.classList.contains('copy-btn') || target.classList.contains('canvas-btn')) {
+                target.style.transform = '';
+                target.style.transition = '';
+            }
         }
         
         function applyParallaxEffects(x, y) {
@@ -2462,7 +2525,10 @@
             // Enhanced time unit interactions - optimized
             const timeUnits = document.querySelectorAll('.time-unit');
             timeUnits.forEach((unit, index) => {
+                let hoverTimeout;
+                
                 unit.addEventListener('mouseenter', (e) => {
+                    clearTimeout(hoverTimeout);
                     unit.style.transform = 'translateY(-8px) scale(1.05)';
                     unit.style.boxShadow = `
                         0 15px 30px rgba(0,0,0,0.4),
@@ -2473,45 +2539,77 @@
                 });
                 
                 unit.addEventListener('mouseleave', (e) => {
-                    unit.style.transform = '';
-                    unit.style.boxShadow = '';
+                    hoverTimeout = setTimeout(() => {
+                        unit.style.transform = '';
+                        unit.style.boxShadow = '';
+                    }, 100);
                 });
                 
                 unit.addEventListener('click', (e) => {
                     // Add number flip animation - simplified
                     const number = unit.querySelector('.time-number');
-                    number.style.transform = 'rotateY(180deg)';
-                    setTimeout(() => {
-                        number.style.transform = '';
-                    }, 300);
+                    if (number) {
+                        number.style.transform = 'rotateY(180deg)';
+                        setTimeout(() => {
+                            number.style.transform = '';
+                        }, 300);
+                    }
                     playAudioFeedback('click');
                 });
             });
             
-            // Enhanced button interactions - optimized
-            const buttons = document.querySelectorAll('.copy-btn');
+            // Enhanced button interactions with debouncing
+            const buttons = document.querySelectorAll('.copy-btn, .canvas-btn');
             buttons.forEach(button => {
+                let hoverTimeout;
+                
                 button.addEventListener('mouseenter', (e) => {
+                    if (button.disabled) return;
+                    clearTimeout(hoverTimeout);
                     button.style.transform = 'translateY(-2px) scale(1.03)';
                     playAudioFeedback('hover');
                 });
                 
                 button.addEventListener('mouseleave', (e) => {
-                    button.style.transform = '';
+                    if (button.disabled) return;
+                    hoverTimeout = setTimeout(() => {
+                        button.style.transform = '';
+                    }, 100);
+                });
+                
+                // Add click debouncing
+                button.addEventListener('click', (e) => {
+                    if (button.disabled) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    // Visual click feedback
+                    button.style.transform = 'scale(0.97)';
+                    setTimeout(() => {
+                        if (!button.disabled) {
+                            button.style.transform = 'translateY(-2px) scale(1.03)';
+                        }
+                    }, 100);
                 });
             });
             
             // Enhanced team chant interactions - optimized
             const chants = document.querySelectorAll('.team-chant');
             chants.forEach(chant => {
+                let hoverTimeout;
+                
                 chant.addEventListener('mouseenter', (e) => {
+                    clearTimeout(hoverTimeout);
                     chant.style.transform = 'scale(1.1)';
                     chant.style.filter = 'drop-shadow(0 0 20px rgba(186, 12, 47, 0.8)) brightness(1.2)';
                 });
                 
                 chant.addEventListener('mouseleave', (e) => {
-                    chant.style.transform = '';
-                    chant.style.filter = '';
+                    hoverTimeout = setTimeout(() => {
+                        chant.style.transform = '';
+                        chant.style.filter = '';
+                    }, 100);
                 });
             });
         }
@@ -2835,73 +2933,165 @@
             }
         }
 
-        // Enhanced Quick Share Function
+        // Button debouncing to prevent multiple rapid clicks
+        let buttonCooldowns = new Map();
+        const BUTTON_COOLDOWN_MS = 500;
+        
+        function isButtonOnCooldown(buttonId) {
+            const lastClick = buttonCooldowns.get(buttonId);
+            if (!lastClick) return false;
+            return Date.now() - lastClick < BUTTON_COOLDOWN_MS;
+        }
+        
+        function setButtonCooldown(buttonId) {
+            buttonCooldowns.set(buttonId, Date.now());
+        }
+        
+        function addLoadingState(button) {
+            if (!button) return;
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            button.style.cursor = 'not-allowed';
+            const originalText = button.textContent;
+            button.textContent = button.textContent.replace(/^[^a-zA-Z]*/, '⏳ ');
+            return originalText;
+        }
+        
+        function removeLoadingState(button, originalText) {
+            if (!button) return;
+            button.disabled = false;
+            button.style.opacity = '';
+            button.style.cursor = '';
+            if (originalText) {
+                button.textContent = originalText;
+            }
+        }
+
+        // Enhanced Quick Share Function with improved error handling
         function copyEnhancedQuick(team) {
-            const countdown = getCurrentCountdown(team);
-            const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
-            const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
-            const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'TAMPA BAY BUCCANEERS';
-            const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
-            const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 14';
-            const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
-            const tv = team === 'bulldogs' ? 'ESPN' : 'CBS';
-            const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
+            const buttonId = `quick-${team}`;
+            if (isButtonOnCooldown(buttonId)) {
+                showCopyFeedback('Please wait a moment before sharing again');
+                return;
+            }
+            setButtonCooldown(buttonId);
             
-            const text = `${teamEmoji} ${teamName} vs ${opponent} 🏈
+            // Find the button that was clicked for loading state
+            const button = event?.target || document.querySelector(`button[onclick*="copyEnhancedQuick('${team}')"]`);
+            const originalText = addLoadingState(button);
+            
+            try {
+                const countdown = getCurrentCountdown(team);
+                const teamEmoji = team === 'bulldogs' ? '🐶' : '🦅';
+                const teamName = team === 'bulldogs' ? 'GEORGIA BULLDOGS' : 'ATLANTA FALCONS';
+                const opponent = team === 'bulldogs' ? 'MARSHALL THUNDERING HERD' : 'TAMPA BAY BUCCANEERS';
+                const fullTeamName = team === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+                const date = team === 'bulldogs' ? 'Aug 30' : 'Sep 14';
+                const venue = team === 'bulldogs' ? 'Sanford Stadium' : 'Mercedes-Benz Stadium';
+                const tv = team === 'bulldogs' ? 'ESPN' : 'CBS';
+                const chant = team === 'bulldogs' ? 'GO DAWGS!' : 'RISE UP!';
+                
+                const text = `${teamEmoji} ${teamName} vs ${opponent} 🏈
 ⏰ ${countdown.days}d ${countdown.hours}h ${countdown.minutes}m ${countdown.seconds}s until kickoff!
 📅 ${date} • 📍 ${venue}
 📺 ${tv} • 🎫 Season Opener
 🔥 ${chant} 🔥
 
 🔗 Share: ${window.location.origin}${window.location.pathname}?format=quick&team=${team}`;
-            
-            // Try Web Share API first
-            try {
+                
+                // Enhanced mobile haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([10, 50, 10]);
+                }
+                
+                // Try Web Share API first with better error handling
                 if (navigator.share && typeof navigator.share === 'function') {
                     navigator.share({
                         title: `${fullTeamName} Game Countdown`,
                         text: text,
                         url: `${window.location.origin}${window.location.pathname}?format=quick&team=${team}`
                     }).then(() => {
+                        removeLoadingState(button, originalText);
                         showCopyFeedback('Shared successfully! 🎉');
                         playAudioFeedback('success');
                     }).catch((error) => {
                         console.log('Web Share API failed:', error);
+                        removeLoadingState(button, originalText);
                         copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
                     });
                 } else {
+                    removeLoadingState(button, originalText);
                     copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
                 }
             } catch (error) {
                 console.error('Error in copyEnhancedQuick:', error);
-                copyToClipboard(text, `${fullTeamName} quick share copied! 📋`);
+                removeLoadingState(button, originalText);
+                showCopyFeedback('Error occurred. Please try again.');
+                playAudioFeedback('error');
             }
         }
 
-        // 4K Canvas Generation
+        // Enhanced 4K Canvas Generation with debouncing
         let currentGraphicTeam = '';
         
         async function generateGraphic(team) {
-            currentGraphicTeam = team;
-            const canvas = document.getElementById('countdownCanvas');
-            const ctx = canvas.getContext('2d');
-            const container = document.getElementById('canvasContainer');
+            const buttonId = `graphic-${team}`;
+            if (isButtonOnCooldown(buttonId)) {
+                showCopyFeedback('Please wait before generating another graphic');
+                return;
+            }
+            setButtonCooldown(buttonId);
             
-            // Apply team-specific styling to canvas container
-            container.className = 'canvas-container active ' + team + '-canvas';
+            // Find the button that was clicked for loading state
+            const button = event?.target || document.querySelector(`button[onclick*="generateGraphic('${team}')"]`);
+            const originalText = addLoadingState(button);
             
-            // Set 4K resolution
-            canvas.width = 3840;
-            canvas.height = 2160;
-            
-            // Scale for preview display
-            canvas.style.width = '800px';
-            canvas.style.height = '450px';
-            
-            // Load and draw the graphic
-            await drawCountdownGraphicWithSVG(ctx, team);
-            
-            playAudioFeedback('swoosh');
+            try {
+                currentGraphicTeam = team;
+                const canvas = document.getElementById('countdownCanvas');
+                const ctx = canvas.getContext('2d');
+                const container = document.getElementById('canvasContainer');
+                
+                // Enhanced mobile haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([15, 100, 15]);
+                }
+                
+                // Apply team-specific styling to canvas container
+                container.className = 'canvas-container active ' + team + '-canvas';
+                
+                // Set 4K resolution
+                canvas.width = 3840;
+                canvas.height = 2160;
+                
+                // Scale for preview display
+                canvas.style.width = '800px';
+                canvas.style.height = '450px';
+                
+                // Load and draw the graphic with timeout
+                const drawPromise = drawCountdownGraphicWithSVG(ctx, team);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Graphic generation timeout')), 10000)
+                );
+                
+                await Promise.race([drawPromise, timeoutPromise]);
+                
+                removeLoadingState(button, originalText);
+                playAudioFeedback('swoosh');
+                showCopyFeedback('4K Graphic generated! 📸');
+                
+            } catch (error) {
+                console.error('Error generating graphic:', error);
+                removeLoadingState(button, originalText);
+                showCopyFeedback('Failed to generate graphic. Please try again.');
+                playAudioFeedback('error');
+                
+                // Close the canvas container if it opened
+                const container = document.getElementById('canvasContainer');
+                if (container) {
+                    container.classList.remove('active');
+                }
+            }
         }
         
         async function drawCountdownGraphicWithSVG(ctx, team) {
@@ -3219,53 +3409,110 @@
         }
 
         function downloadGraphic() {
-            const canvas = document.getElementById('countdownCanvas');
-            const link = document.createElement('a');
-            const teamName = currentGraphicTeam === 'bulldogs' ? 'Bulldogs' : 'Falcons';
+            const buttonId = 'download-graphic';
+            if (isButtonOnCooldown(buttonId)) {
+                showCopyFeedback('Please wait before downloading again');
+                return;
+            }
+            setButtonCooldown(buttonId);
             
-            link.download = `${teamName}_Countdown_4K.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
+            const button = event?.target || document.querySelector(`button[onclick*="downloadGraphic"]`);
+            const originalText = addLoadingState(button);
             
-            showCopyFeedback('4K Graphic Downloaded! 💾');
-            playAudioFeedback('success');
+            try {
+                const canvas = document.getElementById('countdownCanvas');
+                if (!canvas) {
+                    throw new Error('Canvas not found');
+                }
+                
+                const link = document.createElement('a');
+                const teamName = currentGraphicTeam === 'bulldogs' ? 'Bulldogs' : 'Falcons';
+                
+                // Enhanced mobile haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([20, 150, 20]);
+                }
+                
+                link.download = `${teamName}_Countdown_4K.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                removeLoadingState(button, originalText);
+                showCopyFeedback('4K Graphic Downloaded! 💾');
+                playAudioFeedback('success');
+            } catch (error) {
+                console.error('Error downloading graphic:', error);
+                removeLoadingState(button, originalText);
+                showCopyFeedback('Download failed. Please try again.');
+                playAudioFeedback('error');
+            }
         }
 
         function shareGraphic() {
-            const canvas = document.getElementById('countdownCanvas');
-            const teamName = currentGraphicTeam === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+            const buttonId = 'share-graphic';
+            if (isButtonOnCooldown(buttonId)) {
+                showCopyFeedback('Please wait before sharing again');
+                return;
+            }
+            setButtonCooldown(buttonId);
             
-            canvas.toBlob((blob) => {
-                try {
-                    // Check if Web Share API with files is supported
-                    if (navigator.share && navigator.canShare && 
-                        typeof navigator.canShare === 'function' && 
-                        navigator.canShare({ files: [new File([blob], 'countdown.png', { type: 'image/png' })] })) {
-                        
-                        const file = new File([blob], 'countdown.png', { type: 'image/png' });
-                        navigator.share({
-                            title: `${teamName} Game Countdown`,
-                            text: `Check out this ${teamName} countdown!`,
-                            files: [file],
-                            url: `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`
-                        }).then(() => {
-                            showCopyFeedback('Graphic shared successfully! 📤');
-                            playAudioFeedback('success');
-                        }).catch((error) => {
-                            console.log('Error sharing graphic file:', error);
-                            // Fallback to URL sharing
+            const button = event?.target || document.querySelector(`button[onclick*="shareGraphic"]`);
+            const originalText = addLoadingState(button);
+            
+            try {
+                const canvas = document.getElementById('countdownCanvas');
+                if (!canvas) {
+                    throw new Error('Canvas not found');
+                }
+                
+                const teamName = currentGraphicTeam === 'bulldogs' ? 'Georgia Bulldogs' : 'Atlanta Falcons';
+                
+                // Enhanced mobile haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate([10, 50, 10, 50, 10]);
+                }
+                
+                canvas.toBlob((blob) => {
+                    try {
+                        // Check if Web Share API with files is supported
+                        if (navigator.share && navigator.canShare && 
+                            typeof navigator.canShare === 'function' && 
+                            navigator.canShare({ files: [new File([blob], 'countdown.png', { type: 'image/png' })] })) {
+                            
+                            const file = new File([blob], 'countdown.png', { type: 'image/png' });
+                            navigator.share({
+                                title: `${teamName} Game Countdown`,
+                                text: `Check out this ${teamName} countdown!`,
+                                files: [file],
+                                url: `${window.location.origin}${window.location.pathname}?format=graphic&team=${currentGraphicTeam}`
+                            }).then(() => {
+                                removeLoadingState(button, originalText);
+                                showCopyFeedback('Graphic shared successfully! 📤');
+                                playAudioFeedback('success');
+                            }).catch((error) => {
+                                console.log('Error sharing graphic file:', error);
+                                removeLoadingState(button, originalText);
+                                // Fallback to URL sharing
+                                shareGraphicUrl();
+                            });
+                        } else {
+                            removeLoadingState(button, originalText);
+                            // Fallback to URL sharing for browsers that don't support file sharing
                             shareGraphicUrl();
-                        });
-                    } else {
-                        // Fallback to URL sharing for browsers that don't support file sharing
+                        }
+                    } catch (error) {
+                        console.error('Error in shareGraphic:', error);
+                        removeLoadingState(button, originalText);
+                        // Fallback to URL sharing
                         shareGraphicUrl();
                     }
-                } catch (error) {
-                    console.error('Error in shareGraphic:', error);
-                    // Fallback to URL sharing
-                    shareGraphicUrl();
-                }
-            }, 'image/png');
+                }, 'image/png');
+            } catch (error) {
+                console.error('Error preparing graphic for sharing:', error);
+                removeLoadingState(button, originalText);
+                showCopyFeedback('Share failed. Please try again.');
+                playAudioFeedback('error');
+            }
         }
 
         function shareGraphicUrl() {
