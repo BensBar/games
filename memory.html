@@ -652,7 +652,7 @@
       </div>
       <div class="game-stat">
         <div class="stat-label">Matches</div>
-        <div id="matchesValue" class="stat-value">0/20</div>
+        <div id="matchesValue" class="stat-value">0/19</div>
       </div>
       <div class="game-stat">
         <div class="stat-label">Best Time</div>
@@ -704,7 +704,7 @@
     let matchedCards = [];
     let canFlip = true;
     
-    // Card data - 20 unique Octocat images, each used twice
+    // Card data - 19 unique Octocat images, each used twice
     const cardImages = [
       'boxertocat_octodex.png',
       'daftpunktocat-guy.gif',
@@ -713,22 +713,21 @@
       'hula_loop_octodex03.gif',
       'inspectocat.png',
       'ironcat.png',
-      'yogitocat.png',
+      'logo.png',
       'megacat.png',
       'minion.png',
       'octobiwan.png',
       'original.png',
       'plumber.png',
-      'surftocat.png',
+      'repo.png',
       'securitocat.png',
       'spidertocat.png',
-      'vinyltocat.png',
+      'surftocat.png',
       'topguntocat.png',
-      'repo.png',
-      'logo.png'
+      'vinyltocat.png'
     ];
     
-    // Create pairs (40 cards total)
+    // Create pairs (38 cards total)
     const cardDeck = [...cardImages, ...cardImages];
     
     // Sound effects using DataURLs (placeholder beeps)
@@ -863,7 +862,7 @@
         
         matchedCards.push(card1, card2);
         matches++;
-        matchesValue.textContent = `${matches}/20`;
+        matchesValue.textContent = `${matches}/19`;
         
         // Remove animation class after animation completes
         setTimeout(() => {
@@ -871,7 +870,7 @@
           card2.classList.remove('match-animation');
         }, 1000);
         
-        if (matches === 20) {
+        if (matches === 19) {
           setTimeout(() => {
             endGame();
           }, 1000);
@@ -906,7 +905,7 @@
       // Update UI
       timeValue.textContent = '00:00';
       movesValue.textContent = '0';
-      matchesValue.textContent = '0/20';
+      matchesValue.textContent = '0/19';
       
       // Create grid and start timer
       createCardGrid();
