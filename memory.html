@@ -335,17 +335,7 @@
       justify-content: center;
     }
 
-    .memory-card.flipped .card-back {
-      visibility: hidden;
-    }
 
-    .memory-card .card-front {
-      visibility: hidden;
-    }
-
-    .memory-card.flipped .card-front {
-      visibility: visible;
-    }
 
     .card-back img {
       width: 85%;
@@ -538,6 +528,13 @@
       border: 3px solid rgba(255, 255, 255, 0.4);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       overflow: hidden;
+    }
+
+    .card-back {
+      background: linear-gradient(45deg, #1a1a2e, #16213e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .card-front {
