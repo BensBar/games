@@ -539,7 +539,6 @@
     }
 
     .card-front {
-      transform: rotateY(180deg);
       background: linear-gradient(45deg, #ffffff, #f8f8ff, #fff8f0);
       display: flex;
       align-items: center;
@@ -547,6 +546,15 @@
       padding: 5%;
       box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1);
       z-index: 2;
+      opacity: 0;
+    }
+
+    .memory-card.flipped .card-front {
+      opacity: 1;
+    }
+
+    .memory-card.flipped .card-back {
+      opacity: 0;
     }
 
     .card-front img {
