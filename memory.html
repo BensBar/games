@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Game</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        
+        #game-container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
         .card-back img { 
             width: 85%; 
             height: 85%; 
@@ -18,16 +36,47 @@
             0% { filter: drop-shadow(0 0 10px #00d4ff88) drop-shadow(0 0 20px #ff006e44); }
             100% { filter: drop-shadow(0 0 20px #00d4ffbb) drop-shadow(0 0 30px #ff006e88); }
         }
+        
+        .card {
+            width: 100px;
+            height: 150px;
+            background-color: #ddd;
+            margin: 10px;
+            border-radius: 10px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .card-back {
+            background-color: #333;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <!-- Game content will be dynamically generated -->
+        <h1>Memory Game</h1>
+        <p>This is a placeholder for the memory game content.</p>
+        <div class="cards-container">
+            <!-- Example card to show styling -->
+            <div class="card card-back">
+                <img src="https://placehold.co/100x150/333/white?text=Card" alt="Card Back">
+            </div>
+            <div class="card">
+                <span>Click to flip</span>
+            </div>
+        </div>
     </div>
     
     <script>
         // Memory game script will go here
         console.log("Memory game loading...");
+        
+        // Add a simple message to show the page is working
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Page loaded successfully!");
+        });
     </script>
 </body>
 </html>
