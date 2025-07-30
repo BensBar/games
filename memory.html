@@ -1,1 +1,33 @@
-.card-back img { width: 85%; height: 85%; object-fit: contain; transform: scale(1.5); filter: drop-shadow(0 0 15px #00d4ff88) drop-shadow(0 0 25px #ff006e44); animation: cardBackGlow 3s ease-in-out infinite alternate; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <style>
+        .card-back img { 
+            width: 85%; 
+            height: 85%; 
+            object-fit: contain; 
+            transform: scale(1.5); 
+            filter: drop-shadow(0 0 15px #00d4ff88) drop-shadow(0 0 25px #ff006e44); 
+            animation: cardBackGlow 3s ease-in-out infinite alternate; 
+        }
+        
+        @keyframes cardBackGlow {
+            0% { filter: drop-shadow(0 0 10px #00d4ff88) drop-shadow(0 0 20px #ff006e44); }
+            100% { filter: drop-shadow(0 0 20px #00d4ffbb) drop-shadow(0 0 30px #ff006e88); }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Game content will be dynamically generated -->
+    </div>
+    
+    <script>
+        // Memory game script will go here
+        console.log("Memory game loading...");
+    </script>
+</body>
+</html>
