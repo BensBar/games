@@ -304,7 +304,7 @@
     /* Card Grid */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(10, 1fr);
       grid-template-rows: repeat(5, 1fr);
       gap: clamp(5px, 1vw, 15px);
       width: 100%;
@@ -453,7 +453,7 @@
     @media (max-width: 430px) {
       .card-grid {
         grid-template-columns: repeat(5, 1fr);
-        grid-template-rows: repeat(8, 1fr);
+        grid-template-rows: repeat(10, 1fr);
         max-width: 95vw;
         height: min(75vh, 95vw * 1.6);
       }
@@ -478,7 +478,7 @@
     @media (max-height: 500px) and (orientation: landscape) {
       .card-grid {
         grid-template-columns: repeat(10, 1fr);
-        grid-template-rows: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
         max-width: 90vw;
         height: 70vh;
       }
@@ -641,7 +641,7 @@
       </div>
       <div class="game-stat">
         <div class="stat-label">Matches</div>
-        <div id="matchesValue" class="stat-value">0/19</div>
+        <div id="matchesValue" class="stat-value">0/25</div>
       </div>
       <div class="game-stat">
         <div class="stat-label">Best Time</div>
@@ -693,7 +693,7 @@
     let matchedCards = [];
     let canFlip = true;
     
-    // Card data - 19 unique Octocat images, each used twice
+    // Card data - 25 unique Octocat images, each used twice
     const cardImages = [
       'boxertocat_octodex.png',
       'daftpunktocat-guy.gif',
@@ -702,7 +702,6 @@
       'hula_loop_octodex03.gif',
       'inspectocat.png',
       'ironcat.png',
-      'logo.png',
       'megacat.png',
       'minion.png',
       'octobiwan.png',
@@ -713,10 +712,17 @@
       'spidertocat.png',
       'surftocat.png',
       'topguntocat.png',
-      'vinyltocat.png'
+      'vinyltocat.png',
+      'catstello.png',
+      'Fintechtocat.png',
+      'femalecodertocat.png',
+      'saint_nictocat.jpg',
+      'Sentrytocat.jpg',
+      'skatetocat.png',
+      'universetocat.png'
     ];
     
-    // Create pairs (38 cards total)
+    // Create pairs (50 cards total)
     const cardDeck = [...cardImages, ...cardImages];
     
     // Sound effects using DataURLs (placeholder beeps)
@@ -851,7 +857,7 @@
         
         matchedCards.push(card1, card2);
         matches++;
-        matchesValue.textContent = `${matches}/19`;
+        matchesValue.textContent = `${matches}/25`;
         
         // Remove animation class after animation completes
         setTimeout(() => {
@@ -859,7 +865,7 @@
           card2.classList.remove('match-animation');
         }, 1000);
         
-        if (matches === 19) {
+        if (matches === 25) {
           setTimeout(() => {
             endGame();
           }, 1000);
@@ -894,7 +900,7 @@
       // Update UI
       timeValue.textContent = '00:00';
       movesValue.textContent = '0';
-      matchesValue.textContent = '0/19';
+      matchesValue.textContent = '0/25';
       
       // Create grid and start timer
       createCardGrid();
