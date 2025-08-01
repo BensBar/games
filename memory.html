@@ -223,6 +223,79 @@
       text-shadow: 0 0 20px #ff006e88;
     }
 
+    /* Card Count Selection */
+    .card-count-selection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .selection-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.1em, 3vw, 1.6em);
+      font-weight: 700;
+      color: #a0a0ff;
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px #00d4ff88;
+    }
+
+    .selection-buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .selection-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 25px;
+      font-family: 'Orbitron', monospace;
+      background: linear-gradient(45deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+      border: 2px solid rgba(160, 160, 255, 0.3);
+      border-radius: 20px;
+      color: #a0a0ff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      min-width: 140px;
+    }
+
+    .selection-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      border-color: #00d4ff;
+      box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+    }
+
+    .selection-button.active {
+      background: linear-gradient(45deg, #00d4ff, #ff006e);
+      border-color: #00ff88;
+      color: white;
+      box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+    }
+
+    .selection-button.active:hover {
+      box-shadow: 0 12px 35px rgba(0, 255, 136, 0.7);
+    }
+
+    .button-title {
+      font-size: 1.1em;
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .button-subtitle {
+      font-size: 0.8em;
+      font-weight: 400;
+      opacity: 0.9;
+      text-align: center;
+    }
+
     .start-button {
       padding: 20px 40px;
       font-size: clamp(1.2em, 3vw, 1.8em);
@@ -304,13 +377,25 @@
     /* Card Grid */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      grid-template-rows: repeat(5, 1fr);
       gap: clamp(5px, 1vw, 15px);
       width: 100%;
+      perspective: 1000px;
+    }
+
+    /* Default 50-card layout (10x5) */
+    .card-grid.grid-50 {
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(5, 1fr);
       max-width: min(95vw, 95vh * 1.6);
       height: min(80vh, 95vw / 1.6);
-      perspective: 1000px;
+    }
+
+    /* 24-card layout (6x4) */
+    .card-grid.grid-24 {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      max-width: min(90vw, 90vh * 1.2);
+      height: min(75vh, 90vw / 1.2);
     }
 
 
@@ -451,11 +536,18 @@
     
     /* iPhone 16 Pro Max & Mobile optimizations */
     @media (max-width: 430px) {
-      .card-grid {
+      .card-grid.grid-50 {
         grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(10, 1fr);
         max-width: 95vw;
         height: min(75vh, 95vw * 1.6);
+      }
+      
+      .card-grid.grid-24 {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        max-width: 95vw;
+        height: min(70vh, 95vw * 1.2);
       }
       
       .game-ui {
@@ -472,15 +564,31 @@
       .stat-value {
         font-size: 1.2em;
       }
+      
+      .selection-buttons {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .selection-button {
+        min-width: 160px;
+      }
     }
 
     /* Landscape mobile */
     @media (max-height: 500px) and (orientation: landscape) {
-      .card-grid {
+      .card-grid.grid-50 {
         grid-template-columns: repeat(10, 1fr);
         grid-template-rows: repeat(5, 1fr);
         max-width: 90vw;
         height: 70vh;
+      }
+      
+      .card-grid.grid-24 {
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        max-width: 85vw;
+        height: 65vh;
       }
       
       .game-ui {
@@ -624,6 +732,22 @@
     </div>
     <h1 class="intro-title">OCTOCAT MEMORY</h1>
     <p class="intro-subtitle">🐙 World-Class Concentration Game 🐙</p>
+    
+    <!-- Card Count Selection -->
+    <div class="card-count-selection">
+      <p class="selection-title">Choose Your Challenge:</p>
+      <div class="selection-buttons">
+        <button id="cards24Btn" class="selection-button active" data-cards="24">
+          <span class="button-title">24 CARDS</span>
+          <span class="button-subtitle">12 Pairs • 6×4 Grid</span>
+        </button>
+        <button id="cards50Btn" class="selection-button" data-cards="50">
+          <span class="button-title">50 CARDS</span>
+          <span class="button-subtitle">25 Pairs • 10×5 Grid</span>
+        </button>
+      </div>
+    </div>
+    
     <button id="startBtn" class="start-button">START GAME</button>
   </div>
 
@@ -674,6 +798,8 @@
     const cardGrid = document.getElementById('cardGrid');
     const startBtn = document.getElementById('startBtn');
     const playAgainBtn = document.getElementById('playAgainBtn');
+    const cards24Btn = document.getElementById('cards24Btn');
+    const cards50Btn = document.getElementById('cards50Btn');
     
     // UI Elements
     const timeValue = document.getElementById('timeValue');
@@ -692,6 +818,8 @@
     let flippedCards = [];
     let matchedCards = [];
     let canFlip = true;
+    let selectedCardCount = parseInt(sessionStorage.getItem('memory-card-count')) || 24; // Remember selection
+    let totalPairs = selectedCardCount / 2;
     
     // Card data - 25 unique Octocat images, each used twice
     const cardImages = [
@@ -753,6 +881,27 @@
     // Initialize particles
     createParticles();
     
+    // Card count selection functionality
+    function updateCardSelection(cardCount) {
+      selectedCardCount = cardCount;
+      totalPairs = cardCount / 2;
+      sessionStorage.setItem('memory-card-count', cardCount.toString());
+      
+      // Update button states
+      cards24Btn.classList.toggle('active', cardCount === 24);
+      cards50Btn.classList.toggle('active', cardCount === 50);
+      
+      // Update matches display on intro screen
+      matchesValue.textContent = `0/${totalPairs}`;
+    }
+    
+    // Set initial selection
+    updateCardSelection(selectedCardCount);
+    
+    // Event listeners for card count selection
+    cards24Btn.addEventListener('click', () => updateCardSelection(24));
+    cards50Btn.addEventListener('click', () => updateCardSelection(50));
+    
     // Load best time from localStorage
     let bestTime = localStorage.getItem('octocat-memory-best-time') || 0;
     if (bestTime > 0) {
@@ -778,8 +927,15 @@
     
     // Create game grid
     function createCardGrid() {
+      // Create deck based on selected card count
+      const requiredPairs = selectedCardCount / 2;
+      const selectedImages = cardImages.slice(0, requiredPairs);
+      const cardDeck = [...selectedImages, ...selectedImages];
       const shuffledDeck = shuffle(cardDeck);
+      
+      // Clear grid and set appropriate class
       cardGrid.innerHTML = '';
+      cardGrid.className = `card-grid grid-${selectedCardCount}`;
       
       shuffledDeck.forEach((image, index) => {
         const card = document.createElement('div');
@@ -857,7 +1013,7 @@
         
         matchedCards.push(card1, card2);
         matches++;
-        matchesValue.textContent = `${matches}/25`;
+        matchesValue.textContent = `${matches}/${totalPairs}`;
         
         // Remove animation class after animation completes
         setTimeout(() => {
@@ -865,7 +1021,7 @@
           card2.classList.remove('match-animation');
         }, 1000);
         
-        if (matches === 25) {
+        if (matches === totalPairs) {
           setTimeout(() => {
             endGame();
           }, 1000);
@@ -897,10 +1053,13 @@
       matchedCards = [];
       canFlip = true;
       
+      // Update total pairs based on selection
+      totalPairs = selectedCardCount / 2;
+      
       // Update UI
       timeValue.textContent = '00:00';
       movesValue.textContent = '0';
-      matchesValue.textContent = '0/25';
+      matchesValue.textContent = `0/${totalPairs}`;
       
       // Create grid and start timer
       createCardGrid();
