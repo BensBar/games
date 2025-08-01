@@ -80,7 +80,7 @@ function displayLastWinners() {
 function resetRace() {
   mascots.forEach(mascot => {
     mascot.element.style.left = '0px';
-    mascot.element.classList.remove('racing');
+    mascot.element.classList.remove('racing', 'winner', 'speed-burst');
   });
   winnerDiv.textContent = '';
   winnerDiv.classList.remove('winner-animation');
@@ -90,6 +90,21 @@ function resetRace() {
   raceIntervals.forEach(interval => clearInterval(interval));
   raceIntervals = [];
   raceActive = false;
+  
+  // Close winner overlay if open
+  const overlay = document.getElementById('winner-overlay');
+  overlay.classList.remove('show');
+  
+  // Clean up celebration effects
+  const finishLine = document.querySelector('.finish-line');
+  finishLine.classList.remove('celebrating');
+  
+  // Clean up confetti and sparkles
+  const confetti = document.querySelectorAll('.confetti');
+  confetti.forEach(piece => piece.remove());
+  
+  const sparkles = document.querySelectorAll('.finish-sparkle');
+  sparkles.forEach(sparkle => sparkle.remove());
 }
 
 function startCountdown() {
@@ -147,6 +162,12 @@ function startRace() {
         const currentLeft = parseFloat(mascot.element.style.left) || 0;
         // Add randomization to make race interesting
         const speedVariation = 0.7 + Math.random() * 0.6; // 70% to 130% of base speed
+        
+        // Add occasional speed bursts for dramatic effect
+        if (Math.random() < 0.15) { // 15% chance per interval
+          addSpeedBurstEffect(mascot);
+        }
+        
         const delta = baseSpeed * speedVariation;
         const newPosition = currentLeft + delta;
         
@@ -174,6 +195,10 @@ function startRace() {
 }
 
 function announceWinner(winner) {
+  // Add winner class to the winning mascot for enhanced highlighting
+  winner.element.classList.add('winner');
+  
+  // Traditional winner announcement (kept for compatibility)
   winnerDiv.innerHTML = `
     <div class="winner-animation">
       🎉 ${winner.name} wins! 🎉
@@ -183,8 +208,117 @@ function announceWinner(winner) {
   `;
   winnerDiv.classList.add('winner-animation');
   
+  // Trigger finish line celebration
+  triggerFinishLineCelebration();
+  
+  // Show dramatic winner overlay after a short delay
+  setTimeout(() => {
+    showWinnerOverlay(winner);
+  }, 1000);
+  
   // Save the winner to localStorage
   saveWinner(winner);
+}
+
+// New function to show the dramatic winner overlay
+function showWinnerOverlay(winner) {
+  const overlay = document.getElementById('winner-overlay');
+  const overlayWinnerName = document.getElementById('overlay-winner-name');
+  const overlayWinnerTeam = document.getElementById('overlay-winner-team');
+  
+  overlayWinnerName.textContent = `${winner.name} Wins!`;
+  overlayWinnerTeam.textContent = `Team: ${winner.team}`;
+  
+  overlay.classList.add('show');
+  
+  // Create confetti effect
+  createConfetti();
+}
+
+// Function to close the winner overlay
+function closeWinnerOverlay() {
+  const overlay = document.getElementById('winner-overlay');
+  overlay.classList.remove('show');
+  
+  // Remove winner highlighting from mascots
+  mascots.forEach(mascot => {
+    mascot.element.classList.remove('winner');
+  });
+  
+  // Remove finish line celebration
+  const finishLine = document.querySelector('.finish-line');
+  finishLine.classList.remove('celebrating');
+  
+  // Clean up any remaining confetti
+  const confetti = document.querySelectorAll('.confetti');
+  confetti.forEach(piece => piece.remove());
+  
+  // Clean up sparkles
+  const sparkles = document.querySelectorAll('.finish-sparkle');
+  sparkles.forEach(sparkle => sparkle.remove());
+}
+
+// Function to create confetti effect
+function createConfetti() {
+  const colors = ['#ffd700', '#ffaa00', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'];
+  
+  for (let i = 0; i < 100; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.left = Math.random() * 100 + 'vw';
+      confetti.style.top = '-10px';
+      confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+      
+      document.body.appendChild(confetti);
+      
+      // Remove confetti after animation
+      setTimeout(() => {
+        confetti.remove();
+      }, 3500);
+    }, i * 50);
+  }
+}
+
+// Function to trigger finish line celebration effects
+function triggerFinishLineCelebration() {
+  const finishLine = document.querySelector('.finish-line');
+  finishLine.classList.add('celebrating');
+  
+  // Create sparkle effects around the finish line
+  for (let i = 0; i < 20; i++) {
+    setTimeout(() => {
+      createFinishLineSparkle();
+    }, i * 100);
+  }
+}
+
+// Function to create sparkle effects at the finish line
+function createFinishLineSparkle() {
+  const finishLine = document.querySelector('.finish-line');
+  const sparkle = document.createElement('div');
+  sparkle.className = 'finish-sparkle';
+  
+  // Position sparkles around the finish line
+  const rect = finishLine.getBoundingClientRect();
+  sparkle.style.left = (rect.left + Math.random() * rect.width - 20) + 'px';
+  sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+  
+  document.body.appendChild(sparkle);
+  
+  // Remove sparkle after animation
+  setTimeout(() => {
+    sparkle.remove();
+  }, 1500);
+}
+
+// Enhanced racing with speed burst effects
+function addSpeedBurstEffect(mascot) {
+  mascot.element.classList.add('speed-burst');
+  setTimeout(() => {
+    mascot.element.classList.remove('speed-burst');
+  }, 300);
 }
 
 // Initialize the game
@@ -203,3 +337,6 @@ window.addEventListener('resize', () => {
     resetRace();
   }
 });
+
+// Make closeWinnerOverlay globally available
+window.closeWinnerOverlay = closeWinnerOverlay;
