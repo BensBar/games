@@ -1,0 +1,46 @@
+2025-08-03 13:29:33,889 - INFO - Starting batch processing in: /tmp/test_images
+2025-08-03 13:29:33,889 - INFO - Found 1 image files to process
+2025-08-03 13:29:33,889 - INFO - Progress: 1/1 (100.0%)
+2025-08-03 13:29:33,889 - INFO - Processing: saint_nictocat.jpg
+2025-08-03 13:29:34,364 - INFO - Successfully processed: saint_nictocat.jpg
+2025-08-03 13:29:34,365 - INFO - 
+Processing complete!
+2025-08-03 13:29:34,366 - INFO - Total files: 1
+2025-08-03 13:29:34,366 - INFO - Processed: 1
+2025-08-03 13:29:34,366 - INFO - Skipped: 0
+2025-08-03 13:29:34,366 - INFO - Errors: 0
+2025-08-03 13:29:34,366 - INFO - Time elapsed: 0.48 seconds
+2025-08-03 13:30:55,122 - INFO - Starting batch processing in: /tmp/test_images
+2025-08-03 13:30:55,122 - INFO - Found 1 image files to process
+2025-08-03 13:30:55,122 - INFO - Progress: 1/1 (100.0%)
+2025-08-03 13:30:55,122 - INFO - Processing: saint_nictocat.jpg
+2025-08-03 13:30:55,595 - INFO - Successfully processed: saint_nictocat.jpg
+2025-08-03 13:30:55,596 - INFO - 
+Processing complete!
+2025-08-03 13:30:55,596 - INFO - Total files: 1
+2025-08-03 13:30:55,596 - INFO - Processed: 1
+2025-08-03 13:30:55,596 - INFO - Skipped: 0
+2025-08-03 13:30:55,597 - INFO - Errors: 0
+2025-08-03 13:30:55,597 - INFO - Time elapsed: 0.47 seconds
+2025-08-03 13:31:32,964 - INFO - Starting batch processing in: /tmp/test_images
+2025-08-03 13:31:32,964 - INFO - Found 5 image files to process
+2025-08-03 13:31:32,964 - INFO - Progress: 1/5 (20.0%)
+2025-08-03 13:31:32,964 - INFO - Processing: baracktocat.jpg
+2025-08-03 13:31:33,364 - INFO - Successfully processed: baracktocat.jpg
+2025-08-03 13:31:33,365 - INFO - Progress: 2/5 (40.0%)
+2025-08-03 13:31:33,365 - INFO - Processing: collabocats.jpg
+2025-08-03 13:31:33,725 - INFO - Successfully processed: collabocats.jpg
+2025-08-03 13:31:33,725 - INFO - Skipping saint_nictocat.jpg - output already exists
+2025-08-03 13:31:33,726 - INFO - Progress: 4/5 (80.0%)
+2025-08-03 13:31:33,726 - INFO - Processing: saint_nictocat_transparent.png
+2025-08-03 13:31:33,726 - INFO - Skipping saint_nictocat_transparent.png - already has transparency
+2025-08-03 13:31:33,726 - INFO - Progress: 5/5 (100.0%)
+2025-08-03 13:31:33,726 - INFO - Processing: scarletteocat.jpg
+2025-08-03 13:31:33,898 - INFO - Successfully processed: scarletteocat.jpg
+2025-08-03 13:31:33,898 - INFO - 
+Processing complete!
+2025-08-03 13:31:33,898 - INFO - Total files: 5
+2025-08-03 13:31:33,898 - INFO - Processed: 3
+2025-08-03 13:31:33,898 - INFO - Skipped: 2
+2025-08-03 13:31:33,898 - INFO - Errors: 0
+2025-08-03 13:31:33,898 - INFO - Time elapsed: 0.93 seconds
