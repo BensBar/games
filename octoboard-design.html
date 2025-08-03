@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛹 Octocat Skateboard Deck Designer 🐙</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Octoboard Designer">
+    
+    <!-- Note: This version uses HTML5 Canvas directly for maximum compatibility -->
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(45deg, #00d4ff, #ff006e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gallery-header {
+            margin-bottom: 15px;
+        }
+
+        .gallery-header h2 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .octocat-item {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: grab;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .octocat-item:hover {
+            border-color: #00d4ff;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .octocat-item:active {
+            cursor: grabbing;
+        }
+
+        .octocat-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Canvas Section */
+        .canvas-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .canvas-header h2 {
+            font-size: 1.5rem;
+            color: #ff006e;
+            margin-bottom: 15px;
+        }
+
+        .canvas-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        #skateboardCanvas {
+            background: #2a2a3a;
+            border-radius: 15px;
+        }
+
+        /* Tools Section */
+        .tools-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tools-section h2 {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .tool-group {
+            margin-bottom: 20px;
+        }
+
+        .tool-group h3 {
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #0099cc, #00d4ff);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.danger {
+            background: linear-gradient(45deg, #ff006e, #cc0055);
+        }
+
+        .btn.danger:hover {
+            background: linear-gradient(45deg, #cc0055, #ff006e);
+        }
+
+        .btn.success {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+        }
+
+        .btn.success:hover {
+            background: linear-gradient(45deg, #00cc66, #00ff88);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 5px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #aaa;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .canvas-section {
+                order: 1;
+            }
+            
+            .gallery-section {
+                order: 2;
+            }
+            
+            .tools-section {
+                order: 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(4, 1fr);
+                max-height: 300px;
+            }
+            
+            .canvas-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .color-picker-container {
+                justify-content: center;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid #00d4ff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom scrollbar */
+        .gallery-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .gallery-grid::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .gallery-grid::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        .gallery-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 212, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🛹 Octocat Skateboard Deck Designer 🐙</h1>
+            <p>Create your custom skateboard design with GitHub Octocats!</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Gallery Section -->
+            <section class="gallery-section">
+                <div class="gallery-header">
+                    <h2>Octocat Gallery</h2>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search Octocats...">
+                </div>
+                <div class="gallery-grid" id="galleryGrid">
+                    <!-- Octocat images will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Canvas Section -->
+            <section class="canvas-section">
+                <div class="canvas-header">
+                    <h2>Skateboard Deck Designer</h2>
+                    <div class="canvas-controls">
+                        <div class="color-picker-container">
+                            <span>Deck Color:</span>
+                            <div class="color-option active" style="background-color: #2a2a3a;" data-color="#2a2a3a"></div>
+                            <div class="color-option" style="background-color: #ff006e;" data-color="#ff006e"></div>
+                            <div class="color-option" style="background-color: #00d4ff;" data-color="#00d4ff"></div>
+                            <div class="color-option" style="background-color: #ffaa00;" data-color="#ffaa00"></div>
+                            <div class="color-option" style="background-color: #00ff88;" data-color="#00ff88"></div>
+                            <div class="color-option" style="background-color: #ff4444;" data-color="#ff4444"></div>
+                            <div class="color-option" style="background-color: #8844ff;" data-color="#8844ff"></div>
+                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="skateboardCanvas" width="400" height="800"></canvas>
+                </div>
+            </section>
+
+            <!-- Tools Section -->
+            <section class="tools-section">
+                <h2>Design Tools</h2>
+                
+                <div class="tool-group">
+                    <h3>Creative Tools</h3>
+                    <button class="btn" id="randomPlaceBtn">🎲 Random Placement</button>
+                    <button class="btn danger" id="clearAllBtn">🗑️ Clear All</button>
+                </div>
+
+                <div class="tool-group">
+                    <h3>History</h3>
+                    <button class="btn" id="undoBtn">↶ Undo</button>
+                    <button class="btn" id="redoBtn">↷ Redo</button>
+                </div>
+
+                <div class="tool-group">
+                    <h3>Object Controls</h3>
+                    <div class="input-group">
+                        <label>Size:</label>
+                        <input type="range" id="sizeSlider" min="0.1" max="3" step="0.1" value="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Rotation:</label>
+                        <input type="range" id="rotationSlider" min="0" max="360" step="1" value="0">
+                    </div>
+                    <button class="btn danger" id="deleteBtn">🗑️ Delete Selected</button>
+                </div>
+
+                <div class="tool-group">
+                    <h3>Layer Controls</h3>
+                    <button class="btn" id="bringForwardBtn">↗️ Bring Forward</button>
+                    <button class="btn" id="sendBackwardBtn">↙️ Send Backward</button>
+                    <button class="btn" id="bringToFrontBtn">⬆️ Bring to Front</button>
+                    <button class="btn" id="sendToBackBtn">⬇️ Send to Back</button>
+                </div>
+
+                <div class="tool-group">
+                    <h3>Save & Export</h3>
+                    <button class="btn success" id="saveDesignBtn">💾 Save Design</button>
+                    <button class="btn" id="loadDesignBtn">📁 Load Design</button>
+                    <button class="btn success" id="exportBtn">📸 Export PNG</button>
+                </div>
+            </section>
+        </main>
+
+        <div class="status-bar" id="statusBar">
+            Ready to design! Drag Octocats from the gallery to the skateboard deck.
+        </div>
+    </div>
+
+    <script>
+        // Octocat data - all images from the collection
+        const octocats = [
+            { id: 'fintech', name: 'Fintechtocat', src: 'img/Fintechtocat.png' },
+            { id: 'sentry', name: 'Sentrytocat', src: 'img/Sentrytocat.jpg' },
+            { id: 'boxer', name: 'Boxer Octocat', src: 'img/boxertocat_octodex.png' },
+            { id: 'catstello', name: 'Catstello', src: 'img/catstello.png' },
+            { id: 'daftpunk', name: 'Daft Punk Octocat', src: 'img/daftpunktocat-guy.gif' },
+            { id: 'dino', name: 'Dinotocat', src: 'img/dinotocat.png' },
+            { id: 'droid', name: 'Droidtocat', src: 'img/droidtocat.png' },
+            { id: 'female', name: 'Female Codertocat', src: 'img/femalecodertocat.png' },
+            { id: 'hula', name: 'Hula Loop Octocat', src: 'img/hula_loop_octodex03.gif' },
+            { id: 'inspector', name: 'Inspectorcat', src: 'img/inspectocat.png' },
+            { id: 'iron', name: 'Ironcat', src: 'img/ironcat.png' },
+            { id: 'mega', name: 'Megacat', src: 'img/megacat.png' },
+            { id: 'minion', name: 'Minion', src: 'img/minion.png' },
+            { id: 'obiwan', name: 'Octobiwan', src: 'img/octobiwan.png' },
+            { id: 'memory', name: 'Octocat Memory', src: 'img/octocatmemory.png' },
+            { id: 'original', name: 'Original Octocat', src: 'img/original.png' },
+            { id: 'plumber', name: 'Plumber', src: 'img/plumber.png' },
+            { id: 'repo', name: 'Repo', src: 'img/repo.png' },
+            { id: 'saint', name: 'Saint Nictocat', src: 'img/saint_nictocat.jpg' },
+            { id: 'security', name: 'Securitocat', src: 'img/securitocat.png' },
+            { id: 'skate', name: 'Skatetocat', src: 'img/skatetocat.png' },
+            { id: 'spider', name: 'Spidertocat', src: 'img/spidertocat.png' },
+            { id: 'surf', name: 'Surftocat', src: 'img/surftocat.png' },
+            { id: 'topgun', name: 'Top Gun Octocat', src: 'img/topguntocat.png' },
+            { id: 'universe', name: 'Universetocat', src: 'img/universetocat.png' },
+            { id: 'vinyl', name: 'Vinyltocat', src: 'img/vinyltocat.png' },
+            { id: 'yogi', name: 'Yogitocat', src: 'img/yogitocat.png' }
+        ];
+
+        // Global variables
+        let canvas, ctx;
+        let currentDeckColor = '#2a2a3a';
+        let designHistory = [];
+        let historyIndex = -1;
+        let selectedObject = null;
+        let canvasObjects = [];
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let isMouseDown = false;
+
+        // Canvas object class
+        class CanvasObject {
+            constructor(image, x, y, width, height, rotation = 0) {
+                this.image = image;
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.rotation = rotation;
+                this.scale = 0.5;
+                this.selected = false;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x + this.width/2, this.y + this.height/2);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.scale(this.scale, this.scale);
+                ctx.drawImage(this.image, -this.width/2, -this.height/2, this.width, this.height);
+                
+                if (this.selected) {
+                    ctx.strokeStyle = '#00d4ff';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+                }
+                ctx.restore();
+            }
+
+            contains(x, y) {
+                const dx = x - (this.x + this.width/2);
+                const dy = y - (this.y + this.height/2);
+                const cos = Math.cos(-this.rotation * Math.PI / 180);
+                const sin = Math.sin(-this.rotation * Math.PI / 180);
+                const rotatedX = dx * cos - dy * sin;
+                const rotatedY = dx * sin + dy * cos;
+                
+                return rotatedX >= -this.width * this.scale / 2 && 
+                       rotatedX <= this.width * this.scale / 2 &&
+                       rotatedY >= -this.height * this.scale / 2 && 
+                       rotatedY <= this.height * this.scale / 2;
+            }
+
+            move(dx, dy) {
+                this.x += dx;
+                this.y += dy;
+            }
+        }
+
+        // Initialize the app
+        function init() {
+            initCanvas();
+            loadGallery();
+            setupEventListeners();
+            drawCanvas();
+            updateStatus('Application loaded successfully!');
+        }
+
+        // Initialize HTML5 canvas
+        function initCanvas() {
+            canvas = document.getElementById('skateboardCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = 400;
+            canvas.height = 800;
+            
+            // Draw initial skateboard template
+            drawCanvas();
+            
+            // Save initial state
+            saveState();
+        }
+
+        // Draw the entire canvas
+        function drawCanvas() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw deck background
+            ctx.fillStyle = currentDeckColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw skateboard shape
+            drawSkateboardShape();
+            
+            // Draw wheel holes
+            drawWheelHoles();
+            
+            // Draw all objects
+            canvasObjects.forEach(obj => obj.draw(ctx));
+        }
+
+        // Draw skateboard shape
+        function drawSkateboardShape() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const cornerRadius = 50;
+            
+            ctx.fillStyle = currentDeckColor;
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(cornerRadius, 0);
+            ctx.lineTo(width - cornerRadius, 0);
+            ctx.quadraticCurveTo(width, 0, width, cornerRadius);
+            ctx.lineTo(width, height - cornerRadius);
+            ctx.quadraticCurveTo(width, height, width - cornerRadius, height);
+            ctx.lineTo(cornerRadius, height);
+            ctx.quadraticCurveTo(0, height, 0, height - cornerRadius);
+            ctx.lineTo(0, cornerRadius);
+            ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
+            ctx.closePath();
+            
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // Draw wheel holes
+        function drawWheelHoles() {
+            const holeRadius = 8;
+            const holes = [
+                {x: 100, y: 60}, {x: 300, y: 60},
+                {x: 100, y: 100}, {x: 300, y: 100},
+                {x: 100, y: 700}, {x: 300, y: 700},
+                {x: 100, y: 740}, {x: 300, y: 740}
+            ];
+            
+            ctx.fillStyle = '#000';
+            holes.forEach(hole => {
+                ctx.beginPath();
+                ctx.arc(hole.x, hole.y, holeRadius, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        // Load Octocat gallery
+        function loadGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            
+            octocats.forEach(octocat => {
+                const item = document.createElement('div');
+                item.className = 'octocat-item';
+                item.draggable = true;
+                item.dataset.octocatId = octocat.id;
+                
+                const img = document.createElement('img');
+                img.src = octocat.src;
+                img.alt = octocat.name;
+                img.title = octocat.name;
+                
+                // Handle image load errors
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjYWFhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZTwvdGV4dD4KPHR5eHQgeD0iNTAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhYWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                };
+                
+                item.appendChild(img);
+                galleryGrid.appendChild(item);
+                
+                // Add drag start event
+                item.addEventListener('dragstart', handleDragStart);
+                
+                // Add click event for mobile
+                item.addEventListener('click', () => addOctocatToCanvas(octocat));
+            });
+        }
+
+        // Handle drag start
+        function handleDragStart(e) {
+            const octocatId = e.target.closest('.octocat-item').dataset.octocatId;
+            e.dataTransfer.setData('text/plain', octocatId);
+        }
+
+        // Add Octocat to canvas
+        function addOctocatToCanvas(octocat, x = null, y = null) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                // Set random position if not specified
+                if (x === null || y === null) {
+                    x = Math.random() * (canvas.width - 100) + 50;
+                    y = Math.random() * (canvas.height - 200) + 150;
+                }
+                
+                const canvasObj = new CanvasObject(img, x - 50, y - 50, 100, 100);
+                canvasObjects.push(canvasObj);
+                
+                // Select the new object
+                selectObject(canvasObj);
+                
+                drawCanvas();
+                saveState();
+                updateStatus(`Added ${octocat.name} to the deck!`);
+            };
+            img.onerror = function() {
+                updateStatus(`Failed to load ${octocat.name}`);
+            };
+            img.src = octocat.src;
+        }
+
+        // Select an object
+        function selectObject(obj) {
+            canvasObjects.forEach(o => o.selected = false);
+            if (obj) {
+                obj.selected = true;
+                selectedObject = obj;
+                
+                // Update sliders
+                document.getElementById('sizeSlider').value = obj.scale;
+                document.getElementById('rotationSlider').value = obj.rotation;
+                updateStatus('Object selected. Use controls to modify it.');
+            } else {
+                selectedObject = null;
+                document.getElementById('sizeSlider').value = 1;
+                document.getElementById('rotationSlider').value = 0;
+                updateStatus('No object selected.');
+            }
+            drawCanvas();
+        }
+
+        // Get canvas coordinates from mouse event
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Color picker
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentDeckColor = e.target.dataset.color;
+                    drawCanvas();
+                    updateStatus(`Changed deck color to ${currentDeckColor}`);
+                });
+            });
+
+            // Canvas mouse events
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('click', handleCanvasClick);
+
+            // Canvas drop functionality
+            canvas.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            canvas.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const octocatId = e.dataTransfer.getData('text/plain');
+                const octocat = octocats.find(o => o.id === octocatId);
+                if (octocat) {
+                    const coords = getCanvasCoords(e);
+                    addOctocatToCanvas(octocat, coords.x, coords.y);
+                }
+            });
+
+            // Tool buttons
+            document.getElementById('randomPlaceBtn').addEventListener('click', randomPlacement);
+            document.getElementById('clearAllBtn').addEventListener('click', clearAll);
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            document.getElementById('deleteBtn').addEventListener('click', deleteSelected);
+            document.getElementById('bringForwardBtn').addEventListener('click', () => bringForward());
+            document.getElementById('sendBackwardBtn').addEventListener('click', () => sendBackward());
+            document.getElementById('bringToFrontBtn').addEventListener('click', () => bringToFront());
+            document.getElementById('sendToBackBtn').addEventListener('click', () => sendToBack());
+            document.getElementById('saveDesignBtn').addEventListener('click', saveDesign);
+            document.getElementById('loadDesignBtn').addEventListener('click', loadDesign);
+            document.getElementById('exportBtn').addEventListener('click', exportDesign);
+
+            // Object control sliders
+            document.getElementById('sizeSlider').addEventListener('input', updateObjectSize);
+            document.getElementById('rotationSlider').addEventListener('input', updateObjectRotation);
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+        }
+
+        // Mouse event handlers
+        function handleMouseDown(e) {
+            const coords = getCanvasCoords(e);
+            isMouseDown = true;
+            dragStartX = coords.x;
+            dragStartY = coords.y;
+            
+            // Find clicked object (check from top to bottom)
+            let clickedObject = null;
+            for (let i = canvasObjects.length - 1; i >= 0; i--) {
+                if (canvasObjects[i].contains(coords.x, coords.y)) {
+                    clickedObject = canvasObjects[i];
+                    break;
+                }
+            }
+            
+            selectObject(clickedObject);
+            
+            if (selectedObject) {
+                isDragging = true;
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (isDragging && selectedObject && isMouseDown) {
+                const coords = getCanvasCoords(e);
+                const dx = coords.x - dragStartX;
+                const dy = coords.y - dragStartY;
+                
+                selectedObject.move(dx, dy);
+                dragStartX = coords.x;
+                dragStartY = coords.y;
+                
+                drawCanvas();
+            }
+        }
+
+        function handleMouseUp(e) {
+            if (isDragging) {
+                saveState();
+            }
+            isMouseDown = false;
+            isDragging = false;
+        }
+
+        function handleCanvasClick(e) {
+            // Click handling is done in mousedown to allow for dragging
+        }
+
+        // Update object size
+        function updateObjectSize(e) {
+            if (selectedObject) {
+                selectedObject.scale = parseFloat(e.target.value);
+                drawCanvas();
+            }
+        }
+
+        // Update object rotation
+        function updateObjectRotation(e) {
+            if (selectedObject) {
+                selectedObject.rotation = parseFloat(e.target.value);
+                drawCanvas();
+            }
+        }
+
+        // Random placement
+        function randomPlacement() {
+            if (canvasObjects.length === 0) {
+                updateStatus('No Octocats to randomize! Add some first.');
+                return;
+            }
+
+            canvasObjects.forEach(obj => {
+                obj.x = Math.random() * (canvas.width - 100) + 50;
+                obj.y = Math.random() * (canvas.height - 200) + 150;
+                obj.rotation = Math.random() * 360;
+                obj.scale = 0.3 + Math.random() * 0.7;
+            });
+
+            drawCanvas();
+            saveState();
+            updateStatus('Randomly placed all Octocats!');
+        }
+
+        // Clear all objects
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all Octocats from the deck?')) {
+                canvasObjects = [];
+                selectedObject = null;
+                drawCanvas();
+                saveState();
+                updateStatus('Cleared all Octocats from the deck.');
+            }
+        }
+
+        // Delete selected object
+        function deleteSelected() {
+            if (selectedObject) {
+                const index = canvasObjects.indexOf(selectedObject);
+                if (index > -1) {
+                    canvasObjects.splice(index, 1);
+                    selectedObject = null;
+                    drawCanvas();
+                    saveState();
+                    updateStatus('Deleted selected Octocat.');
+                }
+            } else {
+                updateStatus('No Octocat selected to delete.');
+            }
+        }
+
+        // Layer controls
+        function bringForward() {
+            if (selectedObject) {
+                const index = canvasObjects.indexOf(selectedObject);
+                if (index < canvasObjects.length - 1) {
+                    canvasObjects[index] = canvasObjects[index + 1];
+                    canvasObjects[index + 1] = selectedObject;
+                    drawCanvas();
+                    saveState();
+                    updateStatus('Brought object forward.');
+                }
+            }
+        }
+
+        function sendBackward() {
+            if (selectedObject) {
+                const index = canvasObjects.indexOf(selectedObject);
+                if (index > 0) {
+                    canvasObjects[index] = canvasObjects[index - 1];
+                    canvasObjects[index - 1] = selectedObject;
+                    drawCanvas();
+                    saveState();
+                    updateStatus('Sent object backward.');
+                }
+            }
+        }
+
+        function bringToFront() {
+            if (selectedObject) {
+                const index = canvasObjects.indexOf(selectedObject);
+                canvasObjects.splice(index, 1);
+                canvasObjects.push(selectedObject);
+                drawCanvas();
+                saveState();
+                updateStatus('Brought object to front.');
+            }
+        }
+
+        function sendToBack() {
+            if (selectedObject) {
+                const index = canvasObjects.indexOf(selectedObject);
+                canvasObjects.splice(index, 1);
+                canvasObjects.unshift(selectedObject);
+                drawCanvas();
+                saveState();
+                updateStatus('Sent object to back.');
+            }
+        }
+
+        // Save state for undo/redo
+        function saveState() {
+            const state = {
+                objects: canvasObjects.map(obj => ({
+                    imageSrc: obj.image.src,
+                    x: obj.x,
+                    y: obj.y,
+                    width: obj.width,
+                    height: obj.height,
+                    rotation: obj.rotation,
+                    scale: obj.scale
+                })),
+                deckColor: currentDeckColor
+            };
+            
+            designHistory = designHistory.slice(0, historyIndex + 1);
+            designHistory.push(JSON.stringify(state));
+            historyIndex++;
+            
+            // Limit history to 10 steps
+            if (designHistory.length > 10) {
+                designHistory.shift();
+                historyIndex--;
+            }
+        }
+
+        // Undo
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                loadState(designHistory[historyIndex]);
+                updateStatus('Undid last action.');
+            } else {
+                updateStatus('Nothing to undo.');
+            }
+        }
+
+        // Redo
+        function redo() {
+            if (historyIndex < designHistory.length - 1) {
+                historyIndex++;
+                loadState(designHistory[historyIndex]);
+                updateStatus('Redid last action.');
+            } else {
+                updateStatus('Nothing to redo.');
+            }
+        }
+
+        // Load state from history
+        function loadState(stateJson) {
+            const state = JSON.parse(stateJson);
+            currentDeckColor = state.deckColor;
+            
+            // Update color picker
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            const colorOption = document.querySelector(`[data-color="${currentDeckColor}"]`);
+            if (colorOption) colorOption.classList.add('active');
+            
+            // Clear current objects
+            canvasObjects = [];
+            selectedObject = null;
+            
+            // Recreate objects
+            let loadedCount = 0;
+            state.objects.forEach(objData => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = function() {
+                    const canvasObj = new CanvasObject(img, objData.x, objData.y, objData.width, objData.height, objData.rotation);
+                    canvasObj.scale = objData.scale;
+                    canvasObjects.push(canvasObj);
+                    
+                    loadedCount++;
+                    if (loadedCount === state.objects.length) {
+                        drawCanvas();
+                    }
+                };
+                img.src = objData.imageSrc;
+            });
+            
+            if (state.objects.length === 0) {
+                drawCanvas();
+            }
+        }
+
+        // Save design to localStorage
+        function saveDesign() {
+            const design = {
+                objects: canvasObjects.map(obj => ({
+                    imageSrc: obj.image.src,
+                    x: obj.x,
+                    y: obj.y,
+                    width: obj.width,
+                    height: obj.height,
+                    rotation: obj.rotation,
+                    scale: obj.scale
+                })),
+                deckColor: currentDeckColor,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('octoboard-design', JSON.stringify(design));
+            updateStatus('Design saved successfully!');
+        }
+
+        // Load design from localStorage
+        function loadDesign() {
+            const saved = localStorage.getItem('octoboard-design');
+            if (saved) {
+                try {
+                    const design = JSON.parse(saved);
+                    currentDeckColor = design.deckColor;
+                    
+                    // Update color picker
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+                    const colorOption = document.querySelector(`[data-color="${currentDeckColor}"]`);
+                    if (colorOption) colorOption.classList.add('active');
+                    
+                    // Clear current objects
+                    canvasObjects = [];
+                    selectedObject = null;
+                    
+                    // Recreate objects
+                    let loadedCount = 0;
+                    design.objects.forEach(objData => {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+                        img.onload = function() {
+                            const canvasObj = new CanvasObject(img, objData.x, objData.y, objData.width, objData.height, objData.rotation);
+                            canvasObj.scale = objData.scale;
+                            canvasObjects.push(canvasObj);
+                            
+                            loadedCount++;
+                            if (loadedCount === design.objects.length) {
+                                drawCanvas();
+                                saveState();
+                                updateStatus('Design loaded successfully!');
+                            }
+                        };
+                        img.src = objData.imageSrc;
+                    });
+                    
+                    if (design.objects.length === 0) {
+                        drawCanvas();
+                        saveState();
+                        updateStatus('Design loaded successfully!');
+                    }
+                } catch (e) {
+                    updateStatus('Error loading design.');
+                }
+            } else {
+                updateStatus('No saved design found.');
+            }
+        }
+
+        // Export design as PNG
+        function exportDesign() {
+            const dataURL = canvas.toDataURL('png', 1.0);
+            
+            const link = document.createElement('a');
+            link.download = `octoboard-design-${Date.now()}.png`;
+            link.href = dataURL;
+            link.click();
+            
+            updateStatus('Design exported as PNG!');
+        }
+
+        // Handle search
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.octocat-item');
+            
+            items.forEach(item => {
+                const img = item.querySelector('img');
+                const name = img.alt.toLowerCase();
+                
+                if (name.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Update status bar
+        function updateStatus(message) {
+            document.getElementById('statusBar').textContent = message;
+        }
+
+        // Initialize app when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
