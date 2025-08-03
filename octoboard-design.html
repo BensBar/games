@@ -418,6 +418,7 @@
                 
                 <div class="tool-group">
                     <h3>Creative Tools</h3>
+                    <button class="btn" id="addAllBtn">🌟 Add All</button>
                     <button class="btn" id="randomPlaceBtn">🎲 Random Placement</button>
                     <button class="btn danger" id="clearAllBtn">🗑️ Clear All</button>
                 </div>
@@ -464,36 +465,87 @@
     </div>
 
     <script>
-        // Octocat data - all images from the collection
-        const octocats = [
-            { id: 'fintech', name: 'Fintechtocat', src: 'img/Octocats/Fintechtocat.png' },
-            { id: 'sentry', name: 'Sentrytocat', src: 'img/Octocats/Sentrytocat.jpg' },
-            { id: 'boxer', name: 'Boxer Octocat', src: 'img/Octocats/boxertocat_octodex.png' },
-            { id: 'catstello', name: 'Catstello', src: 'img/Octocats/catstello.png' },
-            { id: 'daftpunk', name: 'Daft Punk Octocat', src: 'img/Octocats/daftpunktocat-guy.gif' },
-            { id: 'dino', name: 'Dinotocat', src: 'img/Octocats/dinotocat.png' },
-            { id: 'droid', name: 'Droidtocat', src: 'img/Octocats/droidtocat.png' },
-            { id: 'female', name: 'Female Codertocat', src: 'img/Octocats/femalecodertocat.png' },
-            { id: 'hula', name: 'Hula Loop Octocat', src: 'img/Octocats/hula_loop_octodex03.gif' },
-            { id: 'inspector', name: 'Inspectorcat', src: 'img/Octocats/inspectocat.png' },
-            { id: 'iron', name: 'Ironcat', src: 'img/Octocats/ironcat.png' },
-            { id: 'mega', name: 'Megacat', src: 'img/Octocats/megacat.png' },
-            { id: 'minion', name: 'Minion', src: 'img/Octocats/minion.png' },
-            { id: 'obiwan', name: 'Octobiwan', src: 'img/Octocats/octobiwan.png' },
-            { id: 'memory', name: 'Octocat Memory', src: 'img/Octocats/octocatmemory.png' },
-            { id: 'original', name: 'Original Octocat', src: 'img/Octocats/original.png' },
-            { id: 'plumber', name: 'Plumber', src: 'img/Octocats/plumber.png' },
-            { id: 'repo', name: 'Repo', src: 'img/Octocats/repo.png' },
-            { id: 'saint', name: 'Saint Nictocat', src: 'img/Octocats/saint_nictocat.jpg' },
-            { id: 'security', name: 'Securitocat', src: 'img/Octocats/securitocat.png' },
-            { id: 'skate', name: 'Skatetocat', src: 'img/Octocats/skatetocat.png' },
-            { id: 'spider', name: 'Spidertocat', src: 'img/Octocats/spidertocat.png' },
-            { id: 'surf', name: 'Surftocat', src: 'img/Octocats/surftocat.png' },
-            { id: 'topgun', name: 'Top Gun Octocat', src: 'img/Octocats/topguntocat.png' },
-            { id: 'universe', name: 'Universetocat', src: 'img/Octocats/universetocat.png' },
-            { id: 'vinyl', name: 'Vinyltocat', src: 'img/Octocats/vinyltocat.png' },
-            { id: 'yogi', name: 'Yogitocat', src: 'img/Octocats/yogitocat.png' }
-        ];
+        // Octocat data - dynamically loaded from /img/Octocats directory
+        let octocats = [];
+
+        // Function to dynamically load all Octocats from directory
+        async function loadOctocatsFromDirectory() {
+            const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif'];
+            const octocatDirectory = 'img/Octocats/';
+            const discoveredOctocats = [];
+
+            // Common Octocat filenames to try loading
+            const commonFiles = [
+                'Brennatocat.png', 'Fintechtocat.png', 'Mardigrastocat.png', 'NUX_Octodex.gif',
+                'Professortocat_v2.png', 'Robotocat.png', 'Sentrytocat_octodex.jpg', 'Terracottocat_Single.png',
+                'adventure-cat.png', 'agendacat.png', 'bannekat.png', 'baracktocat.jpg', 'bear-cavalry.png',
+                'benevocats.png', 'bouncercat.png', 'boxertocat_octodex.jpg', 'carlostocat.gif', 'catstello.png',
+                'chellocat.jpg', 'cherryontop-o-cat.png', 'class-act.png', 'codercat.jpg', 'collabocats.jpg',
+                'constructocat2.jpg', 'daftpunktocat-guy.gif', 'daftpunktocat-thomas.gif', 'deckfailcat.png',
+                'defunktocat.png.jpeg', 'dinotocat.png', 'doctocat-brown.jpg', 'dodgetocat.jpg', 'dodgetocat.png',
+                'dodgetocat_v2.png', 'dojocat.jpg', 'dojocat.png', 'droctocat.png', 'droidtocat.png',
+                'drupalcat.jpg', 'dunetocat.png', 'electrocat.png', 'father_timeout.jpg', 'femalecodertocat.png',
+                'filmtocat.png', 'filmtocats.png', 'forktocat.jpg', 'founding-father.jpg', 'foundingfather_v2.png',
+                'gangnamtocat.png', 'gobbleotron.gif', 'goretocat.png', 'gracehoppertocat.jpg', 'heisencat.png',
+                'herme-t-crabb.png', 'hipster-partycat.jpg', 'homercat.png', 'hubot.jpg', 'hula_loop_octodex03.gif',
+                'inflatocat-1.png', 'inflatocat.png', 'inspectocat.jpg', 'ironcat.jpg', 'jean-luc-picat.jpg',
+                'jenktocat.jpg', 'jetpacktocat.png', 'justicetocat.jpg', 'kimonotocat.png', 'labtocat.png',
+                'linktocat.jpg', 'luchadortocat.png', 'manufacturetocat.png', 'maxtocat.gif', 'mcefeeline.jpg',
+                'megacat-2.png', 'megacat.jpg', 'minertocat.png', 'minion.png', 'momtocat.png', 'mona-lovelace.jpg',
+                'mona-the-rivetertocat.png', 'monroe.jpg', 'motherhubbertocat.png', 'mummytocat.gif', 'murakamicat.png',
+                'neurocats_FULL.png', 'octdrey-catburn.jpg', 'octobiwan.jpg', 'octocat-de-los-muertos.jpg',
+                'octoclark-kentocat.jpg', 'octofez.png', 'octoliberty.png', 'octovets_FULL.png', 'okal-eltocat.jpg',
+                'oktobercat.png', 'orderedlistocat.png', 'original.png', 'parentocats.png', 'plumber.jpg',
+                'poptocat.png', 'poptocat_v2.png', 'puddle_jumper_octodex.jpg', 'puppeteer.png', 'pusheencat.png',
+                'pythocat.png', 'red-polo.png', 'repo.png', 'riddlocat.png', 'saint_nictocat.jpg', 'saketocat.png',
+                'saritocat.png', 'scarletteocat.jpg', 'scubatocat.png', 'securitocat.png', 'securityknightocat.png',
+                'setuptocat.jpg', 'shoptocat.png', 'skatetocat.png', 'skitchtocat.png', 'snowoctocat.png',
+                'snowtocat_final.jpg', 'socialite.jpg', 'spidertocat.png', 'spocktocat.png', 'sponsortocat.png',
+                'steroidtocat.png', 'stormtroopocat.png', 'strongbadtocat.png', 'supportcat.png', 'surftocat.png',
+                'swagtocat.png', 'tentocats.jpg', 'tentocats.png', 'thanktocat.png', 'topguntocat.png', 'trekkie.png',
+                'twenty-percent-cooler-octocat.png', 'universetocat.png', 'vinyltocat.png', 'visionary.jpg',
+                'visionary.png', 'waldocat.png', 'welcometocat.png', 'wilson.jpg', 'xtocat.jpg', 'xtocat.png',
+                'yaktocat.png', 'yogitocat.png'
+            ];
+
+            // Test each file to see if it exists
+            for (const filename of commonFiles) {
+                try {
+                    const src = octocatDirectory + filename;
+                    
+                    // Create a promise to test if image loads
+                    const imageExists = await new Promise((resolve) => {
+                        const testImg = new Image();
+                        testImg.onload = () => resolve(true);
+                        testImg.onerror = () => resolve(false);
+                        testImg.src = src;
+                    });
+                    
+                    if (imageExists) {
+                        const name = filename
+                            .replace(/\.(png|jpg|jpeg|gif)$/i, '')
+                            .replace(/[-_]/g, ' ')
+                            .replace(/\b\w/g, l => l.toUpperCase());
+                        
+                        const id = filename.replace(/\.(png|jpg|jpeg|gif)$/i, '').toLowerCase();
+                        
+                        discoveredOctocats.push({
+                            id: id,
+                            name: name,
+                            src: src
+                        });
+                    }
+                } catch (error) {
+                    // Skip files that can't be loaded
+                    console.warn(`Failed to load ${filename}:`, error);
+                }
+            }
+
+            // Sort by name for consistent ordering
+            discoveredOctocats.sort((a, b) => a.name.localeCompare(b.name));
+            
+            return discoveredOctocats;
+        }
 
         // Global variables
         let canvas, ctx;
@@ -556,8 +608,14 @@
         }
 
         // Initialize the app
-        function init() {
+        async function init() {
             initCanvas();
+            updateStatus('Loading Octocats...');
+            
+            // Load octocats dynamically
+            octocats = await loadOctocatsFromDirectory();
+            updateStatus(`Loaded ${octocats.length} Octocats!`);
+            
             loadGallery();
             setupEventListeners();
             drawCanvas();
@@ -603,22 +661,43 @@
         function drawSkateboardShape() {
             const width = canvas.width;
             const height = canvas.height;
-            const cornerRadius = 50;
             
             ctx.fillStyle = currentDeckColor;
             ctx.strokeStyle = '#555';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
             
+            // More realistic skateboard shape with proper nose and tail
             ctx.beginPath();
-            ctx.moveTo(cornerRadius, 0);
-            ctx.lineTo(width - cornerRadius, 0);
-            ctx.quadraticCurveTo(width, 0, width, cornerRadius);
-            ctx.lineTo(width, height - cornerRadius);
-            ctx.quadraticCurveTo(width, height, width - cornerRadius, height);
-            ctx.lineTo(cornerRadius, height);
-            ctx.quadraticCurveTo(0, height, 0, height - cornerRadius);
-            ctx.lineTo(0, cornerRadius);
-            ctx.quadraticCurveTo(0, 0, cornerRadius, 0);
+            
+            // Start from top left, move clockwise
+            const centerX = width / 2;
+            const noseRadius = width * 0.4; // Rounded nose
+            const tailRadius = width * 0.35; // Slightly less rounded tail
+            const sideRadius = width * 0.15; // Side curve radius
+            
+            // Top nose (rounded)
+            ctx.moveTo(centerX - noseRadius * 0.7, 0);
+            ctx.quadraticCurveTo(centerX, -noseRadius * 0.3, centerX + noseRadius * 0.7, 0);
+            ctx.quadraticCurveTo(width, noseRadius * 0.15, width, noseRadius * 0.4);
+            
+            // Right side with slight concave curve (typical skateboard shape)
+            ctx.lineTo(width, height * 0.25);
+            ctx.quadraticCurveTo(width - sideRadius * 0.3, height * 0.5, width, height * 0.75);
+            
+            // Bottom tail (less rounded than nose)
+            ctx.lineTo(width, height - tailRadius * 0.4);
+            ctx.quadraticCurveTo(width, height + tailRadius * 0.2, centerX + tailRadius * 0.6, height);
+            ctx.quadraticCurveTo(centerX, height + tailRadius * 0.15, centerX - tailRadius * 0.6, height);
+            ctx.quadraticCurveTo(0, height + tailRadius * 0.2, 0, height - tailRadius * 0.4);
+            
+            // Left side with slight concave curve
+            ctx.lineTo(0, height * 0.75);
+            ctx.quadraticCurveTo(sideRadius * 0.3, height * 0.5, 0, height * 0.25);
+            
+            // Back to nose
+            ctx.lineTo(0, noseRadius * 0.4);
+            ctx.quadraticCurveTo(0, noseRadius * 0.15, centerX - noseRadius * 0.7, 0);
+            
             ctx.closePath();
             
             ctx.fill();
@@ -771,6 +850,8 @@
             });
 
             // Tool buttons
+            // Creative tools
+            document.getElementById('addAllBtn').addEventListener('click', addAllOctocats);
             document.getElementById('randomPlaceBtn').addEventListener('click', randomPlacement);
             document.getElementById('clearAllBtn').addEventListener('click', clearAll);
             document.getElementById('undoBtn').addEventListener('click', undo);
@@ -854,6 +935,62 @@
             if (selectedObject) {
                 selectedObject.rotation = parseFloat(e.target.value);
                 drawCanvas();
+            }
+        }
+
+        // Add all Octocats to canvas in random arrangement
+        function addAllOctocats() {
+            if (octocats.length === 0) {
+                updateStatus('No Octocats loaded yet!');
+                return;
+            }
+
+            if (confirm(`Add all ${octocats.length} Octocats to the deck? This will clear existing designs.`)) {
+                // Clear existing objects
+                canvasObjects = [];
+                selectedObject = null;
+                
+                let loadedCount = 0;
+                const totalCount = octocats.length;
+                
+                updateStatus(`Adding ${totalCount} Octocats...`);
+                
+                octocats.forEach((octocat, index) => {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = function() {
+                        // Random position within skateboard bounds
+                        const x = Math.random() * (canvas.width - 100) + 50;
+                        const y = Math.random() * (canvas.height - 200) + 150;
+                        
+                        // Create canvas object with random properties
+                        const canvasObj = new CanvasObject(img, x - 50, y - 50, 100, 100);
+                        canvasObj.rotation = Math.random() * 360;
+                        canvasObj.scale = 0.2 + Math.random() * 0.6; // Smaller scale for many objects
+                        
+                        canvasObjects.push(canvasObj);
+                        loadedCount++;
+                        
+                        // Update progress and draw when all loaded
+                        if (loadedCount === totalCount) {
+                            drawCanvas();
+                            saveState();
+                            updateStatus(`Successfully added all ${totalCount} Octocats to the deck!`);
+                        } else {
+                            updateStatus(`Loading Octocats... ${loadedCount}/${totalCount}`);
+                        }
+                    };
+                    img.onerror = function() {
+                        loadedCount++;
+                        console.warn(`Failed to load ${octocat.name}`);
+                        if (loadedCount === totalCount) {
+                            drawCanvas();
+                            saveState();
+                            updateStatus(`Added Octocats (some failed to load): ${canvasObjects.length}/${totalCount}`);
+                        }
+                    };
+                    img.src = octocat.src;
+                });
             }
         }
 
