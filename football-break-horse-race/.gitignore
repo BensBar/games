@@ -13,3 +13,11 @@ package-lock.json
 Thumbs.db
 ehthumbs.db
 Icon?
+
+# 4K source files (too large for repository)
+images/4k-originals/
+
+# Temporary processing files
+*.tmp
+*.temp
+/tmp/

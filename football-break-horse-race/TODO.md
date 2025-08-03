@@ -19,7 +19,7 @@ Owner: Ben Stoll
 
 ## 🎨 Graphics & Visual Upgrades
 
-- [ ] Upgrade all game assets to 4K resolution
+- [x] Upgrade all game assets to 4K resolution
 - [ ] Replace horses with custom **team mascots**
 
 ### 🎭 Mascot Requirements

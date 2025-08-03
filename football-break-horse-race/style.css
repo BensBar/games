@@ -256,7 +256,7 @@ button#startBtn:disabled {
   border-color: rgba(220, 38, 38, 0.6);
 }
 
-/* CSS Sprite Classes for Mascots */
+/* CSS Sprite Classes for Mascots - 4K Enhanced */
 .mascot-sprite {
   position: absolute;
   top: 50%;
@@ -264,18 +264,50 @@ button#startBtn:disabled {
   transform: translate(-50%, -50%);
   width: 40px;
   height: 40px;
-  background-image: url('images/mascots.png');
+  /* Use WebP with PNG fallback for optimal performance */
+  background-image: url('images/mascots-4k.webp'), url('images/mascots-4k-optimized.png');
   background-repeat: no-repeat;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px;
   display: inline-block;
-  /* Horizontal arrangement - 5 sprites side by side */
-  background-size: 200px 40px; /* Scale to fit horizontally */
+  /* Enhanced 4K sprite sheet - 5120x1024 (5 sprites @ 1024px each) */
+  background-size: 200px 40px; /* Scale down for normal displays */
   z-index: 2;
+  /* Enhanced rendering for high-DPI displays */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  /* Fallback for older browsers */
+  image-rendering: optimizeQuality;
 }
 
-/* Sprites arranged horizontally - each sprite is 40px wide */
+/* High-DPI display support for 4K sprites */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mascot-sprite {
+    /* Use larger background for high-DPI to maintain crisp quality */
+    background-size: 400px 80px;
+  }
+}
+
+/* 4K Display optimization */
+@media (min-width: 3000px), (-webkit-min-device-pixel-ratio: 3) {
+  .mascot-sprite {
+    width: 60px;
+    height: 60px;
+    background-size: 300px 60px;
+  }
+}
+
+/* Ultra-wide and 4K+ displays */
+@media (min-width: 3840px) {
+  .mascot-sprite {
+    width: 80px;
+    height: 80px;
+    background-size: 400px 80px;
+  }
+}
+
+/* Sprites arranged horizontally - 4K positions (1024px per sprite) */
 .sprite-hairy-dawg {
   background-position: 0 0;
 }
@@ -285,15 +317,15 @@ button#startBtn:disabled {
 }
 
 .sprite-blooper {
-  background-position: -72px 0;
+  background-position: -80px 0;
 }
 
 .sprite-billy-buffalo {
-  background-position: -112px 0;
+  background-position: -120px 0;
 }
 
 .sprite-t-rac {
-  background-position: -152px 0;
+  background-position: -160px 0;
 }
 
 /* Fallback for older browsers or if sprites fail */
@@ -690,9 +722,12 @@ button#startBtn:disabled {
   .mascot-sprite {
     width: 32px;
     height: 32px;
-    background-size: 160px 32px; /* Adjust sprite size for mobile - horizontal */
+    background-size: 160px 32px; /* 4K sprite scaled for mobile */
+    /* Enhanced rendering for mobile high-DPI */
+    image-rendering: -webkit-optimize-contrast;
   }
   
+  /* Mobile sprite positions with 4K assets */
   .sprite-hairy-dawg {
     background-position: 0 0;
   }
@@ -702,15 +737,15 @@ button#startBtn:disabled {
   }
 
   .sprite-blooper {
-    background-position: -58px 0;
+    background-position: -64px 0;
   }
 
   .sprite-billy-buffalo {
-    background-position: -90px 0;
+    background-position: -96px 0;
   }
 
   .sprite-t-rac {
-    background-position: -122px 0;
+    background-position: -128px 0;
   }
   
   .mascot .name {
@@ -740,9 +775,12 @@ button#startBtn:disabled {
   .mascot-sprite {
     width: 28px;
     height: 28px;
-    background-size: 140px 28px; /* Adjust sprite size for small mobile - horizontal */
+    background-size: 140px 28px; /* 4K sprite scaled for small mobile */
+    /* Enhanced rendering for small mobile */
+    image-rendering: -webkit-optimize-contrast;
   }
   
+  /* Small mobile sprite positions with 4K assets */
   .sprite-hairy-dawg {
     background-position: 0 0;
   }
@@ -752,15 +790,15 @@ button#startBtn:disabled {
   }
 
   .sprite-blooper {
-    background-position: -50px 0;
+    background-position: -56px 0;
   }
 
   .sprite-billy-buffalo {
-    background-position: -76px 0;
+    background-position: -84px 0;
   }
 
   .sprite-t-rac {
-    background-position: -104px 0;
+    background-position: -112px 0;
   }
   
   .mascot .name {
@@ -876,5 +914,232 @@ button#startBtn:disabled {
   
   .winner-team, .winner-time {
     font-size: 0.8em;
+  }
+}
+
+/* ========================================
+   4K AND TV DISPLAY OPTIMIZATIONS
+   ======================================== */
+
+/* Performance optimizations for large images */
+.mascot-sprite {
+  /* Enable hardware acceleration for smoother animations */
+  will-change: transform, background-position;
+  /* Optimize for performance */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+/* Preload hint for 4K sprite sheet - prioritize WebP */
+body::before {
+  content: '';
+  display: none;
+  background-image: url('images/mascots-4k.webp'), url('images/mascots-4k-optimized.png');
+}
+
+/* TV display optimizations - Large screens */
+@media (min-width: 1920px) {
+  body {
+    font-size: 18px;
+    padding: 40px;
+  }
+  
+  h1 {
+    font-size: 3em;
+    margin-bottom: 30px;
+  }
+  
+  #track {
+    max-width: 1400px;
+    padding: 30px;
+  }
+  
+  .mascot {
+    height: 70px;
+    width: 120px;
+  }
+  
+  .mascot-sprite {
+    width: 50px;
+    height: 50px;
+    background-size: 250px 50px;
+  }
+  
+  /* Adjust sprite positions for larger TV display */
+  .sprite-freddy-falcon {
+    background-position: -50px 0;
+  }
+  
+  .sprite-blooper {
+    background-position: -100px 0;
+  }
+  
+  .sprite-billy-buffalo {
+    background-position: -150px 0;
+  }
+  
+  .sprite-t-rac {
+    background-position: -200px 0;
+  }
+}
+
+/* 4K TV display - Ultra high resolution */
+@media (min-width: 3840px) {
+  body {
+    font-size: 24px;
+    padding: 60px;
+  }
+  
+  h1 {
+    font-size: 4em;
+    margin-bottom: 40px;
+  }
+  
+  #countdown {
+    font-size: 6em;
+    min-height: 120px;
+  }
+  
+  #track {
+    max-width: 2000px;
+    padding: 50px;
+    border-width: 5px;
+  }
+  
+  .mascot {
+    height: 100px;
+    width: 160px;
+    border-radius: 20px;
+  }
+  
+  .mascot .name {
+    font-size: 1.3em;
+    top: -35px;
+  }
+  
+  #winner {
+    font-size: 3em;
+    min-height: 100px;
+  }
+  
+  .winner-overlay {
+    backdrop-filter: blur(10px);
+  }
+  
+  .winner-trophy {
+    font-size: clamp(4rem, 10vw, 8rem);
+  }
+  
+  .winner-text {
+    font-size: clamp(3rem, 8vw, 6rem);
+  }
+  
+  .winner-team {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+  }
+  
+  .celebration-button {
+    padding: 20px 40px;
+    font-size: 1.5rem;
+    border-radius: 60px;
+  }
+}
+
+/* 8K and ultra-wide displays */
+@media (min-width: 7680px) {
+  body {
+    font-size: 32px;
+  }
+  
+  .mascot-sprite {
+    width: 120px;
+    height: 120px;
+    background-size: 600px 120px;
+  }
+  
+  /* Adjust sprite positions for 8K displays */
+  .sprite-freddy-falcon {
+    background-position: -120px 0;
+  }
+  
+  .sprite-blooper {
+    background-position: -240px 0;
+  }
+  
+  .sprite-billy-buffalo {
+    background-position: -360px 0;
+  }
+  
+  .sprite-t-rac {
+    background-position: -480px 0;
+  }
+}
+
+/* High refresh rate display optimizations */
+@media (min-refresh-rate: 120Hz) {
+  .mascot-sprite {
+    /* Optimize animations for high refresh rate displays */
+    animation-duration: 0.25s;
+  }
+  
+  .mascot.racing {
+    animation-duration: 0.4s, 0.25s, 0.6s;
+  }
+}
+
+/* Enhanced anti-aliasing for high-DPI displays */
+@media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+  * {
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+  
+  .mascot-sprite {
+    /* Use full resolution sprite for ultra-high DPI */
+    background-size: 512px 102.4px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Ultra-high DPI sprite positions */
+  .sprite-freddy-falcon {
+    background-position: -102.4px 0;
+  }
+  
+  .sprite-blooper {
+    background-position: -204.8px 0;
+  }
+  
+  .sprite-billy-buffalo {
+    background-position: -307.2px 0;
+  }
+  
+  .sprite-t-rac {
+    background-position: -409.6px 0;
+  }
+}
+
+/* Accessibility and readability improvements for large displays */
+@media (min-width: 2560px) {
+  /* Ensure proper contrast and readability on large screens */
+  .mascot .name {
+    text-shadow: 
+      2px 2px 4px rgba(0, 0, 0, 0.8),
+      0 0 8px rgba(0, 0, 0, 0.6);
+  }
+  
+  h1 {
+    text-shadow: 
+      3px 3px 6px rgba(0, 0, 0, 0.8),
+      0 0 12px rgba(220, 38, 38, 0.4);
+  }
+  
+  #winner {
+    text-shadow: 
+      3px 3px 6px rgba(0, 0, 0, 0.8),
+      0 0 15px rgba(220, 38, 38, 0.5);
   }
 }
