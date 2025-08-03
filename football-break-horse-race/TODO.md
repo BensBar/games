@@ -11,7 +11,7 @@ Owner: Ben Stoll
 - [x] Randomize race winner logic
 - [x] Build HTML/CSS/JS scaffolding
 - [x] Add Start button and race reset
-- [ ] Display winner clearly (with animation or confetti)
+- [x] Display winner clearly (with animation or confetti)
 - [ ] Make race duration dynamically fit within 45–60 seconds
 - [ ] Add sound effects (gallop, race start, win celebration)
 
