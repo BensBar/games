@@ -49,9 +49,86 @@
 
         .main-content {
             display: grid;
+            grid-template-areas: 
+                "controls controls controls"
+                "gallery-left canvas gallery-right"
+                "gallery-bottom canvas gallery-bottom2";
             grid-template-columns: 1fr 2fr 1fr;
+            grid-template-rows: auto 1fr auto;
             gap: 20px;
             flex: 1;
+        }
+
+        /* Top controls bar */
+        .top-controls {
+            grid-area: controls;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .creative-tools {
+            display: flex;
+            gap: 10px;
+        }
+
+        .creative-tools .btn {
+            width: auto;
+            margin: 0;
+            padding: 8px 16px;
+        }
+
+        .search-container {
+            min-width: 200px;
+        }
+
+        .search-container .search-input {
+            margin: 0;
+        }
+
+        /* Canvas side controls */
+        .canvas-side-controls {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .canvas-side-controls .tool-group h3 {
+            color: #00d4ff;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Bottom tools */
+        .bottom-tools {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bottom-tools .tool-group {
+            margin-bottom: 15px;
+        }
+
+        .bottom-tools .tool-group h3 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .bottom-tools .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin: 2px 0;
         }
 
         /* Gallery Section */
@@ -61,6 +138,22 @@
             padding: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gallery-left {
+            grid-area: gallery-left;
+        }
+
+        .gallery-right {
+            grid-area: gallery-right;
+        }
+
+        .gallery-bottom {
+            grid-area: gallery-bottom;
+        }
+
+        .gallery-bottom2 {
+            grid-area: gallery-bottom2;
         }
 
         .gallery-header {
@@ -89,9 +182,9 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 10px;
-            max-height: 600px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            max-height: 400px;
             overflow-y: auto;
         }
 
@@ -124,6 +217,7 @@
 
         /* Canvas Section */
         .canvas-section {
+            grid-area: canvas;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 20px;
@@ -288,20 +382,18 @@
         /* Mobile responsiveness */
         @media (max-width: 1200px) {
             .main-content {
+                grid-template-areas: 
+                    "controls"
+                    "canvas"
+                    "gallery-left"
+                    "gallery-right";
                 grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
                 gap: 15px;
             }
             
-            .canvas-section {
-                order: 1;
-            }
-            
-            .gallery-section {
-                order: 2;
-            }
-            
-            .tools-section {
-                order: 3;
+            .gallery-bottom, .gallery-bottom2 {
+                display: none;
             }
         }
 
@@ -311,13 +403,13 @@
             }
             
             .gallery-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 max-height: 300px;
             }
             
-            .canvas-controls {
+            .top-controls {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             
             .color-picker-container {
@@ -378,14 +470,33 @@
         </header>
 
         <main class="main-content">
-            <!-- Gallery Section -->
-            <section class="gallery-section">
-                <div class="gallery-header">
-                    <h2>Octocat Gallery</h2>
+            <!-- Top Controls Bar -->
+            <section class="top-controls">
+                <div class="color-picker-container">
+                    <span>Deck Color:</span>
+                    <div class="color-option active" style="background-color: #2a2a3a;" data-color="#2a2a3a"></div>
+                    <div class="color-option" style="background-color: #ff006e;" data-color="#ff006e"></div>
+                    <div class="color-option" style="background-color: #00d4ff;" data-color="#00d4ff"></div>
+                    <div class="color-option" style="background-color: #ffaa00;" data-color="#ffaa00"></div>
+                    <div class="color-option" style="background-color: #00ff88;" data-color="#00ff88"></div>
+                    <div class="color-option" style="background-color: #ff4444;" data-color="#ff4444"></div>
+                    <div class="color-option" style="background-color: #8844ff;" data-color="#8844ff"></div>
+                    <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                </div>
+                <div class="creative-tools">
+                    <button class="btn" id="addAllBtn">🌟 Add All</button>
+                    <button class="btn" id="randomPlaceBtn">🎲 Random Placement</button>
+                    <button class="btn danger" id="clearAllBtn">🗑️ Clear All</button>
+                </div>
+                <div class="search-container">
                     <input type="text" class="search-input" id="searchInput" placeholder="Search Octocats...">
                 </div>
-                <div class="gallery-grid" id="galleryGrid">
-                    <!-- Octocat images will be loaded here -->
+            </section>
+
+            <!-- Left Gallery Section -->
+            <section class="gallery-section gallery-left">
+                <div class="gallery-grid" id="galleryGridLeft">
+                    <!-- Left Octocat images will be loaded here -->
                 </div>
             </section>
 
@@ -393,68 +504,69 @@
             <section class="canvas-section">
                 <div class="canvas-header">
                     <h2>Skateboard Deck Designer</h2>
-                    <div class="canvas-controls">
-                        <div class="color-picker-container">
-                            <span>Deck Color:</span>
-                            <div class="color-option active" style="background-color: #2a2a3a;" data-color="#2a2a3a"></div>
-                            <div class="color-option" style="background-color: #ff006e;" data-color="#ff006e"></div>
-                            <div class="color-option" style="background-color: #00d4ff;" data-color="#00d4ff"></div>
-                            <div class="color-option" style="background-color: #ffaa00;" data-color="#ffaa00"></div>
-                            <div class="color-option" style="background-color: #00ff88;" data-color="#00ff88"></div>
-                            <div class="color-option" style="background-color: #ff4444;" data-color="#ff4444"></div>
-                            <div class="color-option" style="background-color: #8844ff;" data-color="#8844ff"></div>
-                            <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
-                        </div>
-                    </div>
                 </div>
                 <div class="canvas-wrapper">
                     <canvas id="skateboardCanvas" width="400" height="800"></canvas>
                 </div>
+                <!-- Object Controls near canvas -->
+                <div class="canvas-side-controls">
+                    <div class="tool-group">
+                        <h3>Object Controls</h3>
+                        <div class="input-group">
+                            <label>Size:</label>
+                            <input type="range" id="sizeSlider" min="0.1" max="3" step="0.1" value="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Rotation:</label>
+                            <input type="range" id="rotationSlider" min="0" max="360" step="1" value="0">
+                        </div>
+                        <button class="btn danger" id="deleteBtn">🗑️ Delete Selected</button>
+                    </div>
+                </div>
             </section>
 
-            <!-- Tools Section -->
-            <section class="tools-section">
-                <h2>Design Tools</h2>
+            <!-- Right Gallery Section -->
+            <section class="gallery-section gallery-right">
+                <div class="gallery-grid" id="galleryGridRight">
+                    <!-- Right Octocat images will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Bottom Left Gallery Section -->
+            <section class="gallery-section gallery-bottom">
+                <div class="gallery-grid" id="galleryGridBottom">
+                    <!-- Bottom Octocat images will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Bottom Right Gallery Section with Tools -->
+            <section class="gallery-section gallery-bottom2">
+                <div class="gallery-grid" id="galleryGridBottom2">
+                    <!-- Bottom right Octocat images will be loaded here -->
+                </div>
                 
-                <div class="tool-group">
-                    <h3>Creative Tools</h3>
-                    <button class="btn" id="addAllBtn">🌟 Add All</button>
-                    <button class="btn" id="randomPlaceBtn">🎲 Random Placement</button>
-                    <button class="btn danger" id="clearAllBtn">🗑️ Clear All</button>
-                </div>
-
-                <div class="tool-group">
-                    <h3>History</h3>
-                    <button class="btn" id="undoBtn">↶ Undo</button>
-                    <button class="btn" id="redoBtn">↷ Redo</button>
-                </div>
-
-                <div class="tool-group">
-                    <h3>Object Controls</h3>
-                    <div class="input-group">
-                        <label>Size:</label>
-                        <input type="range" id="sizeSlider" min="0.1" max="3" step="0.1" value="1">
+                <!-- Additional Tools -->
+                <div class="bottom-tools">
+                    <div class="tool-group">
+                        <h3>History</h3>
+                        <button class="btn" id="undoBtn">↶ Undo</button>
+                        <button class="btn" id="redoBtn">↷ Redo</button>
                     </div>
-                    <div class="input-group">
-                        <label>Rotation:</label>
-                        <input type="range" id="rotationSlider" min="0" max="360" step="1" value="0">
+                    
+                    <div class="tool-group">
+                        <h3>Layer Controls</h3>
+                        <button class="btn" id="bringForwardBtn">↗️ Bring Forward</button>
+                        <button class="btn" id="sendBackwardBtn">↙️ Send Backward</button>
+                        <button class="btn" id="bringToFrontBtn">⬆️ Bring to Front</button>
+                        <button class="btn" id="sendToBackBtn">⬇️ Send to Back</button>
                     </div>
-                    <button class="btn danger" id="deleteBtn">🗑️ Delete Selected</button>
-                </div>
 
-                <div class="tool-group">
-                    <h3>Layer Controls</h3>
-                    <button class="btn" id="bringForwardBtn">↗️ Bring Forward</button>
-                    <button class="btn" id="sendBackwardBtn">↙️ Send Backward</button>
-                    <button class="btn" id="bringToFrontBtn">⬆️ Bring to Front</button>
-                    <button class="btn" id="sendToBackBtn">⬇️ Send to Back</button>
-                </div>
-
-                <div class="tool-group">
-                    <h3>Save & Export</h3>
-                    <button class="btn success" id="saveDesignBtn">💾 Save Design</button>
-                    <button class="btn" id="loadDesignBtn">📁 Load Design</button>
-                    <button class="btn success" id="exportBtn">📸 Export PNG</button>
+                    <div class="tool-group">
+                        <h3>Save & Export</h3>
+                        <button class="btn success" id="saveDesignBtn">💾 Save Design</button>
+                        <button class="btn" id="loadDesignBtn">📁 Load Design</button>
+                        <button class="btn success" id="exportBtn">📸 Export PNG</button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -724,9 +836,19 @@
 
         // Load Octocat gallery
         function loadGallery() {
-            const galleryGrid = document.getElementById('galleryGrid');
+            const galleryGrids = [
+                document.getElementById('galleryGridLeft'),
+                document.getElementById('galleryGridRight'),
+                document.getElementById('galleryGridBottom'),
+                document.getElementById('galleryGridBottom2')
+            ];
             
-            octocats.forEach(octocat => {
+            // Clear all galleries first
+            galleryGrids.forEach(grid => {
+                if (grid) grid.innerHTML = '';
+            });
+            
+            octocats.forEach((octocat, index) => {
                 const item = document.createElement('div');
                 item.className = 'octocat-item';
                 item.draggable = true;
@@ -743,7 +865,12 @@
                 };
                 
                 item.appendChild(img);
-                galleryGrid.appendChild(item);
+                
+                // Distribute Octocats across galleries in round-robin fashion
+                const galleryIndex = index % galleryGrids.length;
+                if (galleryGrids[galleryIndex]) {
+                    galleryGrids[galleryIndex].appendChild(item);
+                }
                 
                 // Add drag start event
                 item.addEventListener('dragstart', handleDragStart);
