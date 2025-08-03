@@ -44,3 +44,445 @@ Processing complete!
 2025-08-03 13:31:33,898 - INFO - Skipped: 2
 2025-08-03 13:31:33,898 - INFO - Errors: 0
 2025-08-03 13:31:33,898 - INFO - Time elapsed: 0.93 seconds
+2025-08-03 13:32:32,663 - INFO - Starting batch processing in: img/Octocats
+2025-08-03 13:32:32,665 - INFO - Found 151 image files to process
+2025-08-03 13:32:32,665 - INFO - Progress: 1/151 (0.7%)
+2025-08-03 13:32:32,665 - INFO - Processing: Brennatocat.png
+2025-08-03 13:32:32,675 - INFO - Skipping Brennatocat.png - already has transparency
+2025-08-03 13:32:32,675 - INFO - Progress: 2/151 (1.3%)
+2025-08-03 13:32:32,675 - INFO - Processing: Fintechtocat.png
+2025-08-03 13:32:32,675 - INFO - Skipping Fintechtocat.png - already has transparency
+2025-08-03 13:32:32,675 - INFO - Progress: 3/151 (2.0%)
+2025-08-03 13:32:32,675 - INFO - Processing: Mardigrastocat.png
+2025-08-03 13:32:32,978 - INFO - Successfully processed: Mardigrastocat.png
+2025-08-03 13:32:32,979 - INFO - Progress: 4/151 (2.6%)
+2025-08-03 13:32:32,979 - INFO - Processing: NUX_Octodex.gif
+2025-08-03 13:32:33,438 - INFO - Successfully processed: NUX_Octodex.gif
+2025-08-03 13:32:33,439 - INFO - Progress: 5/151 (3.3%)
+2025-08-03 13:32:33,439 - INFO - Processing: Professortocat_v2.png
+2025-08-03 13:32:33,440 - INFO - Skipping Professortocat_v2.png - already has transparency
+2025-08-03 13:32:33,440 - INFO - Progress: 6/151 (4.0%)
+2025-08-03 13:32:33,440 - INFO - Processing: Robotocat.png
+2025-08-03 13:32:33,632 - INFO - Successfully processed: Robotocat.png
+2025-08-03 13:32:33,633 - INFO - Progress: 7/151 (4.6%)
+2025-08-03 13:32:33,633 - INFO - Processing: Sentrytocat_octodex.jpg
+2025-08-03 13:32:33,980 - INFO - Successfully processed: Sentrytocat_octodex.jpg
+2025-08-03 13:32:33,981 - INFO - Progress: 8/151 (5.3%)
+2025-08-03 13:32:33,981 - INFO - Processing: Terracottocat_Single.png
+2025-08-03 13:32:33,981 - INFO - Skipping Terracottocat_Single.png - already has transparency
+2025-08-03 13:32:33,982 - INFO - Progress: 9/151 (6.0%)
+2025-08-03 13:32:33,982 - INFO - Processing: adventure-cat.png
+2025-08-03 13:32:33,982 - INFO - Skipping adventure-cat.png - already has transparency
+2025-08-03 13:32:33,982 - INFO - Progress: 10/151 (6.6%)
+2025-08-03 13:32:33,982 - INFO - Processing: agendacat.png
+2025-08-03 13:32:33,982 - INFO - Skipping agendacat.png - already has transparency
+2025-08-03 13:32:33,982 - INFO - Progress: 11/151 (7.3%)
+2025-08-03 13:32:33,982 - INFO - Processing: bannekat.png
+2025-08-03 13:32:34,306 - INFO - Successfully processed: bannekat.png
+2025-08-03 13:32:34,307 - INFO - Progress: 12/151 (7.9%)
+2025-08-03 13:32:34,307 - INFO - Processing: baracktocat.jpg
+2025-08-03 13:32:34,684 - INFO - Successfully processed: baracktocat.jpg
+2025-08-03 13:32:34,686 - INFO - Progress: 13/151 (8.6%)
+2025-08-03 13:32:34,686 - INFO - Processing: bear-cavalry.png
+2025-08-03 13:32:34,686 - INFO - Skipping bear-cavalry.png - already has transparency
+2025-08-03 13:32:34,686 - INFO - Progress: 14/151 (9.3%)
+2025-08-03 13:32:34,686 - INFO - Processing: benevocats.png
+2025-08-03 13:32:34,686 - INFO - Skipping benevocats.png - already has transparency
+2025-08-03 13:32:34,686 - INFO - Progress: 15/151 (9.9%)
+2025-08-03 13:32:34,686 - INFO - Processing: bouncercat.png
+2025-08-03 13:32:34,686 - INFO - Skipping bouncercat.png - already has transparency
+2025-08-03 13:32:34,687 - INFO - Progress: 16/151 (10.6%)
+2025-08-03 13:32:34,687 - INFO - Processing: boxertocat_octodex.png
+2025-08-03 13:32:34,687 - INFO - Skipping boxertocat_octodex.png - already has transparency
+2025-08-03 13:32:34,687 - INFO - Progress: 17/151 (11.3%)
+2025-08-03 13:32:34,687 - INFO - Processing: carlostocat.gif
+2025-08-03 13:32:34,872 - INFO - Successfully processed: carlostocat.gif
+2025-08-03 13:32:34,873 - INFO - Progress: 18/151 (11.9%)
+2025-08-03 13:32:34,873 - INFO - Processing: catstello.png
+2025-08-03 13:32:35,171 - INFO - Successfully processed: catstello.png
+2025-08-03 13:32:35,172 - INFO - Progress: 19/151 (12.6%)
+2025-08-03 13:32:35,172 - INFO - Processing: chellocat.jpg
+2025-08-03 13:32:35,725 - INFO - Successfully processed: chellocat.jpg
+2025-08-03 13:32:35,727 - INFO - Progress: 20/151 (13.2%)
+2025-08-03 13:32:35,727 - INFO - Processing: cherryontop-o-cat.png
+2025-08-03 13:32:35,727 - INFO - Skipping cherryontop-o-cat.png - already has transparency
+2025-08-03 13:32:35,727 - INFO - Progress: 21/151 (13.9%)
+2025-08-03 13:32:35,727 - INFO - Processing: class-act.png
+2025-08-03 13:32:35,727 - INFO - Skipping class-act.png - already has transparency
+2025-08-03 13:32:35,727 - INFO - Progress: 22/151 (14.6%)
+2025-08-03 13:32:35,727 - INFO - Processing: codercat.jpg
+2025-08-03 13:32:35,996 - INFO - Successfully processed: codercat.jpg
+2025-08-03 13:32:35,998 - INFO - Progress: 23/151 (15.2%)
+2025-08-03 13:32:35,998 - INFO - Processing: collabocats.jpg
+2025-08-03 13:32:36,352 - INFO - Successfully processed: collabocats.jpg
+2025-08-03 13:32:36,353 - INFO - Progress: 24/151 (15.9%)
+2025-08-03 13:32:36,353 - INFO - Processing: constructocat2.jpg
+2025-08-03 13:32:36,746 - INFO - Successfully processed: constructocat2.jpg
+2025-08-03 13:32:36,748 - INFO - Progress: 25/151 (16.6%)
+2025-08-03 13:32:36,748 - INFO - Processing: daftpunktocat-guy.gif
+2025-08-03 13:32:37,075 - INFO - Successfully processed: daftpunktocat-guy.gif
+2025-08-03 13:32:37,076 - INFO - Progress: 26/151 (17.2%)
+2025-08-03 13:32:37,076 - INFO - Processing: daftpunktocat-thomas.gif
+2025-08-03 13:32:37,282 - INFO - Successfully processed: daftpunktocat-thomas.gif
+2025-08-03 13:32:37,283 - INFO - Progress: 27/151 (17.9%)
+2025-08-03 13:32:37,284 - INFO - Processing: deckfailcat.png
+2025-08-03 13:32:37,284 - INFO - Skipping deckfailcat.png - already has transparency
+2025-08-03 13:32:37,284 - INFO - Progress: 28/151 (18.5%)
+2025-08-03 13:32:37,284 - INFO - Processing: defunktocat.png.jpeg
+2025-08-03 13:32:37,728 - INFO - Successfully processed: defunktocat.png.jpeg
+2025-08-03 13:32:37,730 - INFO - Progress: 29/151 (19.2%)
+2025-08-03 13:32:37,730 - INFO - Processing: dinotocat.png
+2025-08-03 13:32:37,730 - INFO - Skipping dinotocat.png - already has transparency
+2025-08-03 13:32:37,730 - INFO - Progress: 30/151 (19.9%)
+2025-08-03 13:32:37,730 - INFO - Processing: doctocat-brown.jpg
+2025-08-03 13:32:38,065 - INFO - Successfully processed: doctocat-brown.jpg
+2025-08-03 13:32:38,067 - INFO - Progress: 31/151 (20.5%)
+2025-08-03 13:32:38,067 - INFO - Processing: dodgetocat.jpg
+2025-08-03 13:32:38,326 - INFO - Successfully processed: dodgetocat.jpg
+2025-08-03 13:32:38,327 - INFO - Skipping dodgetocat.png - output already exists
+2025-08-03 13:32:38,327 - INFO - Progress: 33/151 (21.9%)
+2025-08-03 13:32:38,327 - INFO - Processing: dodgetocat_v2.png
+2025-08-03 13:32:38,500 - INFO - Successfully processed: dodgetocat_v2.png
+2025-08-03 13:32:38,501 - INFO - Progress: 34/151 (22.5%)
+2025-08-03 13:32:38,501 - INFO - Processing: dojocat.jpg
+2025-08-03 13:32:38,812 - INFO - Successfully processed: dojocat.jpg
+2025-08-03 13:32:38,813 - INFO - Skipping dojocat.png - output already exists
+2025-08-03 13:32:38,813 - INFO - Progress: 36/151 (23.8%)
+2025-08-03 13:32:38,814 - INFO - Processing: droctocat.png
+2025-08-03 13:32:39,027 - INFO - Successfully processed: droctocat.png
+2025-08-03 13:32:39,028 - INFO - Progress: 37/151 (24.5%)
+2025-08-03 13:32:39,028 - INFO - Processing: droidtocat.png
+2025-08-03 13:32:39,028 - INFO - Skipping droidtocat.png - already has transparency
+2025-08-03 13:32:39,028 - INFO - Progress: 38/151 (25.2%)
+2025-08-03 13:32:39,029 - INFO - Processing: drupalcat.jpg
+2025-08-03 13:32:39,390 - INFO - Successfully processed: drupalcat.jpg
+2025-08-03 13:32:39,392 - INFO - Progress: 39/151 (25.8%)
+2025-08-03 13:32:39,392 - INFO - Processing: dunetocat.png
+2025-08-03 13:32:39,650 - INFO - Successfully processed: dunetocat.png
+2025-08-03 13:32:39,651 - INFO - Progress: 40/151 (26.5%)
+2025-08-03 13:32:39,651 - INFO - Processing: electrocat.png
+2025-08-03 13:32:39,817 - INFO - Successfully processed: electrocat.png
+2025-08-03 13:32:39,818 - INFO - Progress: 41/151 (27.2%)
+2025-08-03 13:32:39,818 - INFO - Processing: father_timeout.jpg
+2025-08-03 13:32:40,155 - INFO - Successfully processed: father_timeout.jpg
+2025-08-03 13:32:40,156 - INFO - Progress: 42/151 (27.8%)
+2025-08-03 13:32:40,156 - INFO - Processing: femalecodertocat.png
+2025-08-03 13:32:40,156 - INFO - Skipping femalecodertocat.png - already has transparency
+2025-08-03 13:32:40,156 - INFO - Progress: 43/151 (28.5%)
+2025-08-03 13:32:40,156 - INFO - Processing: filmtocat.png
+2025-08-03 13:32:40,156 - INFO - Skipping filmtocat.png - already has transparency
+2025-08-03 13:32:40,157 - INFO - Progress: 44/151 (29.1%)
+2025-08-03 13:32:40,157 - INFO - Processing: filmtocats.png
+2025-08-03 13:32:40,944 - INFO - Successfully processed: filmtocats.png
+2025-08-03 13:32:40,946 - INFO - Progress: 45/151 (29.8%)
+2025-08-03 13:32:40,946 - INFO - Processing: forktocat.jpg
+2025-08-03 13:32:41,317 - INFO - Successfully processed: forktocat.jpg
+2025-08-03 13:32:41,318 - INFO - Progress: 46/151 (30.5%)
+2025-08-03 13:32:41,318 - INFO - Processing: founding-father.jpg
+2025-08-03 13:32:41,700 - INFO - Successfully processed: founding-father.jpg
+2025-08-03 13:32:41,700 - INFO - Progress: 47/151 (31.1%)
+2025-08-03 13:32:41,700 - INFO - Processing: foundingfather_v2.png
+2025-08-03 13:32:41,701 - INFO - Skipping foundingfather_v2.png - already has transparency
+2025-08-03 13:32:41,701 - INFO - Progress: 48/151 (31.8%)
+2025-08-03 13:32:41,701 - INFO - Processing: gangnamtocat.png
+2025-08-03 13:32:41,701 - INFO - Skipping gangnamtocat.png - already has transparency
+2025-08-03 13:32:41,701 - INFO - Progress: 49/151 (32.5%)
+2025-08-03 13:32:41,701 - INFO - Processing: gobbleotron.gif
+2025-08-03 13:32:42,185 - INFO - Successfully processed: gobbleotron.gif
+2025-08-03 13:32:42,185 - INFO - Progress: 50/151 (33.1%)
+2025-08-03 13:32:42,185 - INFO - Processing: goretocat.png
+2025-08-03 13:32:42,186 - INFO - Skipping goretocat.png - already has transparency
+2025-08-03 13:32:42,186 - INFO - Progress: 51/151 (33.8%)
+2025-08-03 13:32:42,186 - INFO - Processing: gracehoppertocat.jpg
+2025-08-03 13:32:42,548 - INFO - Successfully processed: gracehoppertocat.jpg
+2025-08-03 13:32:42,549 - INFO - Progress: 52/151 (34.4%)
+2025-08-03 13:32:42,549 - INFO - Processing: heisencat.png
+2025-08-03 13:32:42,549 - INFO - Skipping heisencat.png - already has transparency
+2025-08-03 13:32:42,549 - INFO - Progress: 53/151 (35.1%)
+2025-08-03 13:32:42,549 - INFO - Processing: herme-t-crabb.png
+2025-08-03 13:32:42,549 - INFO - Skipping herme-t-crabb.png - already has transparency
+2025-08-03 13:32:42,549 - INFO - Progress: 54/151 (35.8%)
+2025-08-03 13:32:42,549 - INFO - Processing: hipster-partycat.jpg
+2025-08-03 13:32:42,791 - INFO - Successfully processed: hipster-partycat.jpg
+2025-08-03 13:32:42,791 - INFO - Progress: 55/151 (36.4%)
+2025-08-03 13:32:42,791 - INFO - Processing: homercat.png
+2025-08-03 13:32:42,791 - INFO - Skipping homercat.png - already has transparency
+2025-08-03 13:32:42,791 - INFO - Progress: 56/151 (37.1%)
+2025-08-03 13:32:42,791 - INFO - Processing: hubot.jpg
+2025-08-03 13:32:43,146 - INFO - Successfully processed: hubot.jpg
+2025-08-03 13:32:43,146 - INFO - Progress: 57/151 (37.7%)
+2025-08-03 13:32:43,146 - INFO - Processing: hula_loop_octodex03.gif
+2025-08-03 13:32:43,435 - INFO - Successfully processed: hula_loop_octodex03.gif
+2025-08-03 13:32:43,435 - INFO - Progress: 58/151 (38.4%)
+2025-08-03 13:32:43,435 - INFO - Processing: inflatocat-1.png
+2025-08-03 13:32:43,644 - INFO - Successfully processed: inflatocat-1.png
+2025-08-03 13:32:43,644 - INFO - Progress: 59/151 (39.1%)
+2025-08-03 13:32:43,644 - INFO - Processing: inflatocat.png
+2025-08-03 13:32:43,851 - INFO - Successfully processed: inflatocat.png
+2025-08-03 13:32:43,852 - INFO - Progress: 60/151 (39.7%)
+2025-08-03 13:32:43,852 - INFO - Processing: inspectocat.jpg
+2025-08-03 13:32:44,167 - INFO - Successfully processed: inspectocat.jpg
+2025-08-03 13:32:44,167 - INFO - Skipping inspectocat.png - output already exists
+2025-08-03 13:32:44,167 - INFO - Progress: 62/151 (41.1%)
+2025-08-03 13:32:44,167 - INFO - Processing: ironcat.jpg
+2025-08-03 13:32:44,552 - INFO - Successfully processed: ironcat.jpg
+2025-08-03 13:32:44,552 - INFO - Skipping ironcat.png - output already exists
+2025-08-03 13:32:44,552 - INFO - Progress: 64/151 (42.4%)
+2025-08-03 13:32:44,552 - INFO - Processing: jean-luc-picat.jpg
+2025-08-03 13:32:44,869 - INFO - Successfully processed: jean-luc-picat.jpg
+2025-08-03 13:32:44,869 - INFO - Progress: 65/151 (43.0%)
+2025-08-03 13:32:44,869 - INFO - Processing: jenktocat.jpg
+2025-08-03 13:32:45,155 - INFO - Successfully processed: jenktocat.jpg
+2025-08-03 13:32:45,156 - INFO - Progress: 66/151 (43.7%)
+2025-08-03 13:32:45,156 - INFO - Processing: jetpacktocat.png
+2025-08-03 13:32:45,156 - INFO - Skipping jetpacktocat.png - already has transparency
+2025-08-03 13:32:45,156 - INFO - Progress: 67/151 (44.4%)
+2025-08-03 13:32:45,156 - INFO - Processing: justicetocat.jpg
+2025-08-03 13:32:45,646 - INFO - Successfully processed: justicetocat.jpg
+2025-08-03 13:32:45,646 - INFO - Progress: 68/151 (45.0%)
+2025-08-03 13:32:45,646 - INFO - Processing: kimonotocat.png
+2025-08-03 13:32:45,868 - INFO - Successfully processed: kimonotocat.png
+2025-08-03 13:32:45,869 - INFO - Progress: 69/151 (45.7%)
+2025-08-03 13:32:45,869 - INFO - Processing: labtocat.png
+2025-08-03 13:32:46,096 - INFO - Successfully processed: labtocat.png
+2025-08-03 13:32:46,096 - INFO - Progress: 70/151 (46.4%)
+2025-08-03 13:32:46,096 - INFO - Processing: linktocat.jpg
+2025-08-03 13:32:46,561 - INFO - Successfully processed: linktocat.jpg
+2025-08-03 13:32:46,561 - INFO - Progress: 71/151 (47.0%)
+2025-08-03 13:32:46,562 - INFO - Processing: luchadortocat.png
+2025-08-03 13:32:46,760 - INFO - Successfully processed: luchadortocat.png
+2025-08-03 13:32:46,760 - INFO - Progress: 72/151 (47.7%)
+2025-08-03 13:32:46,760 - INFO - Processing: manufacturetocat.png
+2025-08-03 13:32:46,760 - INFO - Skipping manufacturetocat.png - already has transparency
+2025-08-03 13:32:46,761 - INFO - Progress: 73/151 (48.3%)
+2025-08-03 13:32:46,761 - INFO - Processing: maxtocat.gif
+2025-08-03 13:32:47,055 - INFO - Successfully processed: maxtocat.gif
+2025-08-03 13:32:47,055 - INFO - Progress: 74/151 (49.0%)
+2025-08-03 13:32:47,055 - INFO - Processing: mcefeeline.jpg
+2025-08-03 13:32:47,370 - INFO - Successfully processed: mcefeeline.jpg
+2025-08-03 13:32:47,370 - INFO - Progress: 75/151 (49.7%)
+2025-08-03 13:32:47,370 - INFO - Processing: megacat-2.png
+2025-08-03 13:32:47,554 - INFO - Successfully processed: megacat-2.png
+2025-08-03 13:32:47,555 - INFO - Progress: 76/151 (50.3%)
+2025-08-03 13:32:47,555 - INFO - Processing: megacat.jpg
+2025-08-03 13:32:48,016 - INFO - Successfully processed: megacat.jpg
+2025-08-03 13:32:48,016 - INFO - Skipping megacat.png - output already exists
+2025-08-03 13:32:48,017 - INFO - Progress: 78/151 (51.7%)
+2025-08-03 13:32:48,017 - INFO - Processing: minertocat.png
+2025-08-03 13:32:48,222 - INFO - Successfully processed: minertocat.png
+2025-08-03 13:32:48,223 - INFO - Progress: 79/151 (52.3%)
+2025-08-03 13:32:48,223 - INFO - Processing: minion.png
+2025-08-03 13:32:48,223 - INFO - Skipping minion.png - already has transparency
+2025-08-03 13:32:48,223 - INFO - Progress: 80/151 (53.0%)
+2025-08-03 13:32:48,223 - INFO - Processing: momtocat.png
+2025-08-03 13:32:48,223 - INFO - Skipping momtocat.png - already has transparency
+2025-08-03 13:32:48,223 - INFO - Progress: 81/151 (53.6%)
+2025-08-03 13:32:48,223 - INFO - Processing: mona-lovelace.jpg
+2025-08-03 13:32:48,665 - INFO - Successfully processed: mona-lovelace.jpg
+2025-08-03 13:32:48,666 - INFO - Progress: 82/151 (54.3%)
+2025-08-03 13:32:48,666 - INFO - Processing: mona-the-rivetertocat.png
+2025-08-03 13:32:48,666 - INFO - Skipping mona-the-rivetertocat.png - already has transparency
+2025-08-03 13:32:48,666 - INFO - Progress: 83/151 (55.0%)
+2025-08-03 13:32:48,666 - INFO - Processing: monroe.jpg
+2025-08-03 13:32:49,026 - INFO - Successfully processed: monroe.jpg
+2025-08-03 13:32:49,027 - INFO - Progress: 84/151 (55.6%)
+2025-08-03 13:32:49,027 - INFO - Processing: motherhubbertocat.png
+2025-08-03 13:32:49,165 - INFO - Successfully processed: motherhubbertocat.png
+2025-08-03 13:32:49,165 - INFO - Progress: 85/151 (56.3%)
+2025-08-03 13:32:49,165 - INFO - Processing: mummytocat.gif
+2025-08-03 13:32:49,424 - INFO - Successfully processed: mummytocat.gif
+2025-08-03 13:32:49,424 - INFO - Progress: 86/151 (57.0%)
+2025-08-03 13:32:49,424 - INFO - Processing: murakamicat.png
+2025-08-03 13:32:49,424 - INFO - Skipping murakamicat.png - already has transparency
+2025-08-03 13:32:49,424 - INFO - Progress: 87/151 (57.6%)
+2025-08-03 13:32:49,424 - INFO - Processing: neurocats_FULL.png
+2025-08-03 13:32:49,759 - INFO - Successfully processed: neurocats_FULL.png
+2025-08-03 13:32:49,759 - INFO - Progress: 88/151 (58.3%)
+2025-08-03 13:32:49,759 - INFO - Processing: octdrey-catburn.jpg
+2025-08-03 13:32:50,038 - INFO - Successfully processed: octdrey-catburn.jpg
+2025-08-03 13:32:50,039 - INFO - Progress: 89/151 (58.9%)
+2025-08-03 13:32:50,039 - INFO - Processing: octobiwan.jpg
+2025-08-03 13:32:50,381 - INFO - Successfully processed: octobiwan.jpg
+2025-08-03 13:32:50,381 - INFO - Skipping octobiwan.png - output already exists
+2025-08-03 13:32:50,381 - INFO - Progress: 91/151 (60.3%)
+2025-08-03 13:32:50,382 - INFO - Processing: octocat-de-los-muertos.jpg
+2025-08-03 13:32:50,855 - INFO - Successfully processed: octocat-de-los-muertos.jpg
+2025-08-03 13:32:50,855 - INFO - Progress: 92/151 (60.9%)
+2025-08-03 13:32:50,855 - INFO - Processing: octoclark-kentocat.jpg
+2025-08-03 13:32:51,210 - INFO - Successfully processed: octoclark-kentocat.jpg
+2025-08-03 13:32:51,210 - INFO - Progress: 93/151 (61.6%)
+2025-08-03 13:32:51,210 - INFO - Processing: octofez.png
+2025-08-03 13:32:51,211 - INFO - Skipping octofez.png - already has transparency
+2025-08-03 13:32:51,211 - INFO - Progress: 94/151 (62.3%)
+2025-08-03 13:32:51,211 - INFO - Processing: octoliberty.png
+2025-08-03 13:32:51,453 - INFO - Successfully processed: octoliberty.png
+2025-08-03 13:32:51,453 - INFO - Progress: 95/151 (62.9%)
+2025-08-03 13:32:51,453 - INFO - Processing: octovets_FULL.png
+2025-08-03 13:32:52,664 - INFO - Successfully processed: octovets_FULL.png
+2025-08-03 13:32:52,668 - INFO - Progress: 96/151 (63.6%)
+2025-08-03 13:32:52,668 - INFO - Processing: okal-eltocat.jpg
+2025-08-03 13:32:53,029 - INFO - Successfully processed: okal-eltocat.jpg
+2025-08-03 13:32:53,029 - INFO - Progress: 97/151 (64.2%)
+2025-08-03 13:32:53,029 - INFO - Processing: oktobercat.png
+2025-08-03 13:32:53,029 - INFO - Skipping oktobercat.png - already has transparency
+2025-08-03 13:32:53,029 - INFO - Progress: 98/151 (64.9%)
+2025-08-03 13:32:53,029 - INFO - Processing: orderedlistocat.png
+2025-08-03 13:32:53,030 - INFO - Skipping orderedlistocat.png - already has transparency
+2025-08-03 13:32:53,030 - INFO - Progress: 99/151 (65.6%)
+2025-08-03 13:32:53,030 - INFO - Processing: original.png
+2025-08-03 13:32:53,030 - INFO - Skipping original.png - already has transparency
+2025-08-03 13:32:53,030 - INFO - Progress: 100/151 (66.2%)
+2025-08-03 13:32:53,030 - INFO - Processing: parentocats.png
+2025-08-03 13:32:53,331 - INFO - Successfully processed: parentocats.png
+2025-08-03 13:32:53,331 - INFO - Progress: 101/151 (66.9%)
+2025-08-03 13:32:53,331 - INFO - Processing: plumber.jpg
+2025-08-03 13:32:53,783 - INFO - Successfully processed: plumber.jpg
+2025-08-03 13:32:53,783 - INFO - Skipping plumber.png - output already exists
+2025-08-03 13:32:53,783 - INFO - Progress: 103/151 (68.2%)
+2025-08-03 13:32:53,783 - INFO - Processing: poptocat.png
+2025-08-03 13:32:53,783 - INFO - Skipping poptocat.png - already has transparency
+2025-08-03 13:32:53,783 - INFO - Progress: 104/151 (68.9%)
+2025-08-03 13:32:53,783 - INFO - Processing: poptocat_v2.png
+2025-08-03 13:32:53,783 - INFO - Skipping poptocat_v2.png - already has transparency
+2025-08-03 13:32:53,783 - INFO - Progress: 105/151 (69.5%)
+2025-08-03 13:32:53,784 - INFO - Processing: puddle_jumper_octodex.jpg
+2025-08-03 13:32:54,130 - INFO - Successfully processed: puddle_jumper_octodex.jpg
+2025-08-03 13:32:54,131 - INFO - Progress: 106/151 (70.2%)
+2025-08-03 13:32:54,131 - INFO - Processing: puppeteer.png
+2025-08-03 13:32:54,131 - INFO - Skipping puppeteer.png - already has transparency
+2025-08-03 13:32:54,131 - INFO - Progress: 107/151 (70.9%)
+2025-08-03 13:32:54,131 - INFO - Processing: pusheencat.png
+2025-08-03 13:32:54,131 - INFO - Skipping pusheencat.png - already has transparency
+2025-08-03 13:32:54,131 - INFO - Progress: 108/151 (71.5%)
+2025-08-03 13:32:54,131 - INFO - Processing: pythocat.png
+2025-08-03 13:32:54,131 - INFO - Skipping pythocat.png - already has transparency
+2025-08-03 13:32:54,131 - INFO - Progress: 109/151 (72.2%)
+2025-08-03 13:32:54,131 - INFO - Processing: red-polo.png
+2025-08-03 13:32:54,132 - INFO - Skipping red-polo.png - already has transparency
+2025-08-03 13:32:54,132 - INFO - Progress: 110/151 (72.8%)
+2025-08-03 13:32:54,132 - INFO - Processing: repo.png
+2025-08-03 13:32:54,132 - INFO - Skipping repo.png - already has transparency
+2025-08-03 13:32:54,132 - INFO - Progress: 111/151 (73.5%)
+2025-08-03 13:32:54,132 - INFO - Processing: riddlocat.png
+2025-08-03 13:32:54,132 - INFO - Skipping riddlocat.png - already has transparency
+2025-08-03 13:32:54,132 - INFO - Progress: 112/151 (74.2%)
+2025-08-03 13:32:54,132 - INFO - Processing: saint_nictocat.jpg
+2025-08-03 13:32:54,567 - INFO - Successfully processed: saint_nictocat.jpg
+2025-08-03 13:32:54,567 - INFO - Progress: 113/151 (74.8%)
+2025-08-03 13:32:54,567 - INFO - Processing: saketocat.png
+2025-08-03 13:32:54,729 - INFO - Successfully processed: saketocat.png
+2025-08-03 13:32:54,729 - INFO - Progress: 114/151 (75.5%)
+2025-08-03 13:32:54,729 - INFO - Processing: saritocat.png
+2025-08-03 13:32:55,053 - INFO - Successfully processed: saritocat.png
+2025-08-03 13:32:55,053 - INFO - Progress: 115/151 (76.2%)
+2025-08-03 13:32:55,053 - INFO - Processing: scarletteocat.jpg
+2025-08-03 13:32:55,223 - INFO - Successfully processed: scarletteocat.jpg
+2025-08-03 13:32:55,223 - INFO - Progress: 116/151 (76.8%)
+2025-08-03 13:32:55,224 - INFO - Processing: scubatocat.png
+2025-08-03 13:32:55,522 - INFO - Successfully processed: scubatocat.png
+2025-08-03 13:32:55,522 - INFO - Progress: 117/151 (77.5%)
+2025-08-03 13:32:55,522 - INFO - Processing: securitocat.png
+2025-08-03 13:32:55,522 - INFO - Skipping securitocat.png - already has transparency
+2025-08-03 13:32:55,522 - INFO - Progress: 118/151 (78.1%)
+2025-08-03 13:32:55,522 - INFO - Processing: securityknightocat.png
+2025-08-03 13:32:55,838 - INFO - Successfully processed: securityknightocat.png
+2025-08-03 13:32:55,838 - INFO - Progress: 119/151 (78.8%)
+2025-08-03 13:32:55,838 - INFO - Processing: setuptocat.jpg
+2025-08-03 13:32:56,149 - INFO - Successfully processed: setuptocat.jpg
+2025-08-03 13:32:56,149 - INFO - Progress: 120/151 (79.5%)
+2025-08-03 13:32:56,149 - INFO - Processing: shoptocat.png
+2025-08-03 13:32:56,149 - INFO - Skipping shoptocat.png - already has transparency
+2025-08-03 13:32:56,149 - INFO - Progress: 121/151 (80.1%)
+2025-08-03 13:32:56,149 - INFO - Processing: skatetocat.png
+2025-08-03 13:32:56,149 - INFO - Skipping skatetocat.png - already has transparency
+2025-08-03 13:32:56,149 - INFO - Progress: 122/151 (80.8%)
+2025-08-03 13:32:56,149 - INFO - Processing: skitchtocat.png
+2025-08-03 13:32:56,449 - INFO - Successfully processed: skitchtocat.png
+2025-08-03 13:32:56,449 - INFO - Progress: 123/151 (81.5%)
+2025-08-03 13:32:56,449 - INFO - Processing: snowoctocat.png
+2025-08-03 13:32:56,450 - INFO - Skipping snowoctocat.png - already has transparency
+2025-08-03 13:32:56,450 - INFO - Progress: 124/151 (82.1%)
+2025-08-03 13:32:56,450 - INFO - Processing: snowtocat_final.jpg
+2025-08-03 13:32:56,843 - INFO - Successfully processed: snowtocat_final.jpg
+2025-08-03 13:32:56,843 - INFO - Progress: 125/151 (82.8%)
+2025-08-03 13:32:56,843 - INFO - Processing: socialite.jpg
+2025-08-03 13:32:57,160 - INFO - Successfully processed: socialite.jpg
+2025-08-03 13:32:57,160 - INFO - Progress: 126/151 (83.4%)
+2025-08-03 13:32:57,160 - INFO - Processing: spidertocat.png
+2025-08-03 13:32:57,160 - INFO - Skipping spidertocat.png - already has transparency
+2025-08-03 13:32:57,161 - INFO - Progress: 127/151 (84.1%)
+2025-08-03 13:32:57,161 - INFO - Processing: spocktocat.png
+2025-08-03 13:32:57,161 - INFO - Skipping spocktocat.png - already has transparency
+2025-08-03 13:32:57,161 - INFO - Progress: 128/151 (84.8%)
+2025-08-03 13:32:57,161 - INFO - Processing: sponsortocat.png
+2025-08-03 13:32:57,316 - INFO - Successfully processed: sponsortocat.png
+2025-08-03 13:32:57,316 - INFO - Progress: 129/151 (85.4%)
+2025-08-03 13:32:57,316 - INFO - Processing: steroidtocat.png
+2025-08-03 13:32:57,461 - INFO - Successfully processed: steroidtocat.png
+2025-08-03 13:32:57,461 - INFO - Progress: 130/151 (86.1%)
+2025-08-03 13:32:57,461 - INFO - Processing: stormtroopocat.png
+2025-08-03 13:32:57,461 - INFO - Skipping stormtroopocat.png - already has transparency
+2025-08-03 13:32:57,461 - INFO - Progress: 131/151 (86.8%)
+2025-08-03 13:32:57,461 - INFO - Processing: strongbadtocat.png
+2025-08-03 13:32:57,643 - INFO - Successfully processed: strongbadtocat.png
+2025-08-03 13:32:57,643 - INFO - Progress: 132/151 (87.4%)
+2025-08-03 13:32:57,643 - INFO - Processing: supportcat.png
+2025-08-03 13:32:57,643 - INFO - Skipping supportcat.png - already has transparency
+2025-08-03 13:32:57,643 - INFO - Progress: 133/151 (88.1%)
+2025-08-03 13:32:57,644 - INFO - Processing: surftocat.png
+2025-08-03 13:32:57,644 - INFO - Skipping surftocat.png - already has transparency
+2025-08-03 13:32:57,644 - INFO - Progress: 134/151 (88.7%)
+2025-08-03 13:32:57,644 - INFO - Processing: swagtocat.png
+2025-08-03 13:32:57,644 - INFO - Skipping swagtocat.png - already has transparency
+2025-08-03 13:32:57,644 - INFO - Progress: 135/151 (89.4%)
+2025-08-03 13:32:57,644 - INFO - Processing: tentocats.jpg
+2025-08-03 13:32:58,038 - INFO - Successfully processed: tentocats.jpg
+2025-08-03 13:32:58,038 - INFO - Skipping tentocats.png - output already exists
+2025-08-03 13:32:58,039 - INFO - Progress: 137/151 (90.7%)
+2025-08-03 13:32:58,039 - INFO - Processing: thanktocat.png
+2025-08-03 13:32:58,039 - INFO - Skipping thanktocat.png - already has transparency
+2025-08-03 13:32:58,039 - INFO - Progress: 138/151 (91.4%)
+2025-08-03 13:32:58,039 - INFO - Processing: topguntocat.png
+2025-08-03 13:32:58,039 - INFO - Skipping topguntocat.png - already has transparency
+2025-08-03 13:32:58,039 - INFO - Progress: 139/151 (92.1%)
+2025-08-03 13:32:58,039 - INFO - Processing: trekkie.png
+2025-08-03 13:32:58,039 - INFO - Skipping trekkie.png - already has transparency
+2025-08-03 13:32:58,039 - INFO - Progress: 140/151 (92.7%)
+2025-08-03 13:32:58,039 - INFO - Processing: twenty-percent-cooler-octocat.png
+2025-08-03 13:32:58,039 - INFO - Skipping twenty-percent-cooler-octocat.png - already has transparency
+2025-08-03 13:32:58,040 - INFO - Progress: 141/151 (93.4%)
+2025-08-03 13:32:58,040 - INFO - Processing: universetocat.png
+2025-08-03 13:32:58,040 - INFO - Skipping universetocat.png - already has transparency
+2025-08-03 13:32:58,040 - INFO - Progress: 142/151 (94.0%)
+2025-08-03 13:32:58,040 - INFO - Processing: vinyltocat.png
+2025-08-03 13:32:58,040 - INFO - Skipping vinyltocat.png - already has transparency
+2025-08-03 13:32:58,040 - INFO - Progress: 143/151 (94.7%)
+2025-08-03 13:32:58,040 - INFO - Processing: visionary.jpg
+2025-08-03 13:32:58,373 - INFO - Successfully processed: visionary.jpg
+2025-08-03 13:32:58,373 - INFO - Skipping visionary.png - output already exists
+2025-08-03 13:32:58,373 - INFO - Progress: 145/151 (96.0%)
+2025-08-03 13:32:58,373 - INFO - Processing: waldocat.png
+2025-08-03 13:32:58,374 - INFO - Skipping waldocat.png - already has transparency
+2025-08-03 13:32:58,374 - INFO - Progress: 146/151 (96.7%)
+2025-08-03 13:32:58,374 - INFO - Processing: welcometocat.png
+2025-08-03 13:32:58,374 - INFO - Skipping welcometocat.png - already has transparency
+2025-08-03 13:32:58,374 - INFO - Progress: 147/151 (97.4%)
+2025-08-03 13:32:58,374 - INFO - Processing: wilson.jpg
+2025-08-03 13:32:58,723 - INFO - Successfully processed: wilson.jpg
+2025-08-03 13:32:58,723 - INFO - Progress: 148/151 (98.0%)
+2025-08-03 13:32:58,723 - INFO - Processing: xtocat.jpg
+2025-08-03 13:32:59,142 - INFO - Successfully processed: xtocat.jpg
+2025-08-03 13:32:59,143 - INFO - Skipping xtocat.png - output already exists
+2025-08-03 13:32:59,143 - INFO - Progress: 150/151 (99.3%)
+2025-08-03 13:32:59,143 - INFO - Processing: yaktocat.png
+2025-08-03 13:32:59,457 - INFO - Successfully processed: yaktocat.png
+2025-08-03 13:32:59,457 - INFO - Progress: 151/151 (100.0%)
+2025-08-03 13:32:59,458 - INFO - Processing: yogitocat.png
+2025-08-03 13:32:59,458 - INFO - Skipping yogitocat.png - already has transparency
+2025-08-03 13:32:59,458 - INFO - 
+Processing complete!
+2025-08-03 13:32:59,458 - INFO - Total files: 151
+2025-08-03 13:32:59,458 - INFO - Processed: 81
+2025-08-03 13:32:59,458 - INFO - Skipped: 70
+2025-08-03 13:32:59,458 - INFO - Errors: 0
+2025-08-03 13:32:59,458 - INFO - Time elapsed: 26.79 seconds
