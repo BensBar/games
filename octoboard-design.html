@@ -93,112 +93,7 @@
             margin: 0;
         }
 
-        /* Floating object controls */
-        .floating-controls {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00d4ff;
-            border-radius: 12px;
-            padding: 15px;
-            min-width: 250px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .floating-controls.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .floating-controls h4 {
-            color: #00d4ff;
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .floating-controls .control-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .floating-controls .control-row label {
-            color: #fff;
-            font-size: 12px;
-            min-width: 45px;
-            font-weight: bold;
-        }
-
-        .floating-controls .control-row input[type="range"] {
-            flex: 1;
-            background: transparent;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            outline: none;
-        }
-
-        .floating-controls .control-row input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row .value {
-            color: #00d4ff;
-            font-weight: bold;
-            font-size: 12px;
-            min-width: 35px;
-            text-align: right;
-        }
-
-        .floating-controls .delete-btn {
-            width: 100%;
-            margin-top: 8px;
-            padding: 6px;
-            background: linear-gradient(45deg, #ff006e, #cc0055);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .floating-controls .delete-btn:hover {
-            background: linear-gradient(45deg, #cc0055, #ff006e);
-            transform: translateY(-1px);
-        }
-
-        /* Canvas side controls - simplified */
+        /* Canvas side controls */
         .canvas-side-controls {
             margin-top: 20px;
             background: rgba(0, 212, 255, 0.1);
@@ -455,397 +350,13 @@
         .canvas-wrapper {
             position: relative;
             border-radius: 15px;
-            overflow: visible;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        #skateboardCanvas {
-            background: #2a2a3a;
-            border-radius: 15px;
-        }
-
-        /* Floating controls overlay positioned relative to selected object */
-        .floating-controls {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00d4ff;
-            border-radius: 12px;
-            padding: 15px;
-            min-width: 250px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .floating-controls.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .floating-controls h4 {
-            color: #00d4ff;
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .floating-controls .control-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .floating-controls .control-row label {
-            color: #fff;
-            font-size: 12px;
-            min-width: 45px;
-            font-weight: bold;
-        }
-
-        .floating-controls .control-row input[type="range"] {
-            flex: 1;
-            background: transparent;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            outline: none;
-        }
-
-        .floating-controls .control-row input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row .value {
-            color: #00d4ff;
-            font-weight: bold;
-            font-size: 12px;
-            min-width: 35px;
-            text-align: right;
-        }
-
-        .floating-controls .delete-btn {
-            width: 100%;
-            margin-top: 8px;
-            padding: 6px;
-            background: linear-gradient(45deg, #ff006e, #cc0055);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .floating-controls .delete-btn:hover {
-            background: linear-gradient(45deg, #cc0055, #ff006e);
-            transform: translateY(-1px);
-        }
-
-        /* Bottom tools */
-        .bottom-tools {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .bottom-tools .tool-group {
-            margin-bottom: 15px;
-        }
-
-        .bottom-tools .tool-group h3 {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        .bottom-tools .btn {
-            padding: 6px 12px;
-            font-size: 12px;
-            margin: 2px 0;
-        }
-
-        /* Gallery Section */
-        .gallery-section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .gallery-left {
-            grid-area: gallery-left;
-        }
-
-        .gallery-right {
-            grid-area: gallery-right;
-        }
-
-        .gallery-bottom {
-            grid-area: gallery-bottom;
-        }
-
-        .gallery-bottom2 {
-            grid-area: gallery-bottom2;
-        }
-
-        .gallery-header {
-            margin-bottom: 15px;
-        }
-
-        .gallery-header h2 {
-            font-size: 1.5rem;
-            color: #00d4ff;
-            margin-bottom: 10px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .search-input::placeholder {
-            color: #aaa;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .octocat-item {
-            aspect-ratio: 1;
-            border-radius: 8px;
             overflow: hidden;
-            cursor: grab;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .octocat-item:hover {
-            border-color: #00d4ff;
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }
-
-        .octocat-item:active {
-            cursor: grabbing;
-        }
-
-        .octocat-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Canvas Section */
-        .canvas-section {
-            grid-area: canvas;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .canvas-header {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .canvas-header h2 {
-            font-size: 1.5rem;
-            color: #ff006e;
-            margin-bottom: 15px;
-        }
-
-        .canvas-controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .color-picker-container {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .color-option {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .color-option:hover {
-            transform: scale(1.1);
-        }
-
-        .color-option.active {
-            border-color: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
-        .canvas-wrapper {
-            position: relative;
-            border-radius: 15px;
-            overflow: visible;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         #skateboardCanvas {
             background: #2a2a3a;
             border-radius: 15px;
-        }
-
-        /* Floating controls overlay positioned relative to selected object */
-        .floating-controls {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00d4ff;
-            border-radius: 12px;
-            padding: 15px;
-            min-width: 250px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .floating-controls.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .floating-controls h4 {
-            color: #00d4ff;
-            margin: 0 0 12px 0;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .floating-controls .control-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .floating-controls .control-row label {
-            color: #fff;
-            font-size: 12px;
-            min-width: 45px;
-            font-weight: bold;
-        }
-
-        .floating-controls .control-row input[type="range"] {
-            flex: 1;
-            background: transparent;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 4px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            outline: none;
-        }
-
-        .floating-controls .control-row input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #00d4ff;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 212, 255, 0.5);
-        }
-
-        .floating-controls .control-row .value {
-            color: #00d4ff;
-            font-weight: bold;
-            font-size: 12px;
-            min-width: 35px;
-            text-align: right;
-        }
-
-        .floating-controls .delete-btn {
-            width: 100%;
-            margin-top: 8px;
-            padding: 6px;
-            background: linear-gradient(45deg, #ff006e, #cc0055);
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .floating-controls .delete-btn:hover {
-            background: linear-gradient(45deg, #cc0055, #ff006e);
-            transform: translateY(-1px);
         }
 
         /* Tools Section */
@@ -1096,21 +607,6 @@
                 </div>
                 <div class="canvas-wrapper">
                     <canvas id="skateboardCanvas" width="400" height="800"></canvas>
-                    <!-- Floating controls that appear under selected object -->
-                    <div class="floating-controls" id="floatingControls">
-                        <h4>Modify Object</h4>
-                        <div class="control-row">
-                            <label>Size:</label>
-                            <input type="range" id="floatingSizeSlider" min="0.1" max="3" step="0.1" value="1">
-                            <span class="value" id="floatingSizeValue">1.0</span>
-                        </div>
-                        <div class="control-row">
-                            <label>Rotate:</label>
-                            <input type="range" id="floatingRotationSlider" min="0" max="360" step="1" value="0">
-                            <span class="value" id="floatingRotationValue">0°</span>
-                        </div>
-                        <button class="delete-btn" id="floatingDeleteBtn">🗑️ Delete</button>
-                    </div>
                 </div>
                 <!-- Object Controls near canvas -->
                 <div class="canvas-side-controls" id="objectControls">
@@ -1428,64 +924,154 @@
             ctx.lineTo(width, height * 0.25);
             ctx.quadraticCurveTo(width - sideRadius * 0.3, height * 0.5, width, height * 0.75);
             
-            //
-            document.getElementById('floatingDeleteBtn').addEventListener('click', deleteSelected);
-
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            // Bottom tail (less rounded than nose)
+            ctx.lineTo(width, height - tailRadius * 0.4);
+            ctx.quadraticCurveTo(width, height + tailRadius * 0.2, centerX + tailRadius * 0.6, height);
+            ctx.quadraticCurveTo(centerX, height + tailRadius * 0.15, centerX - tailRadius * 0.6, height);
+            ctx.quadraticCurveTo(0, height + tailRadius * 0.2, 0, height - tailRadius * 0.4);
             
-            // Floating controls event listeners
-            document.getElementById('floatingSizeSlider').addEventListener('input', updateObjectSize);
-            document.getElementById('floatingRotationSlider').addEventListener('input', updateObjectRotation);
+            // Left side with slight concave curve
+            ctx.lineTo(0, height * 0.75);
+            ctx.quadraticCurveTo(sideRadius * 0.3, height * 0.5, 0, height * 0.25);
+            
+            // Back to nose
+            ctx.lineTo(0, noseRadius * 0.4);
+            ctx.quadraticCurveTo(0, noseRadius * 0.15, centerX - noseRadius * 0.7, 0);
+            
+            ctx.closePath();
+            
+            ctx.fill();
+            ctx.stroke();
         }
 
-        // Select an object and show floating controls
-        function selectObject(obj) {
-            // Deselect all objects first
-            canvasObjects.forEach(o => o.selected = false);
+        // Draw wheel holes
+        function drawWheelHoles() {
+            const holeRadius = 8;
+            const holes = [
+                {x: 100, y: 60}, {x: 300, y: 60},
+                {x: 100, y: 100}, {x: 300, y: 100},
+                {x: 100, y: 700}, {x: 300, y: 700},
+                {x: 100, y: 740}, {x: 300, y: 740}
+            ];
             
-            const floatingControls = document.getElementById('floatingControls');
+            ctx.fillStyle = '#000';
+            holes.forEach(hole => {
+                ctx.beginPath();
+                ctx.arc(hole.x, hole.y, holeRadius, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        }
+
+        // Load Octocat gallery
+        function loadGallery() {
+            const galleryGrids = [
+                document.getElementById('galleryGridLeft'),
+                document.getElementById('galleryGridRight'),
+                document.getElementById('galleryGridBottom'),
+                document.getElementById('galleryGridBottom2')
+            ];
+            
+            // Clear all galleries first
+            galleryGrids.forEach(grid => {
+                if (grid) grid.innerHTML = '';
+            });
+            
+            octocats.forEach((octocat, index) => {
+                const item = document.createElement('div');
+                item.className = 'octocat-item';
+                item.draggable = true;
+                item.dataset.octocatId = octocat.id;
+                
+                const img = document.createElement('img');
+                img.src = octocat.src;
+                img.alt = octocat.name;
+                img.title = octocat.name;
+                
+                // Handle image load errors
+                img.onerror = function() {
+                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMzMzIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEyIiBmaWxsPSIjYWFhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JbWFnZTwvdGV4dD4KPHR5eHQgeD0iNTAiIHk9IjcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTIiIGZpbGw9IiNhYWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+';
+                };
+                
+                item.appendChild(img);
+                
+                // Distribute Octocats across galleries in round-robin fashion
+                const galleryIndex = index % galleryGrids.length;
+                if (galleryGrids[galleryIndex]) {
+                    galleryGrids[galleryIndex].appendChild(item);
+                }
+                
+                // Add drag start event
+                item.addEventListener('dragstart', handleDragStart);
+                
+                // Add click event for mobile
+                item.addEventListener('click', () => addOctocatToCanvas(octocat));
+            });
+        }
+
+        // Handle drag start
+        function handleDragStart(e) {
+            const octocatId = e.target.closest('.octocat-item').dataset.octocatId;
+            e.dataTransfer.setData('text/plain', octocatId);
+        }
+
+        // Add Octocat to canvas
+        function addOctocatToCanvas(octocat, x = null, y = null) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                // Set random position if not specified
+                if (x === null || y === null) {
+                    x = Math.random() * (canvas.width - 100) + 50;
+                    y = Math.random() * (canvas.height - 200) + 150;
+                }
+                
+                const canvasObj = new CanvasObject(img, x - 50, y - 50, 100, 100);
+                canvasObjects.push(canvasObj);
+                
+                // Select the new object
+                selectObject(canvasObj);
+                
+                drawCanvas();
+                saveState();
+                updateStatus(`Added ${octocat.name} to the deck!`);
+            };
+            img.onerror = function() {
+                updateStatus(`Failed to load ${octocat.name}`);
+            };
+            img.src = octocat.src;
+        }
+
+        // Select an object
+        function selectObject(obj) {
+            canvasObjects.forEach(o => o.selected = false);
             const controlsContainer = document.getElementById('objectControls');
             const controlsTitle = document.getElementById('controlsTitle');
             const noSelectionMessage = document.getElementById('noSelectionMessage');
             const controlsContent = document.getElementById('controlsContent');
+            const sizeValue = document.getElementById('sizeValue');
+            const rotationValue = document.getElementById('rotationValue');
             
             if (obj) {
                 obj.selected = true;
                 selectedObject = obj;
                 
-                // Position and show floating controls
-                positionFloatingControls(obj);
-                floatingControls.classList.add('visible');
-                
-                // Update static controls as well
+                // Show active state
                 controlsContainer.classList.add('active');
                 controlsTitle.textContent = 'Modify Selected Object';
                 noSelectionMessage.style.display = 'none';
                 controlsContent.style.display = 'block';
                 
-                // Update all sliders and values
-                const sizeValue = obj.scale.toFixed(1);
-                const rotationValue = obj.rotation + '°';
-                
+                // Update sliders and values
                 document.getElementById('sizeSlider').value = obj.scale;
                 document.getElementById('rotationSlider').value = obj.rotation;
-                document.getElementById('floatingSizeSlider').value = obj.scale;
-                document.getElementById('floatingRotationSlider').value = obj.rotation;
+                sizeValue.textContent = obj.scale.toFixed(1);
+                rotationValue.textContent = obj.rotation + '°';
                 
-                document.getElementById('sizeValue').textContent = sizeValue;
-                document.getElementById('rotationValue').textContent = rotationValue;
-                document.getElementById('floatingSizeValue').textContent = sizeValue;
-                document.getElementById('floatingRotationValue').textContent = rotationValue;
-                
-                updateStatus('Object selected. Use floating controls to modify it.');
+                updateStatus('Object selected. Use controls below to modify it.');
             } else {
                 selectedObject = null;
                 
-                // Hide floating controls
-                floatingControls.classList.remove('visible');
-                
-                // Show inactive state for static controls
+                // Show inactive state
                 controlsContainer.classList.remove('active');
                 controlsTitle.textContent = 'Select an Object to Modify';
                 noSelectionMessage.style.display = 'block';
@@ -1494,17 +1080,79 @@
                 // Reset sliders
                 document.getElementById('sizeSlider').value = 1;
                 document.getElementById('rotationSlider').value = 0;
-                document.getElementById('floatingSizeSlider').value = 1;
-                document.getElementById('floatingRotationSlider').value = 0;
-                
-                document.getElementById('sizeValue').textContent = '1.0';
-                document.getElementById('rotationValue').textContent = '0°';
-                document.getElementById('floatingSizeValue').textContent = '1.0';
-                document.getElementById('floatingRotationValue').textContent = '0°';
+                sizeValue.textContent = '1.0';
+                rotationValue.textContent = '0°';
                 
                 updateStatus('No object selected. Click on an Octocat to modify it.');
             }
             drawCanvas();
+        }
+
+        // Get canvas coordinates from mouse event
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Color picker
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentDeckColor = e.target.dataset.color;
+                    drawCanvas();
+                    updateStatus(`Changed deck color to ${currentDeckColor}`);
+                });
+            });
+
+            // Canvas mouse events
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('click', handleCanvasClick);
+
+            // Canvas drop functionality
+            canvas.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            canvas.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const octocatId = e.dataTransfer.getData('text/plain');
+                const octocat = octocats.find(o => o.id === octocatId);
+                if (octocat) {
+                    const coords = getCanvasCoords(e);
+                    addOctocatToCanvas(octocat, coords.x, coords.y);
+                }
+            });
+
+            // Tool buttons
+            // Creative tools
+            document.getElementById('addAllBtn').addEventListener('click', addAllOctocats);
+            document.getElementById('randomPlaceBtn').addEventListener('click', randomPlacement);
+            document.getElementById('clearAllBtn').addEventListener('click', clearAll);
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            document.getElementById('deleteBtn').addEventListener('click', deleteSelected);
+            document.getElementById('bringForwardBtn').addEventListener('click', () => bringForward());
+            document.getElementById('sendBackwardBtn').addEventListener('click', () => sendBackward());
+            document.getElementById('bringToFrontBtn').addEventListener('click', () => bringToFront());
+            document.getElementById('sendToBackBtn').addEventListener('click', () => sendToBack());
+            document.getElementById('saveDesignBtn').addEventListener('click', saveDesign);
+            document.getElementById('loadDesignBtn').addEventListener('click', loadDesign);
+            document.getElementById('exportBtn').addEventListener('click', exportDesign);
+
+            // Object control sliders
+            document.getElementById('sizeSlider').addEventListener('input', updateObjectSize);
+            document.getElementById('rotationSlider').addEventListener('input', updateObjectRotation);
+
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
         }
 
         // Mouse event handlers
@@ -1556,59 +1204,22 @@
             // Click handling is done in mousedown to allow for dragging
         }
 
-        // Update object size (both main and floating controls)
+        // Update object size
         function updateObjectSize(e) {
             if (selectedObject) {
                 selectedObject.scale = parseFloat(e.target.value);
-                const value = selectedObject.scale.toFixed(1);
-                document.getElementById('sizeValue').textContent = value;
-                document.getElementById('floatingSizeValue').textContent = value;
-                
-                // Sync sliders
-                document.getElementById('sizeSlider').value = selectedObject.scale;
-                document.getElementById('floatingSizeSlider').value = selectedObject.scale;
-                
-                // Reposition floating controls if object size changed
-                positionFloatingControls(selectedObject);
+                document.getElementById('sizeValue').textContent = selectedObject.scale.toFixed(1);
                 drawCanvas();
             }
         }
 
-        // Update object rotation (both main and floating controls)
+        // Update object rotation
         function updateObjectRotation(e) {
             if (selectedObject) {
                 selectedObject.rotation = parseFloat(e.target.value);
-                const value = selectedObject.rotation + '°';
-                document.getElementById('rotationValue').textContent = value;
-                document.getElementById('floatingRotationValue').textContent = value;
-                
-                // Sync sliders
-                document.getElementById('rotationSlider').value = selectedObject.rotation;
-                document.getElementById('floatingRotationSlider').value = selectedObject.rotation;
-                
+                document.getElementById('rotationValue').textContent = selectedObject.rotation + '°';
                 drawCanvas();
             }
-        }
-
-        // Position floating controls under the selected object
-        function positionFloatingControls(obj) {
-            const floatingControls = document.getElementById('floatingControls');
-            const canvas = document.getElementById('skateboardCanvas');
-            
-            // Calculate object position in canvas coordinates
-            const objCenterX = (obj.x + obj.width / 2) * obj.scale;
-            const objBottom = (obj.y + obj.height) * obj.scale + 30; // 30px below the object
-            
-            // Position relative to canvas center
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            
-            // Convert to pixel position (centered in canvas wrapper)
-            const leftPos = Math.max(10, Math.min(objCenterX - 125, canvasWidth - 260)); // Center the 250px wide control panel
-            const topPos = Math.max(10, Math.min(objBottom, canvasHeight - 120)); // Keep within canvas bounds
-            
-            floatingControls.style.left = leftPos + 'px';
-            floatingControls.style.top = topPos + 'px';
         }
 
         // Add all Octocats to canvas in random arrangement
