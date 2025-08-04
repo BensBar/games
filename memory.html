@@ -928,6 +928,7 @@
     let timerInterval = null;
     let moves = 0;
     let matches = 0;
+    let consecutiveMatches = 0; // Track consecutive matches for bonus
     let flippedCards = [];
     let matchedCards = [];
     let canFlip = true;
@@ -1151,10 +1152,16 @@
         
         matchedCards.push(card1, card2);
         matches++;
+        consecutiveMatches++; // Increment consecutive matches
         matchesValue.textContent = `${matches}/${totalPairs}`;
         
-        // Apply time bonus (subtract 1 second from elapsed time)
+        // Apply regular time bonus (subtract 1 second from elapsed time)
         applyTimeBonus();
+        
+        // Check for consecutive match bonus (every 2 consecutive matches)
+        if (consecutiveMatches % 2 === 0) {
+          applyConsecutiveBonus();
+        }
         
         // Remove animation class after animation completes
         setTimeout(() => {
@@ -1168,7 +1175,8 @@
           }, 1000);
         }
       } else {
-        // No match, flip back
+        // No match, flip back and reset consecutive matches
+        consecutiveMatches = 0; // Reset consecutive counter on miss
         setTimeout(() => {
           card1.classList.remove('flipped');
           card2.classList.remove('flipped');
@@ -1194,6 +1202,21 @@
       showTimeBonusEffect();
     }
     
+    // Apply consecutive match bonus (3 seconds)
+    function applyConsecutiveBonus() {
+      // Add 3 seconds to the start time (effectively subtracting 3 seconds from elapsed time)
+      gameStartTime += 3000;
+      
+      // Ensure we don't go into negative time
+      const currentElapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+      if (currentElapsed < 0) {
+        gameStartTime = Date.now();
+      }
+      
+      // Show visual feedback
+      showConsecutiveBonusEffect();
+    }
+    
     // Show time bonus visual effect
     function showTimeBonusEffect() {
       const bonusEffect = document.createElement('div');
@@ -1216,6 +1239,30 @@
       }, 2000);
     }
     
+    // Show consecutive bonus visual effect
+    function showConsecutiveBonusEffect() {
+      const bonusEffect = document.createElement('div');
+      bonusEffect.className = 'time-bonus-effect';
+      bonusEffect.textContent = '+3 SEC BONUS!';
+      bonusEffect.style.color = '#ff006e'; // Different color for consecutive bonus
+      bonusEffect.style.textShadow = '0 0 10px #ff006e, 0 0 20px #ff006e, 0 0 30px #ff006e';
+      
+      // Position near the timer
+      const timerElement = timeValue;
+      const rect = timerElement.getBoundingClientRect();
+      bonusEffect.style.position = 'fixed';
+      bonusEffect.style.left = rect.left + 'px';
+      bonusEffect.style.top = (rect.top - 80) + 'px'; // Higher up to avoid collision with regular bonus
+      bonusEffect.style.zIndex = '1001';
+      
+      document.body.appendChild(bonusEffect);
+      
+      // Animate and remove
+      setTimeout(() => {
+        bonusEffect.remove();
+      }, 2000);
+    }
+    
     // Start game
     async function startGame() {
       gameState = 'playing';
@@ -1226,6 +1273,7 @@
       gameTimer = 0;
       moves = 0;
       matches = 0;
+      consecutiveMatches = 0; // Reset consecutive matches counter
       flippedCards = [];
       matchedCards = [];
       canFlip = false; // Disable flipping during countdown
