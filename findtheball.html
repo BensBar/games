@@ -1,164 +1,630 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find the Ball</title>
-    <style>
-        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: black; }
-        canvas { border: 1px solid white; }
-        #message { position: absolute; top: 80%; color: white; font-size: 24px; font-family: Arial; text-align: center; }
-    </style>
+<meta charset="UTF-8" />
+<title>Find the Ball</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+    :root {
+        --bg-top:#1c2533;
+        --bg-bottom:#070b11;
+        --accent:#f9b233;
+        --correct:#42d66c;
+        --wrong:#ff4d4d;
+        --panel-bg:rgba(0,0,0,0.45);
+        --font-stack: 'Segoe UI', Arial, sans-serif;
+    }
+    body {
+        margin:0;
+        font-family:var(--font-stack);
+        background: radial-gradient(circle at 50% 35%, #2f3d52 0%, #121821 60%, #070b11 100%);
+        color:#fff;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        min-height:100vh;
+        overflow:hidden;
+        user-select:none;
+    }
+    header {
+        position:absolute;
+        top:10px;
+        width:100%;
+        display:flex;
+        justify-content:center;
+        pointer-events:none;
+    }
+    #scoreboard {
+        background:var(--panel-bg);
+        backdrop-filter:blur(6px);
+        padding:10px 22px;
+        border-radius:18px;
+        display:flex;
+        gap:26px;
+        font-size:15px;
+        box-shadow:0 4px 18px -4px rgba(0,0,0,0.55);
+        pointer-events:auto;
+    }
+    #scoreboard span.label { opacity:0.65; font-size:12px; display:block; letter-spacing:0.5px; text-transform:uppercase; }
+    #scoreboard .value { font-weight:600; font-size:18px; }
+    #container {
+        position:relative;
+        flex:1;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:100%;
+    }
+    canvas {
+        width: min(1000px, 100%);
+        aspect-ratio: 4 / 3;
+        max-height: 82vh;
+        border:1px solid rgba(255,255,255,0.15);
+        border-radius:16px;
+        background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+        box-shadow:0 10px 40px -10px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05) inset;
+        cursor:pointer;
+    }
+    #messageBox {
+        position:absolute;
+        bottom:16px;
+        left:50%;
+        transform:translateX(-50%);
+        background:var(--panel-bg);
+        padding:14px 26px;
+        border-radius:14px;
+        font-size:20px;
+        min-width:260px;
+        text-align:center;
+        backdrop-filter:blur(5px);
+        box-shadow:0 6px 24px -6px rgba(0,0,0,0.65);
+        transition:background .3s, color .3s, transform .35s ease;
+        will-change:transform;
+    }
+    #controls {
+        position:absolute;
+        top:10px;
+        right:16px;
+        display:flex;
+        gap:10px;
+        z-index:10;
+    }
+    button {
+        font:600 14px var(--font-stack);
+        padding:10px 18px;
+        background:linear-gradient(145deg,#f5b02c,#d59012);
+        color:#14181f;
+        border:none;
+        border-radius:12px;
+        cursor:pointer;
+        letter-spacing:0.5px;
+        box-shadow:0 4px 16px -4px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.15) inset;
+        transition:transform .2s, box-shadow .2s, filter .3s;
+    }
+    button:active { transform:translateY(2px) scale(0.97); }
+    button:hover { box-shadow:0 6px 22px -6px rgba(0,0,0,0.65); filter:brightness(1.05); }
+    #hint {
+        position:absolute;
+        top:54px;
+        right:16px;
+        font-size:11px;
+        opacity:0.4;
+        max-width:200px;
+        line-height:1.3;
+        text-align:right;
+    }
+    .hidden { display:none; }
+    @media (max-width: 720px) {
+        #scoreboard { gap:14px; padding:8px 16px; }
+        #scoreboard .value { font-size:15px; }
+        canvas { border-radius:12px; }
+        #messageBox { font-size:17px; padding:11px 18px; }
+    }
+</style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="message"></div>
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const messageDiv = document.getElementById('message');
+    <header>
+        <div id="scoreboard">
+            <div><span class="label">Wins</span><span class="value" id="wins">0</span></div>
+            <div><span class="label">Losses</span><span class="value" id="losses">0</span></div>
+            <div><span class="label">Streak</span><span class="value" id="streak">0</span></div>
+            <div><span class="label">Rounds</span><span class="value" id="rounds">0</span></div>
+        </div>
+    </header>
+    <div id="controls">
+        <button id="restartBtn" class="hidden">Restart</button>
+    </div>
+    <div id="hint">Find the ball under a helmet after the shuffle. Click to guess!</div>
+    <div id="container">
+        <canvas id="gameCanvas" width="1000" height="750" aria-label="Find the ball game area"></canvas>
+        <div id="messageBox"></div>
+    </div>
 
-        // Helmet and ball settings
-        const helmetWidth = 100;
-        const helmetHeight = 100;
-        const ballWidth = 40; // Width for football image (adjust as needed)
-        const ballHeight = 40; // Height for football image
-        const positions = [150, 350, 550]; // x positions for helmets
-        const yPos = 250; // y position for helmets and ball
-        let helmets = positions.map(x => ({ x, y: yPos, width: helmetWidth, height: helmetHeight }));
-        let hasBall = [false, true, false]; // Ball starts under center helmet (index 1)
-        let state = 'initial'; // States: initial, shuffling, guessing, result
-        let startTime = Date.now();
-        const shuffleDuration = 15000; // 15 seconds
-        let guess = null;
-        let animationFrame = null;
+<script>
+(function(){
+'use strict';
 
-        // Load images from /img directory
-        const helmetImg = new Image();
-        helmetImg.src = 'img/helmet.png'; // Updated path
-        const footballImg = new Image();
-        footballImg.src = 'img/football.png'; // Updated path
-        let imagesLoaded = 0;
-        let imagesFailed = false;
+/* ========== Canvas & DOM ========== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const messageBox = document.getElementById('messageBox');
+const restartBtn = document.getElementById('restartBtn');
 
-        // Track image loading
-        function onImageLoad() {
-            imagesLoaded++;
-            if (imagesLoaded === 2) {
-                gameLoop(); // Start game only after both images load
-            }
+/* Scoreboard refs */
+const winsEl = document.getElementById('wins');
+const lossesEl = document.getElementById('losses');
+const streakEl = document.getElementById('streak');
+const roundsEl = document.getElementById('rounds');
+
+/* ========== Assets ========== */
+const helmetImg = new Image();
+const ballImg = new Image();
+helmetImg.src = 'img/helmet.png';
+ballImg.src = 'img/football.png';
+let assetsLoaded = 0;
+let assetsFail = false;
+
+helmetImg.onload = assetLoaded;
+ballImg.onload = assetLoaded;
+helmetImg.onerror = assetFailed;
+ballImg.onerror = assetFailed;
+
+function assetLoaded(){ assetsLoaded++; if(assetsLoaded >= 2) startInitial(); }
+function assetFailed(){ assetsFail = true; assetsLoaded++; if(assetsLoaded >= 2) startInitial(); }
+
+/* ========== Game State ========== */
+const HELMET_W = 140;
+const HELMET_H = 140;
+const BALL_W = 60;
+const BALL_H = 60;
+let baseY = 360;
+let positions = [];
+let helmets = [];
+let hasBall = [];
+let hoveredIndex = -1;
+
+const SHUFFLE_TIME = 6000; // total shuffle phase duration
+const SWAP_INTERVAL_MIN = 350;
+const SWAP_INTERVAL_MAX = 900;
+
+const LIFT_REVEAL_HEIGHT = 80;
+const LIFT_DURATION = 800;
+
+let state = 'loading'; // loading|showing|shuffling|guessing|revealing|result
+let shuffleStart = 0;
+let lastSwapTime = 0;
+let nextSwapAfter = 0;
+let revealStart = 0;
+let chosenIndex = -1;
+let correctIndex = 1;
+
+let animationHandle = null;
+
+/* Score tracking */
+let wins = 0;
+let losses = 0;
+let streak = 0;
+let rounds = 0;
+
+/* Confetti (simple) */
+let confettiPieces = [];
+
+/* ========== Utility ========== */
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function lerp(a,b,t){ return a + (b - a) * t; }
+function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+function easeInOutQuad(t){ return t<0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
+
+/* ========== Initialization ========== */
+function configureLayout(){
+    // 3 helmets spaced evenly in canvas width
+    const margin = 140;
+    const usable = canvas.width - margin*2;
+    const spacing = usable / 2;
+    positions = [
+        margin,
+        margin + spacing,
+        margin + spacing*2
+    ];
+    baseY = Math.round(canvas.height * 0.48);
+    helmets = positions.map(x => ({ x, y: baseY, width: HELMET_W, height: HELMET_H, lifting:0 }));
+}
+configureLayout();
+window.addEventListener('resize', () => {
+    // Keep logic dimension stable (not responsive redraw scaling logic complexity)
+});
+
+/* ========== Game Flow ========== */
+function resetRound(){
+    correctIndex = 1;
+    hasBall = [false,true,false];
+    helmets.forEach(h=>{ h.x = h.x; h.y = baseY; h.lifting = 0; });
+    chosenIndex = -1;
+    hoveredIndex = -1;
+    state = 'showing';
+    shuffleStart = 0;
+    lastSwapTime = 0;
+    nextSwapAfter = 0;
+    revealStart = 0;
+    messageBox.textContent = 'Watch closely...';
+    messageBox.style.color = '#fff';
+    restartBtn.classList.add('hidden');
+    confettiPieces = [];
+}
+
+function startInitial(){
+    if(state !== 'loading') return;
+    resetRound();
+    animate();
+}
+
+restartBtn.addEventListener('click', () => {
+    resetRound();
+});
+
+function scheduleNextSwap(){
+    nextSwapAfter = randInt(SWAP_INTERVAL_MIN, SWAP_INTERVAL_MAX);
+}
+
+/* ========== Swap Animation Logic ========== */
+let activeSwap = null;
+
+function startSwap(i,j){
+    // Use an arc path to move helmets; keep original indices
+    const duration = randInt(450, 750);
+    const startTime = performance.now();
+    const hi = helmets[i];
+    const hj = helmets[j];
+    const startXi = hi.x;
+    const startXj = hj.x;
+    const endXi = positions[j];
+    const endXj = positions[i];
+    const peak = 60; // arc height
+    activeSwap = {
+        i,j,startTime,duration,
+        startXi,startXj,endXi,endXj,
+    };
+}
+
+function updateSwap(now){
+    if(!activeSwap) return false;
+    const {i,j,startTime,duration,startXi,startXj,endXi,endXj} = activeSwap;
+    const t = Math.min(1,(now - startTime)/duration);
+    const eased = easeInOutQuad(t);
+    // Arc param: y offset - simple sine
+    const arcT = Math.sin(Math.PI * eased);
+    helmets[i].x = lerp(startXi, endXi, eased);
+    helmets[j].x = lerp(startXj, endXj, eased);
+    helmets[i].y = baseY - arcT*peak;
+    helmets[j].y = baseY - arcT*peak;
+    if(t >= 1){
+        helmets[i].y = baseY;
+        helmets[j].y = baseY;
+        // finalize swap ball positions
+        [hasBall[i], hasBall[j]] = [hasBall[j], hasBall[i]];
+        activeSwap = null;
+        return true;
+    }
+    return false;
+}
+
+/* ========== Reveal (Lift Helmet) ========== */
+function startReveal(){
+    revealStart = performance.now();
+    state = 'revealing';
+}
+
+function updateReveal(now){
+    const elapsed = now - revealStart;
+    const t = Math.min(1, elapsed / LIFT_DURATION);
+    const eased = easeOutCubic(t);
+    // Lift chosen helmet and actual ball helmet (if different)
+    helmets.forEach((h, idx)=>{
+        if(idx === chosenIndex || hasBall[idx]) {
+            h.lifting = eased;
+        } else {
+            h.lifting = 0;
         }
-        function onImageError() {
-            imagesFailed = true; // Use fallback rendering
-            imagesLoaded++;
-            if (imagesLoaded === 2) {
-                gameLoop();
-            }
+    });
+    if(t >= 1){
+        state = 'result';
+        if(chosenIndex === hasBall.indexOf(true)){
+            // Confetti spawn
+            spawnConfetti();
         }
-        helmetImg.onload = onImageLoad;
-        footballImg.onload = onImageLoad;
-        helmetImg.onerror = onImageError;
-        footballImg.onerror = onImageError;
+    }
+}
 
-        // Draw helmets and ball
-        function drawScene(reveal = false) {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            helmets.forEach((helmet, i) => {
-                if (!imagesFailed && helmetImg.complete && helmetImg.naturalWidth !== 0) {
-                    ctx.drawImage(helmetImg, helmet.x, helmet.y, helmet.width, helmet.height);
-                } else {
-                    ctx.fillStyle = 'blue'; // Fallback
-                    ctx.fillRect(helmet.x, helmet.y, helmet.width, helmet.height);
-                }
-                if (reveal && hasBall[i]) {
-                    if (!imagesFailed && footballImg.complete && footballImg.naturalWidth !== 0) {
-                        ctx.drawImage(footballImg, helmet.x + (helmet.width - ballWidth) / 2, helmet.y + (helmet.height - ballHeight) / 2 + 30, ballWidth, ballHeight);
-                    } else {
-                        ctx.fillStyle = 'red'; // Fallback
-                        ctx.beginPath();
-                        ctx.arc(helmet.x + helmet.width / 2, helmet.y + helmet.height / 2 + 30, 20, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-            });
-            if (state === 'guessing') {
-                messageDiv.textContent = 'Click a helmet to guess!';
-            } else if (state === 'result') {
-                messageDiv.style.color = guess && hasBall[guess] ? 'green' : 'red';
-                messageDiv.textContent = guess && hasBall[guess] ? 'Correct!' : 'Wrong!';
+/* ========== Confetti ========== */
+function spawnConfetti(){
+    const pieces = 140;
+    confettiPieces = new Array(pieces).fill(0).map(()=>({
+        x: canvas.width/2 + randInt(-250,250),
+        y: -20 - Math.random()*200,
+        r: randInt(4,8),
+        c: `hsl(${randInt(0,359)}, 80%, 50%)`,
+        vy: 2 + Math.random()*3,
+        vx: -2 + Math.random()*4,
+        rot: Math.random()*Math.PI*2,
+        vr: -0.2 + Math.random()*0.4,
+        life: 0,
+        maxLife: 3000 + Math.random()*1000
+    }));
+}
+
+function updateConfetti(dt){
+    confettiPieces.forEach(p=>{
+        p.life += dt;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        // gravity-ish
+        p.vy += 0.02;
+        if(p.y > canvas.height + 50) p.y = -50;
+    });
+    confettiPieces = confettiPieces.filter(p=>p.life < p.maxLife);
+}
+
+function drawConfetti(){
+    confettiPieces.forEach(p=>{
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r);
+        ctx.restore();
+    });
+}
+
+/* ========== Rendering ========== */
+function drawBackground(){
+    // Large radial spotlight
+    const g = ctx.createRadialGradient(canvas.width/2, canvas.height*0.45, 100, canvas.width/2, canvas.height*0.6, canvas.height*0.9);
+    g.addColorStop(0,'rgba(255,255,255,0.08)');
+    g.addColorStop(0.4,'rgba(255,255,255,0.03)');
+    g.addColorStop(1,'rgba(0,0,0,0.75)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Subtle stage oval
+    ctx.beginPath();
+    ctx.ellipse(canvas.width/2, baseY + HELMET_H + 40, 450, 60, 0, 0, Math.PI*2);
+    const stageGrad = ctx.createRadialGradient(canvas.width/2, baseY + HELMET_H + 40, 50, canvas.width/2, baseY + HELMET_H + 40, 450);
+    stageGrad.addColorStop(0,'rgba(255,255,255,0.10)');
+    stageGrad.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = stageGrad;
+    ctx.fill();
+}
+
+function drawHelmets(now){
+    helmets.forEach((h, idx)=>{
+        const liftingOffset = h.lifting * LIFT_REVEAL_HEIGHT;
+        const isHover = (idx === hoveredIndex && state === 'guessing');
+        const scale = isHover ? 1.06 : 1.0;
+        const cx = h.x + h.width/2;
+        const cy = h.y + h.height/2;
+        const drawY = h.y - liftingOffset;
+
+        // Shadow
+        ctx.save();
+        const shadowScale = 1 + h.lifting * 0.3;
+        ctx.translate(cx, baseY + h.height - 10);
+        ctx.scale(shadowScale, 1);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, h.width*0.42, 18, 0, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(scale, scale);
+        ctx.translate(-cx, -cy);
+
+        // Helmet image or fallback
+        if(!assetsFail && helmetImg.complete && helmetImg.naturalWidth){
+            ctx.save();
+            if(isHover){
+                ctx.shadowColor = 'rgba(255,255,255,0.6)';
+                ctx.shadowBlur = 22;
             } else {
-                messageDiv.textContent = '';
+                ctx.shadowColor = 'rgba(0,0,0,0.75)';
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 6;
             }
+            ctx.drawImage(helmetImg, h.x, drawY, h.width, h.height);
+            ctx.restore();
+        } else {
+            // Fallback shape
+            ctx.save();
+            const grad = ctx.createLinearGradient(h.x, drawY, h.x, drawY + h.height);
+            grad.addColorStop(0,'#345');
+            grad.addColorStop(1,'#123');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.roundRect(h.x, drawY, h.width, h.height, 28);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+            ctx.stroke();
+            ctx.restore();
         }
 
-        // Animate swap between two helmets
-        function animateSwap(i, j, callback) {
-            const steps = 20;
-            const dx_i = (positions[j] - positions[i]) / steps;
-            const dx_j = (positions[i] - positions[j]) / steps;
-            let step = 0;
+        ctx.restore();
 
-            function stepAnimation() {
-                helmets[i].x += dx_i;
-                helmets[j].x += dx_j;
-                step++;
-                drawScene(state === 'initial');
-                if (step < steps) {
-                    animationFrame = requestAnimationFrame(stepAnimation);
-                } else {
-                    helmets[i].x = positions[i];
-                    helmets[j].x = positions[j];
-                    [hasBall[i], hasBall[j]] = [hasBall[j], hasBall[i]];
-                    callback();
-                }
+        // Ball draw if revealed or if lifting and this has ball
+        if((state === 'revealing' || state === 'result') && hasBall[idx]){
+            const ballX = h.x + (h.width - BALL_W)/2;
+            const ballY = baseY + h.height - 10; // base position on ground
+            if(!assetsFail && ballImg.complete && ballImg.naturalWidth){
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.6)';
+                ctx.shadowBlur = 12;
+                ctx.drawImage(ballImg, ballX, ballY - 10, BALL_W, BALL_H);
+                ctx.restore();
+            } else {
+                ctx.save();
+                ctx.fillStyle = '#b94';
+                ctx.beginPath();
+                ctx.ellipse(ballX + BALL_W/2, ballY + BALL_H/2 - 10, BALL_W/2, BALL_H/2, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(ballX + 10, ballY + BALL_H/2 - 10);
+                ctx.lineTo(ballX + BALL_W - 10, ballY + BALL_H/2 - 10);
+                ctx.stroke();
+                ctx.restore();
             }
-            animationFrame = requestAnimationFrame(stepAnimation);
         }
+    });
+}
 
-        // Main game loop
-        function gameLoop() {
-            if (imagesLoaded < 2) return; // Wait for images
-            if (state === 'initial') {
-                drawScene(true); // Show ball under center
-                setTimeout(() => { state = 'shuffling'; startTime = Date.now(); }, 2000);
-            } else if (state === 'shuffling') {
-                if (Date.now() - startTime < shuffleDuration) {
-                    drawScene();
-                    const swapOptions = [[0, 1], [1, 2]];
-                    const [i, j] = swapOptions[Math.floor(Math.random() * swapOptions.length)];
-                    animateSwap(i, j, () => setTimeout(gameLoop, 200));
-                    return;
-                } else {
-                    state = 'guessing';
-                }
-            } else if (state === 'guessing') {
-                drawScene(); // Helmets closed, prompt guess
-            } else if (state === 'result') {
-                drawScene(true); // Reveal ball
-                setTimeout(() => cancelAnimationFrame(animationFrame), 3000); // End after 3 seconds
-                return;
+function drawOverlayText(){
+    // Optional overlay instructions or stages could be drawn here
+}
+
+/* ========== Main Animation Loop ========== */
+let lastFrameTime = performance.now();
+function animate(now = performance.now()){
+    animationHandle = requestAnimationFrame(animate);
+    const dt = now - lastFrameTime;
+    lastFrameTime = now;
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawBackground();
+
+    switch(state){
+        case 'showing':
+            // Show starting ball under middle helmet
+            helmets.forEach((h,i)=>{
+                h.x = positions[i];
+                h.y = baseY;
+            });
+            drawHelmets(now);
+            if(!shuffleStart){
+                shuffleStart = now;
+                messageBox.textContent = 'Get Ready...';
+                setTimeout(()=>{
+                    state = 'shuffling';
+                    shuffleStart = performance.now();
+                    scheduleNextSwap();
+                    messageBox.textContent = 'Shuffling...';
+                }, 1500);
             }
-            animationFrame = requestAnimationFrame(gameLoop);
+            break;
+        case 'shuffling':
+            if(activeSwap){
+                const done = updateSwap(now);
+                if(done){
+                    lastSwapTime = now;
+                    scheduleNextSwap();
+                }
+            } else if(now - shuffleStart < SHUFFLE_TIME){
+                if(now - lastSwapTime >= nextSwapAfter){
+                    // choose random adjacent or maybe cross swap
+                    const pairs = [[0,1],[1,2],[0,2]];
+                    const [i,j] = pairs[randInt(0,pairs.length-1)];
+                    startSwap(i,j);
+                }
+            } else {
+                // End shuffle
+                activeSwap = null;
+                helmets.forEach((h,i)=>{ h.x = positions[i]; h.y = baseY; });
+                state = 'guessing';
+                messageBox.textContent = 'Pick a helmet!';
+            }
+            drawHelmets(now);
+            break;
+        case 'guessing':
+            drawHelmets(now);
+            break;
+        case 'revealing':
+            updateReveal(now);
+            drawHelmets(now);
+            break;
+        case 'result':
+            drawHelmets(now);
+            updateConfetti(dt);
+            drawConfetti();
+            break;
+    }
+
+    drawOverlayText();
+}
+
+/* ========== Interaction ========== */
+canvas.addEventListener('mousemove', (e)=>{
+    if(state !== 'guessing'){ hoveredIndex = -1; return; }
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+    hoveredIndex = -1;
+    for(let i=0;i<helmets.length;i++){
+        const h = helmets[i];
+        if(mx >= h.x && mx <= h.x + h.width && my >= h.y && my <= h.y + h.height){
+            hoveredIndex = i;
+            break;
         }
+    }
+});
 
-        // Handle click to guess
-        canvas.addEventListener('click', (e) => {
-            if (state !== 'guessing') return;
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            for (let i = 0; i < helmets.length; i++) {
-                const h = helmets[i];
-                if (x >= h.x && x <= h.x + h.width && y >= h.y && y <= h.y + h.height) {
-                    guess = i;
-                    state = 'result';
-                    break;
-                }
+canvas.addEventListener('mouseleave', ()=> hoveredIndex = -1);
+
+canvas.addEventListener('click', ()=>{
+    if(state === 'guessing' && hoveredIndex !== -1){
+        chosenIndex = hoveredIndex;
+        const ballIdx = hasBall.indexOf(true);
+        const correct = (chosenIndex === ballIdx);
+        if(correct){
+            wins++;
+            streak++;
+            messageBox.textContent = 'Correct!';
+            messageBox.style.color = 'var(--correct)';
+        } else {
+            losses++;
+            streak = 0;
+            messageBox.textContent = 'Wrong!';
+            messageBox.style.color = 'var(--wrong)';
+        }
+        rounds++;
+        updateScoreboard();
+        startReveal();
+        restartBtn.classList.remove('hidden');
+        setTimeout(()=>{
+            if(state === 'result'){
+                messageBox.textContent += ' (Play again!)';
             }
-        });
+        }, 1400);
+    }
+});
 
-        // Start game (will wait for images to load)
-    </script>
+function updateScoreboard(){
+    winsEl.textContent = wins;
+    lossesEl.textContent = losses;
+    streakEl.textContent = streak;
+    roundsEl.textContent = rounds;
+}
+
+/* ========== Accessibility / Keyboard ========== */
+document.addEventListener('keydown', (e)=>{
+    if(state === 'guessing'){
+        if(['1','2','3'].includes(e.key)){
+            hoveredIndex = parseInt(e.key,10)-1;
+        }
+        if(e.key === 'Enter' && hoveredIndex !== -1){
+            canvas.click();
+        }
+    } else if(state === 'result'){
+        if(e.key.toLowerCase() === 'r'){
+            resetRound();
+        }
+    }
+});
+
+/* ========== Start ========== */
+messageBox.textContent = 'Loading assets...';
+
+})(); // IIFE
+</script>
 </body>
 </html>
