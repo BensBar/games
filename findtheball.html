@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Ball</title>
+    <style>
+        body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: black; }
+        canvas { border: 1px solid white; }
+        #message { position: absolute; top: 80%; color: white; font-size: 24px; font-family: Arial; text-align: center; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="message"></div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const messageDiv = document.getElementById('message');
 
+        // Helmet and ball settings
+        const helmetWidth = 100;
+        const helmetHeight = 100;
+        const ballWidth = 40; // Width for football image (adjust as needed)
+        const ballHeight = 40; // Height for football image
+        const positions = [150, 350, 550]; // x positions for helmets
+        const yPos = 250; // y position for helmets and ball
+        let helmets = positions.map(x => ({ x, y: yPos, width: helmetWidth, height: helmetHeight }));
+        let hasBall = [false, true, false]; // Ball starts under center helmet (index 1)
+        let state = 'initial'; // States: initial, shuffling, guessing, result
+        let startTime = Date.now();
+        const shuffleDuration = 15000; // 15 seconds
+        let guess = null;
+        let animationFrame = null;
+
+        // Load images from /img directory
+        const helmetImg = new Image();
+        helmetImg.src = 'img/helmet.png'; // Updated path
+        const footballImg = new Image();
+        footballImg.src = 'img/football.png'; // Updated path
+        let imagesLoaded = 0;
+        let imagesFailed = false;
+
+        // Track image loading
+        function onImageLoad() {
+            imagesLoaded++;
+            if (imagesLoaded === 2) {
+                gameLoop(); // Start game only after both images load
+            }
+        }
+        function onImageError() {
+            imagesFailed = true; // Use fallback rendering
+            imagesLoaded++;
+            if (imagesLoaded === 2) {
+                gameLoop();
+            }
+        }
+        helmetImg.onload = onImageLoad;
+        footballImg.onload = onImageLoad;
+        helmetImg.onerror = onImageError;
+        footballImg.onerror = onImageError;
+
+        // Draw helmets and ball
+        function drawScene(reveal = false) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            helmets.forEach((helmet, i) => {
+                if (!imagesFailed && helmetImg.complete && helmetImg.naturalWidth !== 0) {
+                    ctx.drawImage(helmetImg, helmet.x, helmet.y, helmet.width, helmet.height);
+                } else {
+                    ctx.fillStyle = 'blue'; // Fallback
+                    ctx.fillRect(helmet.x, helmet.y, helmet.width, helmet.height);
+                }
+                if (reveal && hasBall[i]) {
+                    if (!imagesFailed && footballImg.complete && footballImg.naturalWidth !== 0) {
+                        ctx.drawImage(footballImg, helmet.x + (helmet.width - ballWidth) / 2, helmet.y + (helmet.height - ballHeight) / 2 + 30, ballWidth, ballHeight);
+                    } else {
+                        ctx.fillStyle = 'red'; // Fallback
+                        ctx.beginPath();
+                        ctx.arc(helmet.x + helmet.width / 2, helmet.y + helmet.height / 2 + 30, 20, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            });
+            if (state === 'guessing') {
+                messageDiv.textContent = 'Click a helmet to guess!';
+            } else if (state === 'result') {
+                messageDiv.style.color = guess && hasBall[guess] ? 'green' : 'red';
+                messageDiv.textContent = guess && hasBall[guess] ? 'Correct!' : 'Wrong!';
+            } else {
+                messageDiv.textContent = '';
+            }
+        }
+
+        // Animate swap between two helmets
+        function animateSwap(i, j, callback) {
+            const steps = 20;
+            const dx_i = (positions[j] - positions[i]) / steps;
+            const dx_j = (positions[i] - positions[j]) / steps;
+            let step = 0;
+
+            function stepAnimation() {
+                helmets[i].x += dx_i;
+                helmets[j].x += dx_j;
+                step++;
+                drawScene(state === 'initial');
+                if (step < steps) {
+                    animationFrame = requestAnimationFrame(stepAnimation);
+                } else {
+                    helmets[i].x = positions[i];
+                    helmets[j].x = positions[j];
+                    [hasBall[i], hasBall[j]] = [hasBall[j], hasBall[i]];
+                    callback();
+                }
+            }
+            animationFrame = requestAnimationFrame(stepAnimation);
+        }
+
+        // Main game loop
+        function gameLoop() {
+            if (imagesLoaded < 2) return; // Wait for images
+            if (state === 'initial') {
+                drawScene(true); // Show ball under center
+                setTimeout(() => { state = 'shuffling'; startTime = Date.now(); }, 2000);
+            } else if (state === 'shuffling') {
+                if (Date.now() - startTime < shuffleDuration) {
+                    drawScene();
+                    const swapOptions = [[0, 1], [1, 2]];
+                    const [i, j] = swapOptions[Math.floor(Math.random() * swapOptions.length)];
+                    animateSwap(i, j, () => setTimeout(gameLoop, 200));
+                    return;
+                } else {
+                    state = 'guessing';
+                }
+            } else if (state === 'guessing') {
+                drawScene(); // Helmets closed, prompt guess
+            } else if (state === 'result') {
+                drawScene(true); // Reveal ball
+                setTimeout(() => cancelAnimationFrame(animationFrame), 3000); // End after 3 seconds
+                return;
+            }
+            animationFrame = requestAnimationFrame(gameLoop);
+        }
+
+        // Handle click to guess
+        canvas.addEventListener('click', (e) => {
+            if (state !== 'guessing') return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            for (let i = 0; i < helmets.length; i++) {
+                const h = helmets[i];
+                if (x >= h.x && x <= h.x + h.width && y >= h.y && y <= h.y + h.height) {
+                    guess = i;
+                    state = 'result';
+                    break;
+                }
+            }
+        });
+
+        // Start game (will wait for images to load)
+    </script>
+</body>
+</html>
