@@ -156,21 +156,8 @@ const lossesEl = document.getElementById('losses');
 const streakEl = document.getElementById('streak');
 const roundsEl = document.getElementById('rounds');
 
-/* ========== Assets ========== */
-const helmetImg = new Image();
-const ballImg = new Image();
-helmetImg.src = 'img/helmet.png';
-ballImg.src = 'img/football.png';
-let assetsLoaded = 0;
-let assetsFail = false;
-
-helmetImg.onload = assetLoaded;
-ballImg.onload = assetLoaded;
-helmetImg.onerror = assetFailed;
-ballImg.onerror = assetFailed;
-
-function assetLoaded(){ assetsLoaded++; if(assetsLoaded >= 2) startInitial(); }
-function assetFailed(){ assetsFail = true; assetsLoaded++; if(assetsLoaded >= 2) startInitial(); }
+/* ========== No External Assets - Using Emoji ========== */
+// Removed image loading logic - using emoji fallbacks instead
 
 /* ========== Game State ========== */
 const HELMET_W = 140;
@@ -190,7 +177,7 @@ const SWAP_INTERVAL_MAX = 900;
 const LIFT_REVEAL_HEIGHT = 80;
 const LIFT_DURATION = 800;
 
-let state = 'loading'; // loading|showing|shuffling|guessing|revealing|result
+let state = 'ready'; // ready|showing|shuffling|guessing|revealing|result
 let shuffleStart = 0;
 let lastSwapTime = 0;
 let nextSwapAfter = 0;
@@ -236,8 +223,11 @@ window.addEventListener('resize', () => {
 
 /* ========== Game Flow ========== */
 function resetRound(){
-    correctIndex = 1;
-    hasBall = [false,true,false];
+    // Randomize starting ball position each round
+    correctIndex = randInt(0, 2);
+    hasBall = [false, false, false];
+    hasBall[correctIndex] = true;
+    
     helmets.forEach(h=>{ h.x = h.x; h.y = baseY; h.lifting = 0; });
     chosenIndex = -1;
     hoveredIndex = -1;
@@ -253,7 +243,7 @@ function resetRound(){
 }
 
 function startInitial(){
-    if(state !== 'loading') return;
+    if(state !== 'ready') return;
     resetRound();
     animate();
 }
@@ -282,13 +272,13 @@ function startSwap(i,j){
     const peak = 60; // arc height
     activeSwap = {
         i,j,startTime,duration,
-        startXi,startXj,endXi,endXj,
+        startXi,startXj,endXi,endXj,peak,
     };
 }
 
 function updateSwap(now){
     if(!activeSwap) return false;
-    const {i,j,startTime,duration,startXi,startXj,endXi,endXj} = activeSwap;
+    const {i,j,startTime,duration,startXi,startXj,endXi,endXj,peak} = activeSwap;
     const t = Math.min(1,(now - startTime)/duration);
     const eased = easeInOutQuad(t);
     // Arc param: y offset - simple sine
@@ -378,19 +368,19 @@ function drawConfetti(){
 
 /* ========== Rendering ========== */
 function drawBackground(){
-    // Large radial spotlight
+    // Large radial spotlight - brightened for better visibility
     const g = ctx.createRadialGradient(canvas.width/2, canvas.height*0.45, 100, canvas.width/2, canvas.height*0.6, canvas.height*0.9);
-    g.addColorStop(0,'rgba(255,255,255,0.08)');
-    g.addColorStop(0.4,'rgba(255,255,255,0.03)');
-    g.addColorStop(1,'rgba(0,0,0,0.75)');
+    g.addColorStop(0,'rgba(255,255,255,0.12)'); // increased from 0.08
+    g.addColorStop(0.4,'rgba(255,255,255,0.06)'); // increased from 0.03
+    g.addColorStop(1,'rgba(0,0,0,0.65)'); // reduced from 0.75
     ctx.fillStyle = g;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // Subtle stage oval
+    // Subtle stage oval - also brightened
     ctx.beginPath();
     ctx.ellipse(canvas.width/2, baseY + HELMET_H + 40, 450, 60, 0, 0, Math.PI*2);
     const stageGrad = ctx.createRadialGradient(canvas.width/2, baseY + HELMET_H + 40, 50, canvas.width/2, baseY + HELMET_H + 40, 450);
-    stageGrad.addColorStop(0,'rgba(255,255,255,0.10)');
+    stageGrad.addColorStop(0,'rgba(255,255,255,0.15)'); // increased from 0.10
     stageGrad.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle = stageGrad;
     ctx.fill();
@@ -421,60 +411,43 @@ function drawHelmets(now){
         ctx.scale(scale, scale);
         ctx.translate(-cx, -cy);
 
-        // Helmet image or fallback
-        if(!assetsFail && helmetImg.complete && helmetImg.naturalWidth){
-            ctx.save();
-            if(isHover){
-                ctx.shadowColor = 'rgba(255,255,255,0.6)';
-                ctx.shadowBlur = 22;
-            } else {
-                ctx.shadowColor = 'rgba(0,0,0,0.75)';
-                ctx.shadowBlur = 20;
-                ctx.shadowOffsetY = 6;
-            }
-            ctx.drawImage(helmetImg, h.x, drawY, h.width, h.height);
-            ctx.restore();
+        // Draw helmet emoji with shadow
+        ctx.save();
+        if(isHover){
+            ctx.shadowColor = 'rgba(255,255,255,0.6)';
+            ctx.shadowBlur = 22;
         } else {
-            // Fallback shape
-            ctx.save();
-            const grad = ctx.createLinearGradient(h.x, drawY, h.x, drawY + h.height);
-            grad.addColorStop(0,'#345');
-            grad.addColorStop(1,'#123');
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.roundRect(h.x, drawY, h.width, h.height, 28);
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-            ctx.stroke();
-            ctx.restore();
+            ctx.shadowColor = 'rgba(0,0,0,0.75)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 6;
         }
+        
+        // Helmet emoji ⛑️
+        ctx.font = `${h.height * 0.8}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fff';
+        ctx.fillText('⛑️', cx, drawY + h.height/2);
+        ctx.restore();
 
         ctx.restore();
 
         // Ball draw if revealed or if lifting and this has ball
         if((state === 'revealing' || state === 'result') && hasBall[idx]){
-            const ballX = h.x + (h.width - BALL_W)/2;
+            const ballX = cx;
             const ballY = baseY + h.height - 10; // base position on ground
-            if(!assetsFail && ballImg.complete && ballImg.naturalWidth){
-                ctx.save();
-                ctx.shadowColor = 'rgba(0,0,0,0.6)';
-                ctx.shadowBlur = 12;
-                ctx.drawImage(ballImg, ballX, ballY - 10, BALL_W, BALL_H);
-                ctx.restore();
-            } else {
-                ctx.save();
-                ctx.fillStyle = '#b94';
-                ctx.beginPath();
-                ctx.ellipse(ballX + BALL_W/2, ballY + BALL_H/2 - 10, BALL_W/2, BALL_H/2, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(ballX + 10, ballY + BALL_H/2 - 10);
-                ctx.lineTo(ballX + BALL_W - 10, ballY + BALL_H/2 - 10);
-                ctx.stroke();
-                ctx.restore();
-            }
+            
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.6)';
+            ctx.shadowBlur = 12;
+            
+            // Football emoji 🏈
+            ctx.font = `${BALL_H}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#fff';
+            ctx.fillText('🏈', ballX, ballY + BALL_H/2 - 10);
+            ctx.restore();
         }
     });
 }
@@ -527,9 +500,8 @@ function animate(now = performance.now()){
                     startSwap(i,j);
                 }
             } else {
-                // End shuffle
+                // End shuffle - helmets stay in their swapped positions
                 activeSwap = null;
-                helmets.forEach((h,i)=>{ h.x = positions[i]; h.y = baseY; });
                 state = 'guessing';
                 messageBox.textContent = 'Pick a helmet!';
             }
@@ -622,7 +594,8 @@ document.addEventListener('keydown', (e)=>{
 });
 
 /* ========== Start ========== */
-messageBox.textContent = 'Loading assets...';
+messageBox.textContent = 'Ready to play!';
+startInitial(); // Start immediately since no assets to load
 
 })(); // IIFE
 </script>
