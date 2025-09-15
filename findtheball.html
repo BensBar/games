@@ -156,14 +156,36 @@ const lossesEl = document.getElementById('losses');
 const streakEl = document.getElementById('streak');
 const roundsEl = document.getElementById('rounds');
 
-/* ========== No External Assets - Using Emoji ========== */
-// Removed image loading logic - using emoji fallbacks instead
+/* ========== Image Assets ========== */
+const helmetImg = new Image();
+const footballImg = new Image();
+let assetsLoaded = false;
+
+helmetImg.src = '/img/inspectocat.png';
+footballImg.src = '/img/original.png';
+
+let loadedCount = 0;
+const totalAssets = 2;
+
+function onAssetLoad(){
+    loadedCount++;
+    if(loadedCount === totalAssets){
+        assetsLoaded = true;
+        messageBox.textContent = 'Ready to play!';
+        startInitial();
+    }
+}
+
+helmetImg.onload = onAssetLoad;
+footballImg.onload = onAssetLoad;
+helmetImg.onerror = () => { console.error('Failed to load helmet image'); onAssetLoad(); };
+footballImg.onerror = () => { console.error('Failed to load football image'); onAssetLoad(); };
 
 /* ========== Game State ========== */
 const HELMET_W = 140;
 const HELMET_H = 140;
-const BALL_W = 60;
-const BALL_H = 60;
+const BALL_W = 80;
+const BALL_H = 80;
 let baseY = 360;
 let positions = [];
 let helmets = [];
@@ -204,8 +226,8 @@ function easeInOutQuad(t){ return t<0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
 
 /* ========== Initialization ========== */
 function configureLayout(){
-    // 3 helmets spaced evenly in canvas width
-    const margin = 140;
+    // 3 helmets spaced evenly with more margin to prevent overlaps even when lifted
+    const margin = 200;
     const usable = canvas.width - margin*2;
     const spacing = usable / 2;
     positions = [
@@ -308,17 +330,29 @@ function updateReveal(now){
     const elapsed = now - revealStart;
     const t = Math.min(1, elapsed / LIFT_DURATION);
     const eased = easeOutCubic(t);
-    // Lift chosen helmet and actual ball helmet (if different)
+    const ballIdx = hasBall.indexOf(true);
+    
+    // In revealing state, lift the chosen helmet
+    // In result state, lift the correct helmet
     helmets.forEach((h, idx)=>{
-        if(idx === chosenIndex || hasBall[idx]) {
-            h.lifting = eased;
-        } else {
-            h.lifting = 0;
+        if(state === 'revealing') {
+            if(idx === chosenIndex) {
+                h.lifting = eased;
+            } else {
+                h.lifting = 0;
+            }
+        } else if(state === 'result') {
+            if(idx === ballIdx) {
+                h.lifting = eased;
+            } else {
+                h.lifting = 0;
+            }
         }
     });
+    
     if(t >= 1){
         state = 'result';
-        if(chosenIndex === hasBall.indexOf(true)){
+        if(chosenIndex === ballIdx){
             // Confetti spawn
             spawnConfetti();
         }
@@ -411,7 +445,7 @@ function drawHelmets(now){
         ctx.scale(scale, scale);
         ctx.translate(-cx, -cy);
 
-        // Draw helmet emoji with shadow
+        // Draw helmet image
         ctx.save();
         if(isHover){
             ctx.shadowColor = 'rgba(255,255,255,0.6)';
@@ -422,31 +456,21 @@ function drawHelmets(now){
             ctx.shadowOffsetY = 6;
         }
         
-        // Helmet emoji ⛑️
-        ctx.font = `${h.height * 0.8}px serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#fff';
-        ctx.fillText('⛑️', cx, drawY + h.height/2);
+        ctx.drawImage(helmetImg, h.x, drawY, h.width, h.height);
         ctx.restore();
 
         ctx.restore();
 
-        // Ball draw if revealed or if lifting and this has ball
-        if((state === 'revealing' || state === 'result') && hasBall[idx]){
-            const ballX = cx;
-            const ballY = baseY + h.height - 10; // base position on ground
+        // Ball draw if revealed, showing, or if lifting and this has ball
+        if((state === 'showing' || state === 'revealing' || state === 'result') && hasBall[idx]){
+            const ballX = cx - BALL_W/2;
+            const ballY = baseY + h.height - BALL_H - 10; // base position on ground
             
             ctx.save();
             ctx.shadowColor = 'rgba(0,0,0,0.6)';
             ctx.shadowBlur = 12;
             
-            // Football emoji 🏈
-            ctx.font = `${BALL_H}px serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#fff';
-            ctx.fillText('🏈', ballX, ballY + BALL_H/2 - 10);
+            ctx.drawImage(footballImg, ballX, ballY, BALL_W, BALL_H);
             ctx.restore();
         }
     });
@@ -594,8 +618,8 @@ document.addEventListener('keydown', (e)=>{
 });
 
 /* ========== Start ========== */
-messageBox.textContent = 'Ready to play!';
-startInitial(); // Start immediately since no assets to load
+messageBox.textContent = 'Loading assets...';
+// startInitial(); // Will be called when assets load
 
 })(); // IIFE
 </script>
