@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Find the Ball</title>
+<title>Find the Ball Under the Hat</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
     :root {
@@ -13,6 +13,8 @@
         --wrong:#ff4d4d;
         --panel-bg:rgba(0,0,0,0.45);
         --font-stack: 'Segoe UI', Arial, sans-serif;
+        --hat-color:#8b4513;
+        --hat-rim:#654321;
     }
     body {
         margin:0;
@@ -132,9 +134,9 @@
         </div>
     </header>
     <div id="controls">
-        <button id="restartBtn" class="hidden">Restart</button>
+        <button id="restartBtn" class="hidden">Play Again</button>
     </div>
-    <div id="hint">Find the ball under a helmet after the shuffle. Click to guess!</div>
+    <div id="hint">Find the ball under a hat after the 20-second shuffle. Click to guess!</div>
     <div id="container">
         <canvas id="gameCanvas" width="1000" height="750" aria-label="Find the ball game area"></canvas>
         <div id="messageBox"></div>
@@ -156,45 +158,19 @@ const lossesEl = document.getElementById('losses');
 const streakEl = document.getElementById('streak');
 const roundsEl = document.getElementById('rounds');
 
-/* ========== Image Assets ========== */
-const helmetImg = new Image();
-const footballImg = new Image();
-let assetsLoaded = false;
-
-helmetImg.src = '/img/inspectocat.png';
-footballImg.src = '/img/original.png';
-
-let loadedCount = 0;
-const totalAssets = 2;
-
-function onAssetLoad(){
-    loadedCount++;
-    if(loadedCount === totalAssets){
-        assetsLoaded = true;
-        messageBox.textContent = 'Ready to play!';
-        startInitial();
-    }
-}
-
-helmetImg.onload = onAssetLoad;
-footballImg.onload = onAssetLoad;
-helmetImg.onerror = () => { console.error('Failed to load helmet image'); onAssetLoad(); };
-footballImg.onerror = () => { console.error('Failed to load football image'); onAssetLoad(); };
-
 /* ========== Game State ========== */
-const HELMET_W = 140;
-const HELMET_H = 140;
-const BALL_W = 80;
-const BALL_H = 80;
+const HAT_W = 140;
+const HAT_H = 100;
+const BALL_RADIUS = 25;
 let baseY = 360;
 let positions = [];
-let helmets = [];
+let hats = [];
 let hasBall = [];
 let hoveredIndex = -1;
 
-const SHUFFLE_TIME = 6000; // total shuffle phase duration
-const SWAP_INTERVAL_MIN = 350;
-const SWAP_INTERVAL_MAX = 900;
+const SHUFFLE_TIME = 20000; // 20 seconds shuffle duration
+const SWAP_INTERVAL_MIN = 400;
+const SWAP_INTERVAL_MAX = 1000;
 
 const LIFT_REVEAL_HEIGHT = 80;
 const LIFT_DURATION = 800;
@@ -205,7 +181,7 @@ let lastSwapTime = 0;
 let nextSwapAfter = 0;
 let revealStart = 0;
 let chosenIndex = -1;
-let correctIndex = 1;
+let correctIndex = 1; // Ball starts under center hat (hat 2, index 1)
 
 let animationHandle = null;
 
@@ -215,7 +191,7 @@ let losses = 0;
 let streak = 0;
 let rounds = 0;
 
-/* Confetti (simple) */
+/* Confetti */
 let confettiPieces = [];
 
 /* ========== Utility ========== */
@@ -226,7 +202,7 @@ function easeInOutQuad(t){ return t<0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; }
 
 /* ========== Initialization ========== */
 function configureLayout(){
-    // 3 helmets spaced evenly with more margin to prevent overlaps even when lifted
+    // 3 hats spaced evenly
     const margin = 200;
     const usable = canvas.width - margin*2;
     const spacing = usable / 2;
@@ -236,21 +212,21 @@ function configureLayout(){
         margin + spacing*2
     ];
     baseY = Math.round(canvas.height * 0.48);
-    helmets = positions.map(x => ({ x, y: baseY, width: HELMET_W, height: HELMET_H, lifting:0 }));
+    hats = positions.map(x => ({ x, y: baseY, width: HAT_W, height: HAT_H, lifting:0 }));
 }
 configureLayout();
-window.addEventListener('resize', () => {
-    // Keep logic dimension stable (not responsive redraw scaling logic complexity)
-});
 
 /* ========== Game Flow ========== */
 function resetRound(){
-    // Randomize starting ball position each round
-    correctIndex = randInt(0, 2);
-    hasBall = [false, false, false];
-    hasBall[correctIndex] = true;
+    // Ball always starts under center hat (hat 2, index 1)
+    correctIndex = 1;
+    hasBall = [false, true, false];
     
-    helmets.forEach(h=>{ h.x = h.x; h.y = baseY; h.lifting = 0; });
+    hats.forEach((h,i)=>{
+        h.x = positions[i];
+        h.y = baseY;
+        h.lifting = 0;
+    });
     chosenIndex = -1;
     hoveredIndex = -1;
     state = 'showing';
@@ -258,7 +234,7 @@ function resetRound(){
     lastSwapTime = 0;
     nextSwapAfter = 0;
     revealStart = 0;
-    messageBox.textContent = 'Watch closely...';
+    messageBox.textContent = 'Watch the ball under hat 2...';
     messageBox.style.color = '#fff';
     restartBtn.classList.add('hidden');
     confettiPieces = [];
@@ -282,16 +258,15 @@ function scheduleNextSwap(){
 let activeSwap = null;
 
 function startSwap(i,j){
-    // Use an arc path to move helmets; keep original indices
-    const duration = randInt(450, 750);
+    const duration = randInt(500, 800);
     const startTime = performance.now();
-    const hi = helmets[i];
-    const hj = helmets[j];
+    const hi = hats[i];
+    const hj = hats[j];
     const startXi = hi.x;
     const startXj = hj.x;
     const endXi = positions[j];
     const endXj = positions[i];
-    const peak = 60; // arc height
+    const peak = 70; // arc height
     activeSwap = {
         i,j,startTime,duration,
         startXi,startXj,endXi,endXj,peak,
@@ -303,16 +278,17 @@ function updateSwap(now){
     const {i,j,startTime,duration,startXi,startXj,endXi,endXj,peak} = activeSwap;
     const t = Math.min(1,(now - startTime)/duration);
     const eased = easeInOutQuad(t);
-    // Arc param: y offset - simple sine
     const arcT = Math.sin(Math.PI * eased);
-    helmets[i].x = lerp(startXi, endXi, eased);
-    helmets[j].x = lerp(startXj, endXj, eased);
-    helmets[i].y = baseY - arcT*peak;
-    helmets[j].y = baseY - arcT*peak;
+    hats[i].x = lerp(startXi, endXi, eased);
+    hats[j].x = lerp(startXj, endXj, eased);
+    hats[i].y = baseY - arcT*peak;
+    hats[j].y = baseY - arcT*peak;
     if(t >= 1){
-        helmets[i].y = baseY;
-        helmets[j].y = baseY;
-        // finalize swap ball positions
+        hats[i].y = baseY;
+        hats[j].y = baseY;
+        // Swap positions array to track which hat is in which position
+        [positions[i], positions[j]] = [positions[j], positions[i]];
+        // Swap ball tracking
         [hasBall[i], hasBall[j]] = [hasBall[j], hasBall[i]];
         activeSwap = null;
         return true;
@@ -320,7 +296,7 @@ function updateSwap(now){
     return false;
 }
 
-/* ========== Reveal (Lift Helmet) ========== */
+/* ========== Reveal (Lift Hat) ========== */
 function startReveal(){
     revealStart = performance.now();
     state = 'revealing';
@@ -332,9 +308,7 @@ function updateReveal(now){
     const eased = easeOutCubic(t);
     const ballIdx = hasBall.indexOf(true);
     
-    // In revealing state, lift the chosen helmet
-    // In result state, lift the correct helmet
-    helmets.forEach((h, idx)=>{
+    hats.forEach((h, idx)=>{
         if(state === 'revealing') {
             if(idx === chosenIndex) {
                 h.lifting = eased;
@@ -353,7 +327,6 @@ function updateReveal(now){
     if(t >= 1){
         state = 'result';
         if(chosenIndex === ballIdx){
-            // Confetti spawn
             spawnConfetti();
         }
     }
@@ -382,7 +355,6 @@ function updateConfetti(dt){
         p.x += p.vx;
         p.y += p.vy;
         p.rot += p.vr;
-        // gravity-ish
         p.vy += 0.02;
         if(p.y > canvas.height + 50) p.y = -50;
     });
@@ -402,82 +374,139 @@ function drawConfetti(){
 
 /* ========== Rendering ========== */
 function drawBackground(){
-    // Large radial spotlight - brightened for better visibility
     const g = ctx.createRadialGradient(canvas.width/2, canvas.height*0.45, 100, canvas.width/2, canvas.height*0.6, canvas.height*0.9);
-    g.addColorStop(0,'rgba(255,255,255,0.12)'); // increased from 0.08
-    g.addColorStop(0.4,'rgba(255,255,255,0.06)'); // increased from 0.03
-    g.addColorStop(1,'rgba(0,0,0,0.65)'); // reduced from 0.75
+    g.addColorStop(0,'rgba(255,255,255,0.12)');
+    g.addColorStop(0.4,'rgba(255,255,255,0.06)');
+    g.addColorStop(1,'rgba(0,0,0,0.65)');
     ctx.fillStyle = g;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // Subtle stage oval - also brightened
     ctx.beginPath();
-    ctx.ellipse(canvas.width/2, baseY + HELMET_H + 40, 450, 60, 0, 0, Math.PI*2);
-    const stageGrad = ctx.createRadialGradient(canvas.width/2, baseY + HELMET_H + 40, 50, canvas.width/2, baseY + HELMET_H + 40, 450);
-    stageGrad.addColorStop(0,'rgba(255,255,255,0.15)'); // increased from 0.10
+    ctx.ellipse(canvas.width/2, baseY + HAT_H + 40, 450, 60, 0, 0, Math.PI*2);
+    const stageGrad = ctx.createRadialGradient(canvas.width/2, baseY + HAT_H + 40, 50, canvas.width/2, baseY + HAT_H + 40, 450);
+    stageGrad.addColorStop(0,'rgba(255,255,255,0.15)');
     stageGrad.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle = stageGrad;
     ctx.fill();
 }
 
-function drawHelmets(now){
-    helmets.forEach((h, idx)=>{
-        const liftingOffset = h.lifting * LIFT_REVEAL_HEIGHT;
-        const isHover = (idx === hoveredIndex && state === 'guessing');
-        const scale = isHover ? 1.06 : 1.0;
-        const cx = h.x + h.width/2;
-        const cy = h.y + h.height/2;
-        const drawY = h.y - liftingOffset;
+function drawHat(h, idx, isHover, liftingOffset){
+    const cx = h.x + h.width/2;
+    const drawY = h.y - liftingOffset;
+    const scale = isHover ? 1.08 : 1.0;
+    
+    // Shadow
+    ctx.save();
+    const shadowScale = 1 + h.lifting * 0.3;
+    ctx.translate(cx, baseY + h.height - 10);
+    ctx.scale(shadowScale, 1);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, h.width*0.48, 18, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fill();
+    ctx.restore();
 
-        // Shadow
-        ctx.save();
-        const shadowScale = 1 + h.lifting * 0.3;
-        ctx.translate(cx, baseY + h.height - 10);
-        ctx.scale(shadowScale, 1);
-        ctx.beginPath();
-        ctx.ellipse(0, 0, h.width*0.42, 18, 0, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(0,0,0,0.55)';
-        ctx.fill();
-        ctx.restore();
-
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.scale(scale, scale);
-        ctx.translate(-cx, -cy);
-
-        // Draw helmet image
-        ctx.save();
-        if(isHover){
-            ctx.shadowColor = 'rgba(255,255,255,0.6)';
-            ctx.shadowBlur = 22;
-        } else {
-            ctx.shadowColor = 'rgba(0,0,0,0.75)';
-            ctx.shadowBlur = 20;
-            ctx.shadowOffsetY = 6;
-        }
-        
-        ctx.drawImage(helmetImg, h.x, drawY, h.width, h.height);
-        ctx.restore();
-
-        ctx.restore();
-
-        // Ball draw if revealed, showing, or if lifting and this has ball
-        if((state === 'showing' || state === 'revealing' || state === 'result') && hasBall[idx]){
-            const ballX = cx - BALL_W/2;
-            const ballY = baseY + h.height - BALL_H - 10; // base position on ground
-            
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.6)';
-            ctx.shadowBlur = 12;
-            
-            ctx.drawImage(footballImg, ballX, ballY, BALL_W, BALL_H);
-            ctx.restore();
-        }
-    });
+    ctx.save();
+    ctx.translate(cx, drawY + h.height/2);
+    ctx.scale(scale, scale);
+    
+    // Draw hat (trapezoid shape)
+    ctx.beginPath();
+    const topWidth = h.width * 0.5;
+    const bottomWidth = h.width * 0.9;
+    const hatHeight = h.height;
+    
+    // Hat body (trapezoid)
+    ctx.moveTo(-topWidth/2, -hatHeight/2);
+    ctx.lineTo(topWidth/2, -hatHeight/2);
+    ctx.lineTo(bottomWidth/2, hatHeight/2);
+    ctx.lineTo(-bottomWidth/2, hatHeight/2);
+    ctx.closePath();
+    
+    // Gradient for hat
+    const hatGrad = ctx.createLinearGradient(0, -hatHeight/2, 0, hatHeight/2);
+    hatGrad.addColorStop(0, '#d2691e');
+    hatGrad.addColorStop(0.5, '#a0522d');
+    hatGrad.addColorStop(1, '#8b4513');
+    ctx.fillStyle = hatGrad;
+    
+    if(isHover){
+        ctx.shadowColor = 'rgba(249, 178, 51, 0.8)';
+        ctx.shadowBlur = 25;
+    } else {
+        ctx.shadowColor = 'rgba(0,0,0,0.75)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 6;
+    }
+    ctx.fill();
+    
+    // Hat rim
+    ctx.beginPath();
+    ctx.ellipse(0, hatHeight/2, bottomWidth/2, 15, 0, 0, Math.PI*2);
+    ctx.fillStyle = '#654321';
+    ctx.fill();
+    
+    ctx.restore();
+    
+    // Draw hat number
+    ctx.save();
+    ctx.font = 'bold 32px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 8;
+    ctx.fillText((idx + 1).toString(), cx, drawY + h.height/2);
+    ctx.restore();
 }
 
-function drawOverlayText(){
-    // Optional overlay instructions or stages could be drawn here
+function drawBall(cx, cy){
+    // Draw ball as a gradient circle
+    ctx.save();
+    
+    // Ball shadow
+    ctx.beginPath();
+    ctx.ellipse(cx, cy + BALL_RADIUS + 5, BALL_RADIUS * 0.8, BALL_RADIUS * 0.3, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fill();
+    
+    // Ball body
+    const ballGrad = ctx.createRadialGradient(cx - BALL_RADIUS/3, cy - BALL_RADIUS/3, BALL_RADIUS * 0.2, cx, cy, BALL_RADIUS);
+    ballGrad.addColorStop(0, '#ff6b6b');
+    ballGrad.addColorStop(0.5, '#ee5a6f');
+    ballGrad.addColorStop(1, '#c92a2a');
+    
+    ctx.beginPath();
+    ctx.arc(cx, cy, BALL_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = ballGrad;
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 15;
+    ctx.fill();
+    
+    // Highlight
+    ctx.beginPath();
+    ctx.arc(cx - BALL_RADIUS/4, cy - BALL_RADIUS/4, BALL_RADIUS/4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.shadowColor = 'transparent';
+    ctx.fill();
+    
+    ctx.restore();
+}
+
+function drawHats(){
+    hats.forEach((h, idx)=>{
+        const liftingOffset = h.lifting * LIFT_REVEAL_HEIGHT;
+        const isHover = (idx === hoveredIndex && state === 'guessing');
+        const cx = h.x + h.width/2;
+        
+        // Draw ball if visible (showing, revealing, or result states)
+        if((state === 'showing' || state === 'revealing' || state === 'result') && hasBall[idx]){
+            const ballY = baseY + h.height - BALL_RADIUS - 5;
+            drawBall(cx, ballY);
+        }
+        
+        drawHat(h, idx, isHover, liftingOffset);
+    });
 }
 
 /* ========== Main Animation Loop ========== */
@@ -492,21 +521,20 @@ function animate(now = performance.now()){
 
     switch(state){
         case 'showing':
-            // Show starting ball under middle helmet
-            helmets.forEach((h,i)=>{
+            hats.forEach((h,i)=>{
                 h.x = positions[i];
                 h.y = baseY;
             });
-            drawHelmets(now);
+            drawHats();
             if(!shuffleStart){
                 shuffleStart = now;
-                messageBox.textContent = 'Get Ready...';
+                messageBox.textContent = 'Watch the ball under hat 2...';
                 setTimeout(()=>{
                     state = 'shuffling';
                     shuffleStart = performance.now();
                     scheduleNextSwap();
-                    messageBox.textContent = 'Shuffling...';
-                }, 1500);
+                    messageBox.textContent = 'Shuffling for 20 seconds...';
+                }, 2000);
             }
             break;
         case 'shuffling':
@@ -518,34 +546,30 @@ function animate(now = performance.now()){
                 }
             } else if(now - shuffleStart < SHUFFLE_TIME){
                 if(now - lastSwapTime >= nextSwapAfter){
-                    // choose random adjacent or maybe cross swap
                     const pairs = [[0,1],[1,2],[0,2]];
                     const [i,j] = pairs[randInt(0,pairs.length-1)];
                     startSwap(i,j);
                 }
             } else {
-                // End shuffle - helmets stay in their swapped positions
                 activeSwap = null;
                 state = 'guessing';
-                messageBox.textContent = 'Pick a helmet!';
+                messageBox.textContent = 'Pick a hat (1, 2, or 3)!';
             }
-            drawHelmets(now);
+            drawHats();
             break;
         case 'guessing':
-            drawHelmets(now);
+            drawHats();
             break;
         case 'revealing':
             updateReveal(now);
-            drawHelmets(now);
+            drawHats();
             break;
         case 'result':
-            drawHelmets(now);
+            drawHats();
             updateConfetti(dt);
             drawConfetti();
             break;
     }
-
-    drawOverlayText();
 }
 
 /* ========== Interaction ========== */
@@ -555,8 +579,8 @@ canvas.addEventListener('mousemove', (e)=>{
     const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
     const my = (e.clientY - rect.top) * (canvas.height / rect.height);
     hoveredIndex = -1;
-    for(let i=0;i<helmets.length;i++){
-        const h = helmets[i];
+    for(let i=0;i<hats.length;i++){
+        const h = hats[i];
         if(mx >= h.x && mx <= h.x + h.width && my >= h.y && my <= h.y + h.height){
             hoveredIndex = i;
             break;
@@ -574,12 +598,12 @@ canvas.addEventListener('click', ()=>{
         if(correct){
             wins++;
             streak++;
-            messageBox.textContent = 'Correct!';
+            messageBox.textContent = '🎉 Correct! You found the ball!';
             messageBox.style.color = 'var(--correct)';
         } else {
             losses++;
             streak = 0;
-            messageBox.textContent = 'Wrong!';
+            messageBox.textContent = '❌ Wrong! The ball was under hat ' + (ballIdx + 1);
             messageBox.style.color = 'var(--wrong)';
         }
         rounds++;
@@ -588,7 +612,7 @@ canvas.addEventListener('click', ()=>{
         restartBtn.classList.remove('hidden');
         setTimeout(()=>{
             if(state === 'result'){
-                messageBox.textContent += ' (Play again!)';
+                messageBox.textContent += ' - Click "Play Again"';
             }
         }, 1400);
     }
@@ -618,8 +642,8 @@ document.addEventListener('keydown', (e)=>{
 });
 
 /* ========== Start ========== */
-messageBox.textContent = 'Loading assets...';
-// startInitial(); // Will be called when assets load
+messageBox.textContent = 'Ready to play!';
+startInitial();
 
 })(); // IIFE
 </script>
